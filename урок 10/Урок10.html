@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок 10 — Telegram-бот 🤖</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* API key copy block */
+        .api-block {
+            background: linear-gradient(135deg, rgba(255, 61, 104, 0.1), rgba(148, 156, 255, 0.08));
+            border: 2px solid rgba(255, 61, 104, 0.4);
+            border-radius: 16px;
+            padding: 22px 24px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .api-block .api-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--pink);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .api-key-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .api-key-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--white);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex: 1;
+            word-break: break-all;
+        }
+
+        .api-copy-btn {
+            background: var(--pink);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .api-copy-btn:hover {
+            background: #ff1a4f;
+            box-shadow: var(--glow-pink);
+        }
+
+        .api-copy-btn.copied {
+            background: var(--green);
+            color: #000;
+        }
+
+        /* Info owner box */
+        .owner-box {
+            background: rgba(255, 224, 102, 0.08);
+            border: 1px solid rgba(255, 224, 102, 0.35);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin: 14px 0;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .owner-box .icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .owner-box p {
+            color: #f0dfa0;
+            font-size: 0.91rem;
+            line-height: 1.72;
+        }
+
+        .owner-box strong {
+            color: var(--yellow);
+        }
+
+        .owner-box a {
+            color: var(--cyan);
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Кнопка Назад в Каталог -->
+<a href="../index.html" class="back-to-index" style="position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #a855f7, #3b82f6); color: white; text-decoration: none; border-radius: 8px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 99999; display: flex; align-items: center; gap: 8px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);">
+  &#8592; Вернуться в каталог
+</a>
+<style>
+    .back-to-index:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.8); border-color: white; }
+    .back-to-index:active { transform: scale(0.95); }
+    @media (max-width: 768px) { .back-to-index { font-size: 12px !important; padding: 7px 10px !important; top: 8px !important; right: 8px !important; border-radius: 6px !important; gap: 4px !important; } }
+</style>
+
+
+    <div id="progress-bar"></div>
+    <div id="particles"></div>
+
+    <nav id="sidebar">
+        <div class="sidebar-logo">
+            <div class="k">🎮 KIBERone</div>
+            <span class="t">Калининград · Урок 10</span>
+        </div>
+        <a class="nav-item active" href="#hero"> <span class="nav-emoji">🏠</span> Главная <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#theory"> <span class="nav-emoji">🧠</span> Теория <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch1"> <span class="nav-emoji">🏗️</span> Глава 1 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch2"> <span class="nav-emoji">⚙️</span> Глава 2 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#testing"> <span class="nav-emoji">▶️</span> Тестирование <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#full"> <span class="nav-emoji">💻</span> Полный код <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#api"> <span class="nav-emoji">🔑</span> API & Важное <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#end"> <span class="nav-emoji">🏁</span> Итог <span class="nav-dot"></span></a>
+        <div class="sidebar-footer">Тьютор <span>KIBERone</span><br>Калининград 🏰</div>
+    </nav>
+
+    <div id="sidebar-overlay" onclick="closeMenu()"></div>
+    <button id="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <div id="main">
+
+        <!-- ── HERO ── -->
+        <section class="hero" id="hero">
+            <div class="hero-badge">⚡ Урок 10 · C# · Console App · Telegram Bot</div>
+            <h1>
+                <span class="line1">Telegram-бот</span>
+                <span class="line2">🤖 Консольное приложение + DeepSeek API</span>
+            </h1>
+            <p class="hero-desc">
+                Цель: Научиться создавать Telegram-бота на C#, который принимает сообщения от пользователя, отправляет их на AI-сервис DeepSeek и возвращает ответ. Кроме того, бот реагирует на команду /secret, отправляя заранее подготовленное изображение.
+            </p>
+            <div class="hero-tags">
+                <div class="hero-tag"><span>✈️</span>Telegram.Bot</div>
+                <div class="hero-tag"><span>🤖</span>DeepSeek API</div>
+                <div class="hero-tag"><span>📄</span>JSON</div>
+                <div class="hero-tag"><span>🔑</span>Token</div>
+                <div class="hero-tag"><span>🖼️</span>Фото</div>
+            </div>
+        </section>
+
+        <div class="content">
+
+            <!-- ══ ТЕОРИЯ ══ -->
+            <section class="section" id="theory">
+                <div class="section-title">
+                    <div class="section-num">🧠</div>
+                    <h2>Теоретическая часть</h2>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>✈️</span> Telegram-бот и Telegram.Bot
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body open">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>Telegram-бот</strong> – это программа, которая автоматически общается с пользователями в мессенджере Telegram. Мы регистрируем бота через BotFather и получаем специальный токен (ключ) — это как пароль, с помощью которого наша программа может «залогиниться» к Telegram и работать от имени бота. Библиотека Telegram.Bot (через её классы и методы) упрощает общение с API Telegram: она позволяет нашей программе принимать сообщения от пользователей и отправлять им ответы.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>💬</span> Команда
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>Команда</strong> – это сообщение, которое начинается со слеша <strong>/</strong>. Например, когда пользователь пишет <strong>/secret</strong>, бот понимает, что нужно выполнить особое действие. В нашем случае при получении команды /secret бот отправит специальный файл secret.png пользователю. Для обычных сообщений (не команд) бот будет работать иначе: он возьмёт текст от пользователя, пошлёт его в AI-сервис DeepSeek и вернёт пользователю ответ от AI.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🤖</span> DeepSeek API
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>DeepSeek API</strong> – это «умный помощник» (нейросеть), который умеет отвечать на текстовые вопросы. Мы уже знаем, что для работы с таким сервисом нужно сформировать HTTP-запрос. В нём мы указываем свой секретный API-ключ (как пароль) и текст вопроса пользователя в формате JSON. DeepSeek возвращает ответ тоже в формате JSON. Мы распарсим этот ответ с помощью System.Text.Json – извлечём нужное текстовое сообщение – и отправим его пользователю через бота.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="theory-box" style="margin-top:20px;">
+                    <p>Итак, принцип работы нашего бота такой: пользователь пишет нам в Telegram. Программа получает это сообщение. Если это команда <strong>/secret</strong>, бот отправляет заранее подготовленное изображение. Иначе бот делает HTTP-запрос к DeepSeek (используя WebClient) и по полученному JSON-ответу формирует текстовый ответ, который отправляет обратно пользователю.</p>
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 1 ══ -->
+            <section class="section" id="ch1">
+                <div class="section-title">
+                    <div class="section-num">🏗️</div>
+                    <h2>Практическая часть<br>Глава 1. Создание проекта и подключение библиотек</h2>
+                </div>
+
+                <div class="warn-box" style="margin-bottom:20px;">
+                    <div class="icon">🤖</div>
+                    <p>Заранее создайте телеграм бота в <a href="https://t.me/BotFather" target="_blank">https://t.me/BotFather</a> и скопируйте токен.</p>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n" style="font-size:0.75rem;">▸</div>
+                        <div class="step-t">Откройте Visual Studio и создайте новый проект: <strong>Console App (.NET)</strong> на языке C#. Дайте проекту понятное имя.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 10.1 — Создание проекта Console App</span>
+                    </div>
+                    <img src="картинки/10.1.png" alt="Создание проекта">
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n" style="font-size:0.75rem;">▸</div>
+                        <div class="step-t">Установите через <strong>NuGet</strong> пакет <strong>Telegram.Bot</strong>. Для этого щёлкните правой кнопкой по проекту – Manage NuGet Packages – найдите Telegram.Bot и установите версию <strong>16.0.0</strong> и нажмите Применить.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 10.2</span>
+                    </div>
+                    <img src="картинки/10.2.png" alt="Установка пакета 1">
+                </div>
+                
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 10.3</span>
+                    </div>
+                    <img src="картинки/10.3.png" alt="Установка пакета 2">
+                </div>
+
+                <div class="info-box">
+                    <div class="icon">⚠️</div>
+                    <p><strong>ВАЖНО! Версия 16.0.0</strong> - убедитесь, что выбрали именно её перед нажатием "Установить".</p>
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n" style="font-size:0.75rem;">▸</div>
+                        <div class="step-t">В начале файла Program.cs добавьте нужные using-директивы для работы с Telegram, сетью и JSON:</div>
+                    </div>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+                            📄 Program.cs — using-директивы
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="using System;
+using Telegram.Bot;
+using Telegram.Bot.Args;
+using System.Net;
+using System.Text.Json;
+using Telegram.Bot.Types.InputFiles;"><span class="kw">using</span> System;
+<span class="kw">using</span> Telegram.Bot;
+<span class="kw">using</span> Telegram.Bot.Args;
+<span class="kw">using</span> System.Net;
+<span class="kw">using</span> System.Text.Json;
+<span class="kw">using</span> Telegram.Bot.Types.InputFiles;</pre>
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n" style="font-size:0.75rem;">▸</div>
+                        <div class="step-t">Добавьте в проект файл <strong>secret.png</strong> (можно сгенерировать или скачать). Щёлкните правой кнопкой по проекту – Add – Existing Item и выберите secret.png. После добавления выберите secret.png в Solution Explorer, в свойствах файла поставьте <strong>Copy to Output Directory: Copy always</strong>. Это гарантирует, что при сборке файл попадёт рядом с exe.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 10.4</span>
+                    </div>
+                    <img src="картинки/10.4.png" alt="Добавление файла 1">
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 10.5</span>
+                    </div>
+                    <img src="картинки/10.5.png" alt="Добавление файла 2">
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 10.6</span>
+                    </div>
+                    <img src="картинки/10.6.png" alt="Свойства файла">
+                </div>
+
+            </section>
+
+            <!-- ══ ГЛАВА 2 ══ -->
+            <section class="section" id="ch2">
+                <div class="section-title">
+                    <div class="section-num">⚙️</div>
+                    <h2>Глава 2. Написание кода бота</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t"><strong>Объявление токенов.</strong> В коде определите строковые переменные для токенов Telegram и DeepSeek:
+                            <br><br>
+                            Замените <code>"ВАШ_TELEGRAM_BOT_TOKEN"</code> на реальный токен, который вы получили от BotFather.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+                            📄 Program.cs
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="string botToken = &quot;ВАШ_TELEGRAM_BOT_TOKEN&quot;;      // Токен вашего Telegram-бота
+string deepSeekKey = &quot;sk-5cb04ed1e7324c12a3aaab46c10ff3e2&quot;;  // API-ключ DeepSeek"><span class="kw">string</span> <span class="var">botToken</span> = <span class="str">"ВАШ_TELEGRAM_BOT_TOKEN"</span>;      <span class="cm">// Токен вашего Telegram-бота</span>
+<span class="kw">string</span> <span class="var">deepSeekKey</span> = <span class="str">"sk-5cb04ed1e7324c12a3aaab46c10ff3e2"</span>;  <span class="cm">// API-ключ DeepSeek</span></pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 10.7 — Объявление токенов</span>
+                    </div>
+                    <img src="картинки/10.7.png" alt="Объявление токенов">
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t"><strong>Инициализация бота.</strong> Создайте клиент Telegram и запустите приём сообщений:</div>
+                    </div>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+                            📄 Program.cs
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="var botClient = new TelegramBotClient(botToken);
+botClient.OnMessage += Bot_OnMessage;
+botClient.StartReceiving();
+Console.WriteLine(&quot;Бот запущен. Нажмите Enter для выхода.&quot;);
+Console.ReadLine();"><span class="kw">var</span> <span class="var">botClient</span> = <span class="kw">new</span> <span class="cls">TelegramBotClient</span>(<span class="var">botToken</span>);
+<span class="var">botClient</span>.OnMessage += <span class="var">Bot_OnMessage</span>;
+<span class="var">botClient</span>.<span class="fn">StartReceiving</span>();
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Бот запущен. Нажмите Enter для выхода."</span>);
+<span class="cls">Console</span>.<span class="fn">ReadLine</span>();</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 10.8 — Инициализация бота</span>
+                    </div>
+                    <img src="картинки/10.8.png" alt="Инициализация бота">
+                </div>
+
+                <div class="theory-box">
+                    <p>Здесь мы создаём объект <strong>TelegramBotClient</strong>, подписываемся на событие <strong>OnMessage</strong> (вызовется при любом входящем сообщении) и запускаем фоновое получение сообщений. <code>Console.ReadLine()</code> не даёт программе сразу завершиться.</p>
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t"><strong>Обработчик сообщений.</strong> Добавьте метод Bot_OnMessage, который будет вызываться при получении сообщения. В нём нам нужно проверить текст и в зависимости от содержания отвечать:</div>
+                    </div>
+                </div>
+
+                <div class="code-wrap" style="margin-top:16px;">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+                            📄 Program.cs — Обработчик сообщений
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="async void Bot_OnMessage(object sender, MessageEventArgs e)
+{
+    if (e.Message.Text == null) return;
+
+    if (e.Message.Text == &quot;/secret&quot;)
+    {
+        using (var stream = System.IO.File.OpenRead(&quot;secret.png&quot;))
+        {
+            var file = new Telegram.Bot.Types.InputFiles.InputOnlineFile(stream, &quot;secret.png&quot;);
+            await botClient.SendPhotoAsync(
+                chatId: e.Message.Chat.Id,
+                photo: file,
+                caption: &quot;Вот ваш секретный файл!&quot;
+            );
+        }
+    }
+    else
+    {
+        string userText = e.Message.Text;
+        string jsonBody = &quot;{\&quot;model\&quot;:\&quot;deepseek-chat\&quot;,\&quot;messages\&quot;:[&quot; +
+            &quot;{\&quot;role\&quot;:\&quot;system\&quot;,\&quot;content\&quot;:\&quot;Ты дружелюбный помощник для пользователя.\&quot;},&quot; +
+            &quot;{\&quot;role\&quot;:\&quot;user\&quot;,\&quot;content\&quot;:\&quot;&quot; + userText + &quot;\&quot;}&quot; +
+            &quot;]}&quot;;
+
+        using (WebClient webClient = new WebClient())
+        {
+            webClient.Headers.Add(&quot;Authorization&quot;, &quot;Bearer &quot; + deepSeekKey);
+            webClient.Headers.Add(&quot;Content-Type&quot;, &quot;application/json&quot;);
+
+            string response = webClient.UploadString(&quot;https://api.deepseek.com/chat/completions&quot;, jsonBody);
+            using JsonDocument doc = JsonDocument.Parse(response);
+            string botAnswer = doc.RootElement
+                .GetProperty(&quot;choices&quot;)[0]
+                .GetProperty(&quot;message&quot;)
+                .GetProperty(&quot;content&quot;)
+                .GetString();
+
+            await botClient.SendTextMessageAsync(chatId: e.Message.Chat.Id, text: botAnswer);
+        }
+    }
+}"><span class="kw">async void</span> <span class="fn">Bot_OnMessage</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">MessageEventArgs</span> <span class="var">e</span>)
+{
+    <span class="kw">if</span> (<span class="var">e</span>.Message.Text == <span class="kw">null</span>) <span class="kw">return</span>;
+
+    <span class="kw">if</span> (<span class="var">e</span>.Message.Text == <span class="str">"/secret"</span>)
+    {
+        <span class="kw">using</span> (<span class="kw">var</span> <span class="var">stream</span> = <span class="cls">System.IO.File</span>.<span class="fn">OpenRead</span>(<span class="str">"secret.png"</span>))
+        {
+            <span class="kw">var</span> <span class="var">file</span> = <span class="kw">new</span> <span class="cls">Telegram.Bot.Types.InputFiles.InputOnlineFile</span>(<span class="var">stream</span>, <span class="str">"secret.png"</span>);
+            <span class="kw">await</span> <span class="var">botClient</span>.<span class="fn">SendPhotoAsync</span>(
+                <span class="var">chatId</span>: <span class="var">e</span>.Message.Chat.Id,
+                <span class="var">photo</span>: <span class="var">file</span>,
+                <span class="var">caption</span>: <span class="str">"Вот ваш секретный файл!"</span>
+            );
+        }
+    }
+    <span class="kw">else</span>
+    {
+        <span class="kw">string</span> <span class="var">userText</span> = <span class="var">e</span>.Message.Text;
+        <span class="kw">string</span> <span class="var">jsonBody</span> = <span class="str">"{\"model\":\"deepseek-chat\",\"messages\":["</span> +
+            <span class="str">"{\"role\":\"system\",\"content\":\"Ты дружелюбный помощник для пользователя.\"},"</span> +
+            <span class="str">"{\"role\":\"user\",\"content\":\""</span> + <span class="var">userText</span> + <span class="str">"\"}"</span> +
+            <span class="str">"]}"</span>;
+
+        <span class="kw">using</span> (<span class="cls">WebClient</span> <span class="var">webClient</span> = <span class="kw">new</span> <span class="cls">WebClient</span>())
+        {
+            <span class="var">webClient</span>.Headers.<span class="fn">Add</span>(<span class="str">"Authorization"</span>, <span class="str">"Bearer "</span> + <span class="var">deepSeekKey</span>);
+            <span class="var">webClient</span>.Headers.<span class="fn">Add</span>(<span class="str">"Content-Type"</span>, <span class="str">"application/json"</span>);
+
+            <span class="kw">string</span> <span class="var">response</span> = <span class="var">webClient</span>.<span class="fn">UploadString</span>(<span class="str">"https://api.deepseek.com/chat/completions"</span>, <span class="var">jsonBody</span>);
+            <span class="kw">using</span> <span class="cls">JsonDocument</span> <span class="var">doc</span> = <span class="cls">JsonDocument</span>.<span class="fn">Parse</span>(<span class="var">response</span>);
+            <span class="kw">string</span> <span class="var">botAnswer</span> = <span class="var">doc</span>.RootElement
+                .<span class="fn">GetProperty</span>(<span class="str">"choices"</span>)[<span class="num">0</span>]
+                .<span class="fn">GetProperty</span>(<span class="str">"message"</span>)
+                .<span class="fn">GetProperty</span>(<span class="str">"content"</span>)
+                .<span class="fn">GetString</span>();
+
+            <span class="kw">await</span> <span class="var">botClient</span>.<span class="fn">SendTextMessageAsync</span>(<span class="var">chatId</span>: <span class="var">e</span>.Message.Chat.Id, <span class="var">text</span>: <span class="var">botAnswer</span>);
+        }
+    }
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 10.9 — Обработчик сообщений</span>
+                    </div>
+                    <img src="картинки/10.9.png" alt="Обработчик сообщений">
+                </div>
+
+                <div class="theory-box">
+                    <p>В этом коде мы используем WebClient для отправки POST-запроса к DeepSeek. Обратите внимание: строка JSON содержит два сообщения – одно системное (для установки поведения бота) и одно от пользователя. Ответ DeepSeek мы распарсили через JsonDocument и отправили в чат.</p>
+                </div>
+
+            </section>
+
+            <!-- ══ ТЕСТИРОВАНИЕ ══ -->
+            <section class="section" id="testing">
+                <div class="section-title">
+                    <div class="section-num">▶️</div>
+                    <h2>Тестирование бота</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">Соберите и запустите проект (F5). В консоли отобразится сообщение "Бот запущен...". Программа ожидает сообщений в фоновом режиме.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">Откройте Telegram и найдите вашего бота по его username (имя, которое вы указали через BotFather). Нажмите Start или просто отправьте любое сообщение боту.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t"><strong>Тест обычного сообщения:</strong> Напишите боту любой текст, например: <em>Привет, бот!</em> или любой вопрос. Спустя секунду или две бот должен ответить – это ответ от DeepSeek. Проверьте, что он выглядит как связный текст (например, DeepSeek представит себя или ответит по теме).</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">4</div>
+                        <div class="step-t"><strong>Тест команды /secret:</strong> Отправьте боту сообщение <code>/secret</code>. Бот должен вернуть изображение <strong>secret.png</strong> с подписью (если указали caption). Проверьте, что изображение приходит и открывается.</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="icon">✅</div>
+                    <p>Если оба теста прошли успешно, значит бот работает правильно: он отвечает на обычные сообщения AI-ответом и отправляет картинку по команде /secret.</p>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 10.10 — Тестирование работы</span>
+                    </div>
+                    <img src="картинки/10.10.png" alt="Тестирование">
+                </div>
+            </section>
+
+            <!-- ══ ПОЛНЫЙ КОД ══ -->
+            <section class="section" id="full">
+                <div class="section-title">
+                    <div class="section-num">💻</div>
+                    <h2>Полный код</h2>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+                            📄 Program.cs — Полный код
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="using System;
+using Telegram.Bot;
+using Telegram.Bot.Args;
+using System.Net;
+using System.Text.Json;
+using Telegram.Bot.Types.InputFiles;
+
+string botToken = &quot;7771081495:AAHQE795OXobD5M6OGvep2RKBAFZfWwnk5Y&quot;;      // Вставьте токен вашего бота
+string deepSeekKey = &quot;sk-5cb04ed1e7324c12a3aaab46c10ff3e2&quot;;  // API-ключ DeepSeek
+
+var botClient = new TelegramBotClient(botToken);
+botClient.OnMessage += Bot_OnMessage;
+botClient.StartReceiving();
+Console.WriteLine(&quot;Бот запущен. Нажмите Enter для выхода.&quot;);
+Console.ReadLine();
+
+async void Bot_OnMessage(object sender, MessageEventArgs e)
+{
+    if (e.Message.Text == null) return;
+
+    if (e.Message.Text == &quot;/secret&quot;)
+    {
+        using (var stream = System.IO.File.OpenRead(&quot;secret.png&quot;))
+        {
+            var file = new Telegram.Bot.Types.InputFiles.InputOnlineFile(stream, &quot;secret.png&quot;);
+            await botClient.SendPhotoAsync(
+                chatId: e.Message.Chat.Id,
+                photo: file,
+                caption: &quot;Вот ваш секретный файл!&quot;
+            );
+        }
+    }
+    else
+    {
+        string userText = e.Message.Text;
+        string jsonBody = &quot;{\&quot;model\&quot;:\&quot;deepseek-chat\&quot;,\&quot;messages\&quot;:[&quot; +
+            &quot;{\&quot;role\&quot;:\&quot;system\&quot;,\&quot;content\&quot;:\&quot;Ты дружелюбный помощник для пользователя.\&quot;},&quot; +
+            &quot;{\&quot;role\&quot;:\&quot;user\&quot;,\&quot;content\&quot;:\&quot;&quot; + userText + &quot;\&quot;}&quot; +
+            &quot;]}&quot;;
+
+        using (WebClient webClient = new WebClient())
+        {
+            webClient.Headers.Add(&quot;Authorization&quot;, &quot;Bearer &quot; + deepSeekKey);
+            webClient.Headers.Add(&quot;Content-Type&quot;, &quot;application/json&quot;);
+
+            string response = webClient.UploadString(&quot;https://api.deepseek.com/chat/completions&quot;, jsonBody);
+            using JsonDocument doc = JsonDocument.Parse(response);
+            string botAnswer = doc.RootElement
+                .GetProperty(&quot;choices&quot;)[0]
+                .GetProperty(&quot;message&quot;)
+                .GetProperty(&quot;content&quot;)
+                .GetString();
+
+            await botClient.SendTextMessageAsync(chatId: e.Message.Chat.Id, text: botAnswer);
+        }
+    }
+}"><span class="kw">using</span> System;
+<span class="kw">using</span> Telegram.Bot;
+<span class="kw">using</span> Telegram.Bot.Args;
+<span class="kw">using</span> System.Net;
+<span class="kw">using</span> System.Text.Json;
+<span class="kw">using</span> Telegram.Bot.Types.InputFiles;
+
+<span class="kw">string</span> <span class="var">botToken</span> = <span class="str">"7771081495:AAHQE795OXobD5M6OGvep2RKBAFZfWwnk5Y"</span>;      <span class="cm">// Вставьте токен вашего бота</span>
+<span class="kw">string</span> <span class="var">deepSeekKey</span> = <span class="str">"sk-5cb04ed1e7324c12a3aaab46c10ff3e2"</span>;  <span class="cm">// API-ключ DeepSeek</span>
+
+<span class="kw">var</span> <span class="var">botClient</span> = <span class="kw">new</span> <span class="cls">TelegramBotClient</span>(<span class="var">botToken</span>);
+<span class="var">botClient</span>.OnMessage += <span class="var">Bot_OnMessage</span>;
+<span class="var">botClient</span>.<span class="fn">StartReceiving</span>();
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Бот запущен. Нажмите Enter для выхода."</span>);
+<span class="cls">Console</span>.<span class="fn">ReadLine</span>();
+
+<span class="kw">async void</span> <span class="fn">Bot_OnMessage</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">MessageEventArgs</span> <span class="var">e</span>)
+{
+    <span class="kw">if</span> (<span class="var">e</span>.Message.Text == <span class="kw">null</span>) <span class="kw">return</span>;
+
+    <span class="kw">if</span> (<span class="var">e</span>.Message.Text == <span class="str">"/secret"</span>)
+    {
+        <span class="kw">using</span> (<span class="kw">var</span> <span class="var">stream</span> = <span class="cls">System.IO.File</span>.<span class="fn">OpenRead</span>(<span class="str">"secret.png"</span>))
+        {
+            <span class="kw">var</span> <span class="var">file</span> = <span class="kw">new</span> <span class="cls">Telegram.Bot.Types.InputFiles.InputOnlineFile</span>(<span class="var">stream</span>, <span class="str">"secret.png"</span>);
+            <span class="kw">await</span> <span class="var">botClient</span>.<span class="fn">SendPhotoAsync</span>(
+                <span class="var">chatId</span>: <span class="var">e</span>.Message.Chat.Id,
+                <span class="var">photo</span>: <span class="var">file</span>,
+                <span class="var">caption</span>: <span class="str">"Вот ваш секретный файл!"</span>
+            );
+        }
+    }
+    <span class="kw">else</span>
+    {
+        <span class="kw">string</span> <span class="var">userText</span> = <span class="var">e</span>.Message.Text;
+        <span class="kw">string</span> <span class="var">jsonBody</span> = <span class="str">"{\"model\":\"deepseek-chat\",\"messages\":["</span> +
+            <span class="str">"{\"role\":\"system\",\"content\":\"Ты дружелюбный помощник для пользователя.\"},"</span> +
+            <span class="str">"{\"role\":\"user\",\"content\":\""</span> + <span class="var">userText</span> + <span class="str">"\"}"</span> +
+            <span class="str">"]}"</span>;
+
+        <span class="kw">using</span> (<span class="cls">WebClient</span> <span class="var">webClient</span> = <span class="kw">new</span> <span class="cls">WebClient</span>())
+        {
+            <span class="var">webClient</span>.Headers.<span class="fn">Add</span>(<span class="str">"Authorization"</span>, <span class="str">"Bearer "</span> + <span class="var">deepSeekKey</span>);
+            <span class="var">webClient</span>.Headers.<span class="fn">Add</span>(<span class="str">"Content-Type"</span>, <span class="str">"application/json"</span>);
+
+            <span class="kw">string</span> <span class="var">response</span> = <span class="var">webClient</span>.<span class="fn">UploadString</span>(<span class="str">"https://api.deepseek.com/chat/completions"</span>, <span class="var">jsonBody</span>);
+            <span class="kw">using</span> <span class="cls">JsonDocument</span> <span class="var">doc</span> = <span class="cls">JsonDocument</span>.<span class="fn">Parse</span>(<span class="var">response</span>);
+            <span class="kw">string</span> <span class="var">botAnswer</span> = <span class="var">doc</span>.RootElement
+                .<span class="fn">GetProperty</span>(<span class="str">"choices"</span>)[<span class="num">0</span>]
+                .<span class="fn">GetProperty</span>(<span class="str">"message"</span>)
+                .<span class="fn">GetProperty</span>(<span class="str">"content"</span>)
+                .<span class="fn">GetString</span>();
+
+            <span class="kw">await</span> <span class="var">botClient</span>.<span class="fn">SendTextMessageAsync</span>(<span class="var">chatId</span>: <span class="var">e</span>.Message.Chat.Id, <span class="var">text</span>: <span class="var">botAnswer</span>);
+        }
+    }
+}</pre>
+                </div>
+            </section>
+
+            <!-- ══ API КЛЮЧ ══ -->
+            <section class="section" id="api">
+                <div class="section-title">
+                    <div class="section-num">🔑</div>
+                    <h2>Важное — API DeepSeek</h2>
+                </div>
+
+                <div class="api-block">
+                    <div class="api-label">🔑 API-ключ DeepSeek</div>
+                    <div class="api-key-row">
+                        <div class="api-key-text" id="api-key-text">sk-5cb04ed1e7324c12a3aaab46c10ff3e2</div>
+                        <button class="api-copy-btn" id="api-copy-btn" onclick="copyApiKey()">📋 Скопировать
+                            ключ</button>
+                    </div>
+                </div>
+
+                <div class="warn-box" style="margin-top:20px;">
+                    <div class="icon">⚠️</div>
+                    <p><strong>ВАЖНОЕ!</strong> API DeepSeek – "sk-5cb04ed1e7324c12a3aaab46c10ff3e2" (используйте именно этот ключ). Файл <strong>secret.png</strong> должен находиться рядом с исполняемым файлом (в свойствах файла выставьте «Copy to Output Directory: Copy always»). Без этих условий бот не сможет отправить AI-ответ или картинку.</p>
+                </div>
+
+                <div class="owner-box">
+                    <div class="icon">💳</div>
+                    <p>На данный момент (08.02.2026) API DeepSeek оплачивает <strong>Гафаров Акбар</strong>. Если API будет
+                        недоступен, напишите мне либо вручную получите его сами и согласуйте 100 рублей у
+                        руководителя. Получить можно тут: <a href="https://platform.deepseek.com/api_keys" target="_blank">DeepSeek Platform</a></p>
+                </div>
+            </section>
+
+            <!-- ══ ИТОГ ══ -->
+            <section class="section" id="end">
+                <div class="section-title">
+                    <div class="section-num">🏁</div>
+                    <h2>Итоги урока</h2>
+                </div>
+
+                <div class="theory-box">
+                    <p>В этом уроке мы сделали Telegram-бота на C#, который общается с пользователем через мессенджер. Бот принимает текст от пользователя, пересылает его AI-сервису DeepSeek и возвращает ответ. Кроме того, бот умеет распознавать команду /secret и отправлять в ответ заранее подготовленное изображение. Во время работы над проектом вы познакомились с тем, как устроены Telegram-боты и как они получают сообщения, а также повторили работу с API: отправку HTTP-запроса через WebClient и разбор JSON-ответа с помощью System.Text.Json.</p>
+                </div>
+
+                <div class="info-box" style="margin-top:20px;">
+                    <div class="icon">💬</div>
+                    <p><strong>Обсудите с учениками результаты:</strong> какие ответы дал DeepSeek, как бот реагировал на команды, и что можно улучшить. Например, можно предложить настроить другие команды, изменить системное сообщение для бота или расширить логику взаимодействия. Это покажет, как простая основа может быть дополнена новыми «фишками».</p>
+                </div>
+            </section>
+
+        </div><!-- /content -->
+
+        <div class="download-section">
+            <a href="Урок10.docx" download="Урок10.docx" class="download-btn" id="dl-btn">
+                <span class="dl-icon" id="dl-icon">📄</span>
+                Скачать полный конспект 10 урока
+            </a>
+        </div>
+
+        <footer>
+            <div class="footer-brand">Сделано тьютором <span>KIBERone</span> Калининград 🏰</div>
+            <div class="footer-hint">// Урок 10 · C# · Console App · Telegram Bot · JSON</div>
+        </footer>
+
+    </div><!-- /main -->
+
+    <div id="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+    <div id="toast">✅ Скопировано!</div>
+    <div id="easter-egg">
+        <span class="big">✈️</span>
+        <h3>Секретная команда сработала!</h3>
+        <p>Ты нашёл секрет урока 🎉<br>Konami code: ↑↑↓↓←→←→BA</p>
+        <button id="egg-close" onclick="closeEgg()">Закрыть</button>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+            updateNav();
+        });
+
+        (function () {
+            const c = document.getElementById('particles');
+            const colors = ['#949cff', '#ff3d68', '#00e5ff', '#00ffb3', '#ffe066'];
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div'); p.className = 'particle';
+                const s = Math.random() * 6 + 3;
+                p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};animation-duration:${Math.random() * 20 + 12}s;animation-delay:-${Math.random() * 20}s;`;
+                c.appendChild(p);
+            }
+        })();
+
+        function toggleQ(h) {
+            h.classList.toggle('open');
+            h.nextElementSibling.classList.toggle('open');
+        }
+
+        function copyCode(btn) {
+            const pre = btn.closest('.code-wrap').querySelector('pre');
+            const raw = (pre.dataset.code || pre.innerText).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+            navigator.clipboard.writeText(raw).then(() => {
+                btn.textContent = '✅ Скопировано!'; btn.classList.add('copied');
+                showToast('Код скопирован!');
+                setTimeout(() => { btn.textContent = '📋 Копировать'; btn.classList.remove('copied'); }, 2000);
+            });
+        }
+
+        function copyApiKey() {
+            const key = document.getElementById('api-key-text').textContent.trim();
+            navigator.clipboard.writeText(key).then(() => {
+                const btn = document.getElementById('api-copy-btn');
+                btn.textContent = '✅ Скопирован!';
+                btn.classList.add('copied');
+                showToast('API-ключ скопирован!');
+                setTimeout(() => { btn.textContent = '📋 Скопировать ключ'; btn.classList.remove('copied'); }, 2500);
+            });
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = '✅ ' + msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function openLightbox(w) { document.getElementById('lightbox-img').src = w.querySelector('img').src; document.getElementById('lightbox').classList.add('open'); }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEgg(); } });
+
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('open'); }
+        function closeMenu() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('open'); }
+
+        const sects = ['hero', 'theory', 'ch1', 'ch2', 'testing', 'full', 'api', 'end'];
+        function updateNav() {
+            let cur = sects[0];
+            sects.forEach(id => { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < 130) cur = id; });
+            document.querySelectorAll('.nav-item').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+        }
+
+        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let ki = 0;
+        document.addEventListener('keydown', e => { ki = (e.key === konami[ki]) ? ki + 1 : 0; if (ki === konami.length) { document.getElementById('easter-egg').classList.add('show'); ki = 0; } });
+        function closeEgg() { document.getElementById('easter-egg').classList.remove('show'); }
+
+        document.getElementById('dl-btn').addEventListener('click', function () {
+            const icon = document.getElementById('dl-icon'); icon.textContent = '✅';
+            setTimeout(() => { icon.textContent = '📄'; }, 2500);
+        });
+
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => { chip.style.transform = 'scale(1.15)'; setTimeout(() => chip.style.transform = '', 200); showToast('🏷️ ' + chip.textContent); });
+        });
+    </script>
+</body>
+
+</html>

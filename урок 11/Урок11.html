@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок 11 — Звуковая панель 🔊</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<!-- Кнопка Назад в Каталог -->
+<a href="../index.html" class="back-to-index" style="position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #a855f7, #3b82f6); color: white; text-decoration: none; border-radius: 8px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 99999; display: flex; align-items: center; gap: 8px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);">
+  &#8592; Вернуться в каталог
+</a>
+<style>
+    .back-to-index:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.8); border-color: white; }
+    .back-to-index:active { transform: scale(0.95); }
+    @media (max-width: 768px) { .back-to-index { font-size: 12px !important; padding: 7px 10px !important; top: 8px !important; right: 8px !important; border-radius: 6px !important; gap: 4px !important; } }
+</style>
+
+
+    <div id="progress-bar"></div>
+    <div id="particles"></div>
+
+    <nav id="sidebar">
+        <div class="sidebar-logo">
+            <div class="k">🎮 KIBERone</div>
+            <span class="t">Калининград · Урок 11</span>
+        </div>
+        <a class="nav-item active" href="#hero"> <span class="nav-emoji">🏠</span> Главная <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#theory"> <span class="nav-emoji">🧠</span> Теория <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch1"> <span class="nav-emoji">🏗️</span> Глава 1 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch2"> <span class="nav-emoji">💻</span> Глава 2 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch3"> <span class="nav-emoji">🎵</span> Глава 3 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch4"> <span class="nav-emoji">📥</span> Глава 4 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch5"> <span class="nav-emoji">📦</span> Глава 5 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#end"> <span class="nav-emoji">🏁</span> Заключение <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#full"> <span class="nav-emoji">📜</span> Полный код <span class="nav-dot"></span></a>
+        <div class="sidebar-footer">Тьютор <span>KIBERone</span><br>Калининград 🏰</div>
+    </nav>
+
+    <div id="sidebar-overlay" onclick="closeMenu()"></div>
+    <button id="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <div id="main">
+
+        <!-- ── HERO ── -->
+        <section class="hero" id="hero">
+            <div class="hero-badge">⚡ Урок 11 · C# · Windows Forms · Звук · .exe</div>
+            <h1>
+                <span class="line1">Звуковая панель</span>
+                <span class="line2">🔊 кнопки с аудио и сборка приложения</span>
+            </h1>
+            <p class="hero-desc">
+                Описание : На этом уроке ученики создадут приложение на Windows Forms с несколькими кнопками, каждая из которых будет воспроизводить звук, научатся добавлять аудиофайлы в проект и правильно размещать их для работы программы, разберутся с форматом звука и с помощью стороннего сервиса конвертируют mp3 в wav, чтобы он корректно воспроизводился, после чего соберут готовое приложение в .exe файл и зададут ему собственную иконку для полноценного запуска с рабочего стола.
+            </p>
+            <div class="hero-tags">
+                <div class="hero-tag"><span>🎵</span>System.Media</div>
+                <div class="hero-tag"><span>🔊</span>SoundPlayer</div>
+                <div class="hero-tag"><span>📦</span>.exe Сборка</div>
+                <div class="hero-tag"><span>🏷️</span>Tag (Свойство)</div>
+                <div class="hero-tag"><span>🔄</span>Конвертация</div>
+            </div>
+        </section>
+
+        <div class="content">
+
+            <!-- ══ ТЕОРИЯ ══ -->
+            <section class="section" id="theory">
+                <div class="section-title">
+                    <div class="section-num">🧠</div>
+                    <h2>ТЕОРЕТИЧЕСКАЯ ЧАСТЬ УРОКА 11</h2>
+                </div>
+                
+                <div class="theory-box" style="margin-top:20px;">
+                    <p>На этом уроке мы работаем со звуком в приложении Windows Forms и разбираем, как программа может воспроизводить аудио при нажатии кнопки. Для этого используется встроенная библиотека <strong>System.Media</strong>, а именно класс <strong>SoundPlayer</strong>, который предназначен для простого воспроизведения звуковых файлов. Он работает очень легко: достаточно передать путь к файлу, и звук будет воспроизведён. Однако у этого класса есть ограничение — он поддерживает только формат .wav, поэтому напрямую использовать .mp3 не получится.</p>
+                </div>
+
+                <div class="theory-box" style="margin-top:20px;">
+                    <p>Форматы звука отличаются способом хранения аудиоданных. <strong>.wav</strong> — это несжатый формат, в котором звук хранится практически «как есть», поэтому такие файлы обычно больше по размеру, но при этом максимально просты для обработки и воспроизведения программой. <strong>.mp3</strong> — это сжатый формат, который уменьшает размер файла за счёт потери части данных, благодаря чему он широко используется в интернете и на устройствах. Однако из-за своей структуры .mp3 требует более сложных библиотек для воспроизведения, поэтому стандартный SoundPlayer его не поддерживает.</p>
+                </div>
+
+                <div class="theory-box" style="margin-top:20px;">
+                    <p>Чтобы использовать звуки в нашем проекте, файлы необходимо правильно добавить в проект Visual Studio. Они должны находиться рядом с исполняемым файлом программы (в папке bin/Debug или bin/Release), потому что при запуске приложение ищет файлы именно там. Для этого используется настройка <strong>Copy to Output Directory</strong>, которая автоматически копирует файлы в нужное место при сборке проекта.</p>
+                </div>
+
+                <div class="theory-box" style="margin-top:20px;">
+                    <p>Также на уроке используется механизм событий Windows Forms. Каждая кнопка имеет событие <strong>Click</strong>, которое срабатывает при нажатии. Вместо того чтобы писать отдельный код для каждой кнопки, мы используем один общий обработчик и свойство <strong>Tag</strong>, в котором храним имя звукового файла. Это позволяет сделать код компактным и удобным для расширения.</p>
+                </div>
+
+                <div class="theory-box" style="margin-top:20px;">
+                    <p>Дополнительно рассматривается процесс конвертации аудиофайлов. Поскольку у нас могут быть звуки в формате .mp3, мы используем сторонние онлайн-сервисы для перевода их в .wav. Это важный практический навык — умение подготавливать ресурсы для программы.</p>
+                </div>
+
+                <div class="theory-box" style="margin-top:20px;">
+                    <p>В завершение ученики узнают, как собрать проект в .exe файл и задать ему иконку. Это позволяет превратить написанную программу в полноценное приложение, которое можно запускать с рабочего стола и использовать вне Visual Studio.</p>
+                </div>
+
+            </section>
+
+            <!-- ══ ПРАКТИКА ══ -->
+            <div class="section-title" style="margin-top:40px;margin-bottom:20px;">
+                <div class="section-num" style="background:var(--pink);">🛠️</div>
+                <h2>ПРАКТИЧЕСКАЯ ЧАСТЬ</h2>
+            </div>
+
+            <!-- ══ ГЛАВА 1 ══ -->
+            <section class="section" id="ch1">
+                <div class="section-title">
+                    <div class="section-num">🏗️</div>
+                    <h2>ГЛАВА 1. Создание проекта и интерфейса</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">На этом этапе необходимо создать новый проект в Visual Studio, выбрав Приложение Windows Forms (Майкрасофт) и назвать его, например, «Урок_11».</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">После создания откроется форма (Form1), на которую нужно добавить три кнопки из панели Toolbox (<strong>cttl+alt+x</strong>) (при желании можно добавить больше). Кнопки можно расположить в любом удобном месте на форме.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t">Названия кнопок менять не требуется, можно оставить стандартные <code>button1</code>, <code>button2</code>, <code>button3</code>. На этом этапе важно получить рабочий интерфейс с кнопками, которые будут использоваться дальше для добавления звуков.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.1</span>
+                    </div>
+                    <img src="картинки/11.1.png" alt="интерфейс">
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 2 ══ -->
+            <section class="section" id="ch2">
+                <div class="section-title">
+                    <div class="section-num">💻</div>
+                    <h2>ГЛАВА 2. Переход в код и подключение звуков к кнопкам</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">После того как форма и кнопки созданы, необходимо перейти к написанию логики программы. Для этого в Visual Studio нужно нажать правой кнопкой мыши по форме Form1 в окне конструктора и выбрать пункт <strong>View Code («Перейти в код»)</strong>. После этого откроется файл с кодом формы, в котором находится класс Form1. В этот файл нужно вставить следующий код:</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.2</span>
+                    </div>
+                    <img src="картинки/11.2.png" alt="View Code">
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+                            📄 Form1.cs
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="using System.Media;
+
+namespace Урок_11
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+
+            button1.Tag = &quot;&quot;;
+            button2.Tag = &quot;&quot;;
+            button3.Tag = &quot;&quot;;
+
+            button1.Click += PlayButtonSound;
+            button2.Click += PlayButtonSound;
+            button3.Click += PlayButtonSound;
+        }
+        void PlaySound(string file)
+        {
+            new SoundPlayer(file).Play();
+        }
+        void PlayButtonSound(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            PlaySound(btn.Tag.ToString());
+        }
+    }
+}"><span class="kw">using</span> System.Media;
+
+<span class="kw">namespace</span> Урок_11
+{
+    <span class="kw">public partial class</span> <span class="cls">Form1</span> : <span class="cls">Form</span>
+    {
+        <span class="kw">public</span> <span class="fn">Form1</span>()
+        {
+            <span class="fn">InitializeComponent</span>();
+
+            <span class="var">button1</span>.Tag = <span class="str">""</span>;
+            <span class="var">button2</span>.Tag = <span class="str">""</span>;
+            <span class="var">button3</span>.Tag = <span class="str">""</span>;
+
+            <span class="var">button1</span>.Click += <span class="var">PlayButtonSound</span>;
+            <span class="var">button2</span>.Click += <span class="var">PlayButtonSound</span>;
+            <span class="var">button3</span>.Click += <span class="var">PlayButtonSound</span>;
+        }
+        <span class="kw">void</span> <span class="fn">PlaySound</span>(<span class="kw">string</span> <span class="var">file</span>)
+        {
+            <span class="kw">new</span> <span class="cls">SoundPlayer</span>(<span class="var">file</span>).<span class="fn">Play</span>();
+        }
+        <span class="kw">void</span> <span class="fn">PlayButtonSound</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">EventArgs</span> <span class="var">e</span>)
+        {
+            <span class="cls">Button</span> <span class="var">btn</span> = (<span class="cls">Button</span>)<span class="var">sender</span>;
+            <span class="fn">PlaySound</span>(<span class="var">btn</span>.Tag.<span class="fn">ToString</span>());
+        }
+    }
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.3</span>
+                    </div>
+                    <img src="картинки/11.3.png" alt="Код">
+                </div>
+
+                <p class="prose" style="font-weight:800;color:var(--white);margin-top:16px;">Ниже приведено подробное объяснение каждой части этого кода.</p>
+
+                <div class="theory-box" style="margin-top:12px;">
+                    <p>Строка <code>using System.Media;</code> подключает библиотеку для работы со звуком. Именно здесь находится класс SoundPlayer, который будет воспроизводить аудиофайлы.</p>
+                </div>
+
+                <div class="theory-box" style="margin-top:12px;">
+                    <p>Далее идёт строка <code>namespace Урок_11</code>. Пространство имён используется для объединения классов проекта в одну логическую группу. Обычно оно совпадает с названием проекта. Ниже объявляется класс Form1, который наследуется от класса Form. Это значит, что Form1 является обычным окном Windows-приложения, на котором можно размещать кнопки и другие элементы.</p>
+                </div>
+
+                <div class="theory-box" style="margin-top:12px;">
+                    <p>Внутри класса находится конструктор <code>public Form1()</code>. Конструктор выполняется автоматически при запуске формы. Первая строка внутри него — <code>InitializeComponent();</code> — создаёт все элементы, которые были добавлены на форму через конструктор Visual Studio. Без этой строки форма не сможет правильно отобразить кнопки и другие элементы.</p>
+                </div>
+
+                <div class="theory-box" style="margin-top:12px;">
+                    <p>Следующие строки <code>button1.Tag = "";</code>, <code>button2.Tag = "";</code>, <code>button3.Tag = "";</code> задают значение свойства <strong>Tag</strong> для каждой кнопки. Свойство Tag — это специальное дополнительное поле, в котором можно хранить любые данные. В нашем случае в нём будет храниться имя звукового файла, который должна воспроизводить кнопка. Пока в примере оставлены пустые строки, но позже сюда нужно будет вписать имена файлов, например sound1.wav, sound2.wav, sound3.wav.</p>
+                </div>
+
+                <div class="theory-box" style="margin-top:12px;">
+                    <p>Далее идут строки <code>button1.Click += PlayButtonSound;</code>, <code>button2.Click += PlayButtonSound;</code>, <code>button3.Click += PlayButtonSound;</code>. Они подключают всем трём кнопкам один и тот же обработчик события Click. Это означает, что при нажатии на любую из этих кнопок будет выполняться метод PlayButtonSound. Такой подход позволяет не писать отдельный код для каждой кнопки, а использовать одну общую логику для всех.</p>
+                </div>
+
+                <div class="theory-box" style="margin-top:12px;">
+                    <p>Ниже находится метод <code>void PlaySound(string file)</code>. Он принимает один параметр file, в котором должно находиться имя звукового файла. Внутри метода создаётся объект SoundPlayer с указанным именем файла, а затем вызывается метод <strong>.Play()</strong>, который запускает воспроизведение звука. Таким образом, этот метод отвечает только за проигрывание файла по его имени.</p>
+                </div>
+
+                <div class="theory-box" style="margin-top:12px;">
+                    <p>Последний метод <code>void PlayButtonSound(object sender, EventArgs e)</code> является общим обработчиком нажатия для всех кнопок. Параметр <strong>sender</strong> содержит объект, который вызвал событие, то есть именно ту кнопку, на которую нажали. С помощью строки <code>Button btn = (Button)sender;</code> мы преобразуем объект sender в тип Button, чтобы работать с ним как с кнопкой. Затем строка <code>PlaySound(btn.Tag.ToString());</code> берёт значение из свойства Tag этой кнопки, превращает его в строку и передаёт в метод PlaySound. В результате при нажатии программа понимает, какая кнопка была нажата, получает связанный с ней файл и воспроизводит нужный звук.</p>
+                </div>
+
+                <div class="warn-box" style="margin-top:12px;">
+                    <div class="icon">💡</div>
+                    <p>Таким образом, данный код создаёт универсальную систему: каждой кнопке можно назначить свой звук через свойство Tag, а воспроизведение для всех кнопок будет происходить через один общий обработчик. Это делает программу короче, удобнее и понятнее для дальнейшего расширения.</p>
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 3 ══ -->
+            <section class="section" id="ch3">
+                <div class="section-title">
+                    <div class="section-num">🎵</div>
+                    <h2>ГЛАВА 3. Подготовка звуковых файлов</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">На этом этапе необходимо подобрать и скачать короткие звуки для кнопок. Чаще всего дети будут искать такие звуки на сайте <strong>myinstants.com</strong>, поэтому важно сразу предупредить их, что переходить по сайту нужно аккуратно, так как там встречаются неподходящие и неприемлемые аудиофайлы. Задача — скачать три коротких звука в формате .mp3.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.4</span>
+                    </div>
+                    <img src="картинки/11.4.png" alt="Сайт звуков">
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">После этого нужно перейти на сайт-конвертер, например <strong>convertio.co</strong> (можно конвертироват параллельно 2 файла), так как наша программа использует библиотеку SoundPlayer, которая работает только с форматом .wav. На сайте конвертера необходимо загрузить все три mp3-файла, дождаться завершения обработки и скачать готовый архив с файлами .wav.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.5</span>
+                    </div>
+                    <img src="картинки/11.5.png" alt="Конвертирование">
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t">Затем архив нужно разархивировать, а полученные файлы для удобства переименовать в <strong>1.wav</strong>, <strong>2.wav</strong> и <strong>3.wav</strong>, чтобы в дальнейшем их было проще подключать к кнопкам в программе.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.6</span>
+                    </div>
+                    <img src="картинки/11.6.png" alt="Папка файлов">
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 4 ══ -->
+            <section class="section" id="ch4">
+                <div class="section-title">
+                    <div class="section-num">📥</div>
+                    <h2>ГЛАВА 4. Загрузка звуков в проект и проверка работы</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">После подготовки файлов .wav их необходимо добавить в проект Visual Studio. Для этого нужно в окне <strong>Solution Explorer</strong> нажать правой кнопкой мыши по проекту, выбрать <strong>Add → Existing Item</strong> и загрузить файлы 1.wav, 2.wav и 3.wav.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.7</span>
+                    </div>
+                    <img src="картинки/11.7.png" alt="Add Existing Item">
+                </div>
+
+                <p class="prose" style="margin:16px 0;"><strong>P.S. Выберите все файлы чтоб найти звуки</strong></p>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.8</span>
+                    </div>
+                    <img src="картинки/11.8.png" alt="Все файлы">
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">После добавления каждый файл нужно выделить по очереди и в окне свойств изменить параметр <strong>Copy to Output Directory</strong> на значение <strong>Copy if newer</strong>, чтобы при запуске программы звуки автоматически копировались в папку вместе с .exe файлом.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.9</span>
+                    </div>
+                    <img src="картинки/11.9.png" alt="Copy if newer">
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t">Затем нужно вернуться в код формы и в строках <code>button1.Tag</code>, <code>button2.Tag</code>, <code>button3.Tag</code> указать имена соответствующих файлов: 1.wav, 2.wav, 3.wav.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">4</div>
+                        <div class="step-t">После этого можно запустить проект и проверить работу программы: при нажатии на каждую кнопку должен воспроизводиться свой звук. Если звук не воспроизводится, нужно проверить правильность имени файла, его формат и настройки копирования в выходную папку.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.10</span>
+                    </div>
+                    <img src="картинки/11.10.png" alt="Проверка работы">
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 5 ══ -->
+            <section class="section" id="ch5">
+                <div class="section-title">
+                    <div class="section-num">📦</div>
+                    <h2>ГЛАВА 5. Установка иконки и создание .exe</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">На этом этапе необходимо подготовить иконку для программы — скачать файл в формате <strong>.ico</strong> (важно, чтобы это был именно этот формат), но пока не добавлять его в проект.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.11</span>
+                    </div>
+                    <img src="картинки/11.11.png" alt="Фрагмент ICO">
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">Далее в Visual Studio нужно переключить режим сборки с <strong>Debug</strong> на <strong>Release</strong>, чтобы получить готовую версию программы.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t">После этого открыть свойства проекта (ПКМ по проекту → Properties), перейти во вкладку <strong>Application (Приложение) </strong> и в разделе <strong>Icon and manifest</strong> выбрать скачанный .ico файл — после этого иконка автоматически применится к программе.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.12</span>
+                    </div>
+                    <img src="картинки/11.12.png" alt="Иконка проекта">
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n">4</div>
+                        <div class="step-t">Затем выполнить сборку проекта (<strong>Build → Rebuild Solution</strong>) и перейти в папку проекта по пути <strong>bin/Release/...</strong>, где находится готовый <strong>.exe</strong> файл. Этот файл можно скопировать вместе со звуками в удобное место (например, на рабочий стол или в отдельную папку), после чего на рабочем столе создать ярлык и указать путь к этому .exe файлу, чтобы программу можно было запускать как обычное приложение ( либо просто создать ярлык и указать полный путь файла)</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 11.13</span>
+                    </div>
+                    <img src="картинки/11.13.png" alt="exe файл">
+                </div>
+            </section>
+
+            <!-- ══ ЗАКЛЮЧЕНИЕ И ДОП. ЗАДАНИЕ ══ -->
+            <section class="section" id="end">
+                <div class="section-title">
+                    <div class="section-num">🏁</div>
+                    <h2>ЗАКЛЮЧЕНИЕ</h2>
+                </div>
+
+                <div class="theory-box">
+                    <p>На этом уроке ученики научились работать со звуком в приложении Windows Forms, подключать внешние файлы к проекту и управлять ими через код. Были разобраны принципы работы с библиотекой System.Media, особенности форматов .mp3 и .wav, а также процесс подготовки файлов для использования в программе. В результате у каждого получилось полноценное приложение с кнопками, которые воспроизводят звук, а также готовая версия программы в формате .exe с собственной иконкой, которую можно запускать с рабочего стола. Это важный шаг к созданию полноценных пользовательских приложений.</p>
+                </div>
+
+                <div class="section-title" style="margin-top:32px;margin-bottom:16px;padding-bottom:12px;">
+                    <div class="section-num" style="background:linear-gradient(135deg,var(--yellow),var(--green));">🎨
+                    </div>
+                    <h2>ДОПОЛНИТЕЛЬНОЕ ЗАДАНИЕ</h2>
+                </div>
+
+                <div class="info-box">
+                    <div class="icon">🖼️</div>
+                    <p>Для тех, кто справился быстрее, можно усложнить проект и добавить изображения на кнопки. Для этого нужно скачать картинки, добавить их в проект и установить их в свойстве Image у кнопок через окно свойств или через код. Также можно убрать текст с кнопок и оставить только изображения, чтобы получилась полноценная звуковая панель с визуальными элементами.</p>
+                </div>
+            </section>
+
+            <!-- ══ ПОЛНЫЙ КОД ══ -->
+            <section class="section" id="full">
+                <div class="section-title">
+                    <div class="section-num">📜</div>
+                    <h2>Полный код</h2>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+                            📄 Form1.cs — Полный код
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="using System.Media;
+
+namespace Урок_11
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+
+            button1.Tag = &quot;1.wav&quot;;
+            button2.Tag = &quot;2.wav&quot;;
+            button3.Tag = &quot;3 .wav&quot;;
+
+            button1.Click += PlayButtonSound;
+            button2.Click += PlayButtonSound;
+            button3.Click += PlayButtonSound;
+        }
+        void PlaySound(string file)
+        {
+            new SoundPlayer(file).Play();
+        }
+        void PlayButtonSound(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            PlaySound(btn.Tag.ToString());
+        }
+    }
+}"><span class="kw">using</span> System.Media;
+
+<span class="kw">namespace</span> Урок_11
+{
+    <span class="kw">public partial class</span> <span class="cls">Form1</span> : <span class="cls">Form</span>
+    {
+        <span class="kw">public</span> <span class="fn">Form1</span>()
+        {
+            <span class="fn">InitializeComponent</span>();
+
+            <span class="var">button1</span>.Tag = <span class="str">"1.wav"</span>;
+            <span class="var">button2</span>.Tag = <span class="str">"2.wav"</span>;
+            <span class="var">button3</span>.Tag = <span class="str">"3 .wav"</span>;
+
+            <span class="var">button1</span>.Click += <span class="var">PlayButtonSound</span>;
+            <span class="var">button2</span>.Click += <span class="var">PlayButtonSound</span>;
+            <span class="var">button3</span>.Click += <span class="var">PlayButtonSound</span>;
+        }
+        <span class="kw">void</span> <span class="fn">PlaySound</span>(<span class="kw">string</span> <span class="var">file</span>)
+        {
+            <span class="kw">new</span> <span class="cls">SoundPlayer</span>(<span class="var">file</span>).<span class="fn">Play</span>();
+        }
+        <span class="kw">void</span> <span class="fn">PlayButtonSound</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">EventArgs</span> <span class="var">e</span>)
+        {
+            <span class="cls">Button</span> <span class="var">btn</span> = (<span class="cls">Button</span>)<span class="var">sender</span>;
+            <span class="fn">PlaySound</span>(<span class="var">btn</span>.Tag.<span class="fn">ToString</span>());
+        }
+    }
+}</pre>
+                </div>
+            </section>
+
+        </div><!-- /content -->
+
+        <div class="download-section">
+            <a href="Урок11.docx" download="Урок11.docx" class="download-btn" id="dl-btn">
+                <span class="dl-icon" id="dl-icon">📄</span>
+                Скачать полный конспект 11 урока
+            </a>
+        </div>
+
+        <footer>
+            <div class="footer-brand">Сделано тьютором <span>KIBERone</span> Калининград 🏰</div>
+            <div class="footer-hint">// Урок 11 · C# · Windows Forms · Звук · .exe</div>
+        </footer>
+
+    </div><!-- /main -->
+
+    <div id="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+    <div id="toast">✅ Скопировано!</div>
+    <div id="easter-egg">
+        <span class="big">🔊</span>
+        <h3>Музыкальная пауза!</h3>
+        <p>Ты нашёл секрет урока 🎉<br>Konami code: ↑↑↓↓←→←→BA</p>
+        <button id="egg-close" onclick="closeEgg()">Закрыть</button>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+            updateNav();
+        });
+
+        (function () {
+            const c = document.getElementById('particles');
+            const colors = ['#949cff', '#ff3d68', '#00e5ff', '#00ffb3', '#ffe066'];
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div'); p.className = 'particle';
+                const s = Math.random() * 6 + 3;
+                p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};animation-duration:${Math.random() * 20 + 12}s;animation-delay:-${Math.random() * 20}s;`;
+                c.appendChild(p);
+            }
+        })();
+
+        function toggleQ(h) {
+            h.classList.toggle('open');
+            h.nextElementSibling.classList.toggle('open');
+        }
+
+        function copyCode(btn) {
+            const pre = btn.closest('.code-wrap').querySelector('pre');
+            const raw = (pre.dataset.code || pre.innerText).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+            navigator.clipboard.writeText(raw).then(() => {
+                btn.textContent = '✅ Скопировано!'; btn.classList.add('copied');
+                showToast('Код скопирован!');
+                setTimeout(() => { btn.textContent = '📋 Копировать'; btn.classList.remove('copied'); }, 2000);
+            });
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = '✅ ' + msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function openLightbox(w) { document.getElementById('lightbox-img').src = w.querySelector('img').src; document.getElementById('lightbox').classList.add('open'); }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEgg(); } });
+
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('open'); }
+        function closeMenu() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('open'); }
+
+        const sects = ['hero', 'theory', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'end', 'full'];
+        function updateNav() {
+            let cur = sects[0];
+            sects.forEach(id => { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < 130) cur = id; });
+            document.querySelectorAll('.nav-item').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+        }
+
+        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let ki = 0;
+        document.addEventListener('keydown', e => { ki = (e.key === konami[ki]) ? ki + 1 : 0; if (ki === konami.length) { document.getElementById('easter-egg').classList.add('show'); ki = 0; } });
+        function closeEgg() { document.getElementById('easter-egg').classList.remove('show'); }
+
+        document.getElementById('dl-btn').addEventListener('click', function () {
+            const icon = document.getElementById('dl-icon'); icon.textContent = '✅';
+            setTimeout(() => { icon.textContent = '📄'; }, 2500);
+        });
+
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => { chip.style.transform = 'scale(1.15)'; setTimeout(() => chip.style.transform = '', 200); showToast('🏷️ ' + chip.textContent); });
+        });
+    </script>
+</body>
+
+</html>

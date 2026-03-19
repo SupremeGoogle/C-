@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок 9 — AI-Ассистент 🤖</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* API key copy block */
+        .api-block {
+            background: linear-gradient(135deg, rgba(255, 61, 104, 0.1), rgba(148, 156, 255, 0.08));
+            border: 2px solid rgba(255, 61, 104, 0.4);
+            border-radius: 16px;
+            padding: 22px 24px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .api-block .api-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--pink);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .api-key-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .api-key-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--white);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex: 1;
+            word-break: break-all;
+        }
+
+        .api-copy-btn {
+            background: var(--pink);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .api-copy-btn:hover {
+            background: #ff1a4f;
+            box-shadow: var(--glow-pink);
+        }
+
+        .api-copy-btn.copied {
+            background: var(--green);
+            color: #000;
+        }
+
+        /* Info owner box */
+        .owner-box {
+            background: rgba(255, 224, 102, 0.08);
+            border: 1px solid rgba(255, 224, 102, 0.35);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin: 14px 0;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .owner-box .icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .owner-box p {
+            color: #f0dfa0;
+            font-size: 0.91rem;
+            line-height: 1.72;
+        }
+
+        .owner-box strong {
+            color: var(--yellow);
+        }
+
+        .owner-box a {
+            color: var(--cyan);
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Кнопка Назад в Каталог -->
+<a href="../index.html" class="back-to-index" style="position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #a855f7, #3b82f6); color: white; text-decoration: none; border-radius: 8px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 99999; display: flex; align-items: center; gap: 8px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);">
+  &#8592; Вернуться в каталог
+</a>
+<style>
+    .back-to-index:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.8); border-color: white; }
+    .back-to-index:active { transform: scale(0.95); }
+    @media (max-width: 768px) { .back-to-index { font-size: 12px !important; padding: 7px 10px !important; top: 8px !important; right: 8px !important; border-radius: 6px !important; gap: 4px !important; } }
+</style>
+
+
+    <div id="progress-bar"></div>
+    <div id="particles"></div>
+
+    <nav id="sidebar">
+        <div class="sidebar-logo">
+            <div class="k">🎮 KIBERone</div>
+            <span class="t">Калининград · Урок 9</span>
+        </div>
+        <a class="nav-item active" href="#hero"> <span class="nav-emoji">🏠</span> Главная <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#theory"> <span class="nav-emoji">🧠</span> Теория <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch1"> <span class="nav-emoji">🏗️</span> Глава 1 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch2"> <span class="nav-emoji">📡</span> Глава 2 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#explain"><span class="nav-emoji">🔍</span> Разбор кода <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch3"> <span class="nav-emoji">▶️</span> Глава 3 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#full"> <span class="nav-emoji">💻</span> Полный код <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#api"> <span class="nav-emoji">🔑</span> API-ключ <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#end"> <span class="nav-emoji">🏁</span> Итог <span class="nav-dot"></span></a>
+        <div class="sidebar-footer">Тьютор <span>KIBERone</span><br>Калининград 🏰</div>
+    </nav>
+
+    <div id="sidebar-overlay" onclick="closeMenu()"></div>
+    <button id="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <div id="main">
+
+        <!-- ── HERO ── -->
+        <section class="hero" id="hero">
+            <div class="hero-badge">⚡ Урок 9 · C# · WinForms · DeepSeek API</div>
+            <h1>
+                <span class="line1">AI-Ассистент</span>
+                <span class="line2">🤖 WinForms + DeepSeek API</span>
+            </h1>
+            <p class="hero-desc">
+                Цель: создать простое приложение на C# с графическим интерфейсом (WinForms), которое отправляет текст на
+                AI-сервис DeepSeek и получает ответ прямо в окне программы.
+            </p>
+            <div class="hero-tags">
+                <div class="hero-tag"><span>🌐</span>API & HTTP</div>
+                <div class="hero-tag"><span>🤖</span>DeepSeek</div>
+                <div class="hero-tag"><span>📄</span>JSON</div>
+                <div class="hero-tag"><span>🔑</span>API-токен</div>
+                <div class="hero-tag"><span>📡</span>WebClient</div>
+            </div>
+        </section>
+
+        <div class="content">
+
+            <!-- ══ ТЕОРИЯ ══ -->
+            <section class="section" id="theory">
+                <div class="section-title">
+                    <div class="section-num">🧠</div>
+                    <h2>Теоретическая часть</h2>
+                </div>
+                <p class="prose" style="color:var(--muted);margin-bottom:16px;">В этой части мы разберём ключевые
+                    понятия 👇</p>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🌐</span> API (Application Programming Interface)
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body open">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>API (Application Programming Interface)</strong> — это набор правил и
+                                соглашений, который позволяет разным программам взаимодействовать между собой. Проще
+                                говоря, это «переводчик» между приложениями, который знает, какие команды и данные можно
+                                отправлять и получать.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>📡</span> HTTP-запрос
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>HTTP-запрос</strong> — это способ отправить информацию по сети. По аналогии с
+                                заказом в ресторане: мы делаем «заказ» (запрос) и ждём, пока «официант» (сервер) не
+                                принесёт «блюдо» (ответ). В случае DeepSeek наш запрос — это запрос через интернет, в
+                                котором мы передаём текст, а сервер возвращает ответ в формате данных.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🤖</span> DeepSeek
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>DeepSeek</strong> — это современная нейросеть (система искусственного
+                                интеллекта), способная обрабатывать естественный язык и генерировать ответы на вопросы.
+                                По сути, мы используем DeepSeek как «умного помощника», который на основе большого
+                                объёма данных отвечает на наши сообщения.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>📄</span> JSON
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>JSON</strong> — распространённый текстовый формат для обмена данными. Ответы
+                                от API обычно приходят именно в формате JSON. JSON выглядит как список пар
+                                ключ-значение: это легко читать и удобно парсить программно.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🔑</span> API-токен (ключ)
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>API-токен (ключ)</strong> — это секретный код, который нужен для доступа к
+                                DeepSeek. Токен действует как «пароль»: он показывает серверу, что вы —
+                                зарегистрированный пользователь с разрешением задавать вопросы. Без токена DeepSeek не
+                                позволит получить ответ на запрос.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="theory-box" style="margin-top:20px;">
+                    <p>Таким образом, чтобы использовать DeepSeek, наше приложение должно отправить HTTP-запрос в
+                        интернет на специальный адрес DeepSeek API, передав в нём текст вопроса и наш токен. Сервер
+                        обработает запрос и вернёт ответ в формате JSON — из него мы извлечём нужный текст и покажем
+                        пользователю.</p>
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 1 ══ -->
+            <section class="section" id="ch1">
+                <div class="section-title">
+                    <div class="section-num">🏗️</div>
+                    <h2>Глава 1 — Создание проекта и элементов формы</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">Откройте <strong>Visual Studio</strong> и создайте новый проект:
+                            <strong>Windows Forms (Консольное приложение)</strong>. Дайте проекту имя.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">
+                            В дизайнере формы (Form1) добавьте на форму следующие элементы из Toolbox:
+                            <ul style="margin-top:12px;list-style:none;display:flex;flex-direction:column;gap:8px;">
+                                <li
+                                    style="color:#9aa5d8;font-size:0.88rem;line-height:1.6;padding-left:16px;position:relative;">
+                                    <span style="position:absolute;left:0;color:var(--purple);">▸</span>
+                                    <strong style="color:var(--white);">Label</strong> с текстом «Введите запрос:»,
+                                    рядом <strong style="color:var(--white);">TextBox</strong> (назовём его <code
+                                        style="color:var(--cyan);font-family:'JetBrains Mono',monospace">textBoxQuestion</code>)
+                                    — сюда пользователь будет вводить вопрос. Его можно сделать многострочным и
+                                    растянуть.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 9.1 — TextBox для ввода вопроса</span>
+                    </div>
+                    <img src="картинки/9.1.png" alt="TextBox для ввода">
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n" style="font-size:0.75rem;">→</div>
+                        <div class="step-t">
+                            <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+                                <li
+                                    style="color:#9aa5d8;font-size:0.88rem;line-height:1.6;padding-left:16px;position:relative;">
+                                    <span style="position:absolute;left:0;color:var(--pink);">▸</span>
+                                    <strong style="color:var(--white);">Button</strong> (назовём его <code
+                                        style="color:var(--cyan);font-family:'JetBrains Mono',monospace">buttonAsk</code>)
+                                    с текстом «Спросить». Эта кнопка будет отправлять запрос.
+                                </li>
+                                <li
+                                    style="color:#9aa5d8;font-size:0.88rem;line-height:1.6;padding-left:16px;position:relative;">
+                                    <span style="position:absolute;left:0;color:var(--green);">▸</span>
+                                    <strong style="color:var(--white);">Label</strong> для вывода ответа (например,
+                                    <code
+                                        style="color:var(--cyan);font-family:'JetBrains Mono',monospace">labelAnswer</code>).
+                                    Можно сразу очистить у него текст или поставить «...». Нужно сделать labelAnswer
+                                    многострочным (установить <code
+                                        style="color:var(--cyan);font-family:'JetBrains Mono',monospace">AutoSize = False</code>
+                                    и задать подходящий размер), чтобы ответ помещался. Можно растянуть за пределы
+                                    формы, чтобы текст точно помещался, когда раскроете приложение во весь экран.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 9.2 — Готовая форма с элементами</span>
+                    </div>
+                    <img src="картинки/9.2.png" alt="Готовая форма">
+                </div>
+
+                <div class="steps" style="margin-top:16px;">
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t">Убедитесь, что имена элементов удобные (например, <code
+                                style="color:var(--purple);font-family:'JetBrains Mono',monospace">textBoxQuestion</code>,
+                            <code style="color:var(--purple);font-family:'JetBrains Mono',monospace">labelAnswer</code>,
+                            <code style="color:var(--purple);font-family:'JetBrains Mono',monospace">buttonAsk</code>).
+                            Это не обязательно, но помогает разбираться в коде.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 2 ══ -->
+            <section class="section" id="ch2">
+                <div class="section-title">
+                    <div class="section-num">📡</div>
+                    <h2>Глава 2 — Написание обработчика кнопки и отправка запроса</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">Дважды щёлкните по кнопке <strong>buttonAsk</strong> в дизайнере. Visual
+                            Studio автоматически создаст метод <code
+                                style="color:var(--purple);font-family:'JetBrains Mono',monospace">buttonAsk_Click</code>
+                            в коде формы. Это будет наш обработчик события нажатия кнопки.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">
+                            Внутри метода <code
+                                style="color:var(--purple);font-family:'JetBrains Mono',monospace">buttonAsk_Click</code>
+                            напишем код отправки запроса. Алгоритм такой:
+                            <ul style="margin-top:10px;list-style:none;display:flex;flex-direction:column;gap:6px;">
+                                <li style="color:#9aa5d8;font-size:0.87rem;padding-left:14px;position:relative;"><span
+                                        style="position:absolute;left:0;color:var(--purple);">1.</span>получить текст из
+                                    textBoxQuestion</li>
+                                <li style="color:#9aa5d8;font-size:0.87rem;padding-left:14px;position:relative;"><span
+                                        style="position:absolute;left:0;color:var(--purple);">2.</span>сформировать
+                                    JSON-запрос</li>
+                                <li style="color:#9aa5d8;font-size:0.87rem;padding-left:14px;position:relative;"><span
+                                        style="position:absolute;left:0;color:var(--purple);">3.</span>послать его на
+                                    DeepSeek API</li>
+                                <li style="color:#9aa5d8;font-size:0.87rem;padding-left:14px;position:relative;"><span
+                                        style="position:absolute;left:0;color:var(--purple);">4.</span>получить ответ
+                                    (строку JSON)</li>
+                                <li style="color:#9aa5d8;font-size:0.87rem;padding-left:14px;position:relative;"><span
+                                        style="position:absolute;left:0;color:var(--purple);">5.</span>распарсить JSON и
+                                    вывести содержимое ответа в labelAnswer</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t">Код внутри <code
+                                style="color:var(--purple);font-family:'JetBrains Mono',monospace">buttonAsk_Click</code>
+                            (C#):</div>
+                    </div>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — buttonAsk_Click
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="private void buttonAsk_Click(object sender, EventArgs e)
+{
+    string prompt = textBoxQuestion.Text; // Текст вопроса от пользователя
+
+    string apiKey = &quot;ВАШ_ТОКЕН&quot;; // Замените на свой токен DeepSeek
+
+    // Формируем тело запроса в виде JSON-строки
+    string jsonBody =
+        &quot;{\&quot;model\&quot;:\&quot;deepseek-chat\&quot;,\&quot;messages\&quot;:[&quot; +
+        &quot;{\&quot;role\&quot;:\&quot;system\&quot;,\&quot;content\&quot;:\&quot;Ты помощник для чайников.\&quot;},&quot; +
+        &quot;{\&quot;role\&quot;:\&quot;user\&quot;,\&quot;content\&quot;:\&quot;&quot; + prompt + &quot;\&quot;}&quot; +
+        &quot;]}&quot;;
+
+    // Создаём клиент для отправки HTTP-запроса
+    using (WebClient client = new WebClient())
+    {
+        client.Headers.Add(&quot;Authorization&quot;, &quot;Bearer &quot; + apiKey);
+        client.Headers.Add(&quot;Content-Type&quot;, &quot;application/json&quot;);
+
+        // Отправляем POST-запрос и получаем ответ в формате JSON (строка)
+        string response = client.UploadString(&quot;https://api.deepseek.com/chat/completions&quot;, jsonBody);
+
+        // Разбираем JSON-ответ и извлекаем текст от AI
+        using JsonDocument doc = JsonDocument.Parse(response);
+
+        string aiText = doc.RootElement
+            .GetProperty(&quot;choices&quot;)[0]
+            .GetProperty(&quot;message&quot;)
+            .GetProperty(&quot;content&quot;)
+            .GetString();
+
+        // Выводим ответ в метку на форме
+        labelAnswer.Text = aiText;
+    }
+}"><span class="kw">private void</span> <span class="fn">buttonAsk_Click</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">EventArgs</span> <span class="var">e</span>)
+{
+    <span class="kw">string</span> <span class="var">prompt</span> = <span class="var">textBoxQuestion</span>.Text; <span class="cm">// Текст вопроса от пользователя</span>
+
+    <span class="kw">string</span> <span class="var">apiKey</span> = <span class="str">"ВАШ_ТОКЕН"</span>; <span class="cm">// Замените на свой токен DeepSeek</span>
+
+    <span class="cm">// Формируем тело запроса в виде JSON-строки</span>
+    <span class="kw">string</span> <span class="var">jsonBody</span> =
+        <span class="str">"{\"model\":\"deepseek-chat\",\"messages\":["</span> +
+        <span class="str">"{\"role\":\"system\",\"content\":\"Ты помощник для чайников.\"},"</span> +
+        <span class="str">"{\"role\":\"user\",\"content\":\""</span> + <span class="var">prompt</span> + <span class="str">"\"}"</span> +
+        <span class="str">"]}"</span>;
+
+    <span class="cm">// Создаём клиент для отправки HTTP-запроса</span>
+    <span class="kw">using</span> (<span class="cls">WebClient</span> <span class="var">client</span> = <span class="kw">new</span> <span class="cls">WebClient</span>())
+    {
+        <span class="var">client</span>.Headers.<span class="fn">Add</span>(<span class="str">"Authorization"</span>, <span class="str">"Bearer "</span> + <span class="var">apiKey</span>);
+        <span class="var">client</span>.Headers.<span class="fn">Add</span>(<span class="str">"Content-Type"</span>, <span class="str">"application/json"</span>);
+
+        <span class="cm">// Отправляем POST-запрос и получаем ответ в формате JSON (строка)</span>
+        <span class="kw">string</span> <span class="var">response</span> = <span class="var">client</span>.<span class="fn">UploadString</span>(<span class="str">"https://api.deepseek.com/chat/completions"</span>, <span class="var">jsonBody</span>);
+
+        <span class="cm">// Разбираем JSON-ответ и извлекаем текст от AI</span>
+        <span class="kw">using</span> <span class="cls">JsonDocument</span> <span class="var">doc</span> = <span class="cls">JsonDocument</span>.<span class="fn">Parse</span>(<span class="var">response</span>);
+
+        <span class="kw">string</span> <span class="var">aiText</span> = <span class="var">doc</span>.RootElement
+            .<span class="fn">GetProperty</span>(<span class="str">"choices"</span>)[<span class="num">0</span>]
+            .<span class="fn">GetProperty</span>(<span class="str">"message"</span>)
+            .<span class="fn">GetProperty</span>(<span class="str">"content"</span>)
+            .<span class="fn">GetString</span>();
+
+        <span class="cm">// Выводим ответ в метку на форме</span>
+        <span class="var">labelAnswer</span>.Text = <span class="var">aiText</span>;
+    }
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 9.3 — Код обработчика кнопки</span>
+                    </div>
+                    <img src="картинки/9.3.png" alt="Код обработчика">
+                </div>
+
+                <div class="info-box">
+                    <div class="icon">💡</div>
+                    <p>Здесь мы используем класс <strong>WebClient</strong> (простая обёртка для HTTP-запроса) и парсим
+                        ответ с помощью <strong>System.Text.Json.JsonDocument</strong>. После выполнения этого кода в
+                        <code style="color:var(--cyan);font-family:'JetBrains Mono',monospace">labelAnswer</code>
+                        появится ответ от DeepSeek.</p>
+                </div>
+            </section>
+
+            <!-- ══ РАЗБОР КОДА ══ -->
+            <section class="section" id="explain">
+                <div class="section-title">
+                    <div class="section-num">🔍</div>
+                    <h2>Разбор кода buttonAsk_Click — по шагам</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">Сначала из поля ввода <code>textBoxQuestion</code> считывается текст,
+                            который ввёл пользователь. Это и есть вопрос, который мы отправим нейросети. Текст
+                            сохраняется в строковую переменную <strong>prompt</strong>, чтобы с ним было удобно работать
+                            дальше.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">В переменной <strong>apiKey</strong> указывается API-токен DeepSeek. Этот
+                            токен необходим для доступа к сервису и играет роль пароля. Без него сервер не позволит
+                            отправлять запросы. Токен всегда должен храниться в коде аккуратно и не передаваться другим
+                            людям.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t">Формируется тело запроса в формате JSON. В JSON мы указываем модель
+                            <code>deepseek-chat</code> и массив <code>messages</code>. В массиве сообщений первым идёт
+                            сообщение с ролью <strong>system</strong> — оно задаёт поведение нейросети (мы говорим AI,
+                            что он «помощник для чайников»). Второе сообщение имеет роль <strong>user</strong> и
+                            содержит реальный текст вопроса пользователя из переменной prompt.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">4</div>
+                        <div class="step-t">Создаётся объект <strong>WebClient</strong> — простой класс для отправки
+                            HTTP-запросов через интернет. С помощью заголовков передаём серверу два важных параметра:
+                            <code>Authorization</code> с нашим токеном доступа и <code>Content-Type</code>, указывающий,
+                            что данные отправляются в формате JSON. Без этих заголовков сервер не примет запрос.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">5</div>
+                        <div class="step-t">Метод <code>UploadString</code> отправляет POST-запрос на адрес DeepSeek API
+                            и передаёт сформированный JSON. В ответ сервер возвращает строку, которая тоже является
+                            JSON-документом. В этом документе содержится сгенерированный ответ нейросети.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">6</div>
+                        <div class="step-t">Чтобы получить сам текст ответа, используется класс
+                            <strong>JsonDocument</strong>. Он позволяет разобрать JSON-строку и обращаться к её
+                            элементам. Ответ AI находится внутри массива <code>choices</code>, затем в объекте
+                            <code>message</code>, и далее в поле <code>content</code>. Именно это поле содержит текст,
+                            который сгенерировала нейросеть.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">7</div>
+                        <div class="step-t">В конце работы метода полученный текст сохраняется в переменную
+                            <strong>aiText</strong> и выводится в элемент <code>labelAnswer</code> на форме. В
+                            результате пользователь видит ответ AI прямо в окне программы.</div>
+                    </div>
+                </div>
+
+                <div class="theory-box">
+                    <p>Таким образом, данный метод выполняет полный цикл работы AI-ассистента: получает текст от
+                        пользователя, отправляет его в нейросеть через API, принимает ответ и отображает его в
+                        интерфейсе Windows-приложения.</p>
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 3 ══ -->
+            <section class="section" id="ch3">
+                <div class="section-title">
+                    <div class="section-num">▶️</div>
+                    <h2>Глава 3 — Тестирование</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">Запустите приложение (<strong>F5</strong>). У вас откроется окно с полями
+                            ввода и кнопкой.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">Введите в поле свой запрос (например, «Привет, как тебя зовут?») и нажмите
+                            <strong>«Спросить»</strong>.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t">Программа отправит запрос на DeepSeek и через секунду (или пару секунд) в
+                            метке появится ответ AI. Например: «Я — виртуальный помощник.» Если всё работает —
+                            поздравляем, ваш AI-Ассистент создан!</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 9.4 — Готовое приложение с ответом от AI</span>
+                    </div>
+                    <img src="картинки/9.4.png" alt="Работающее приложение">
+                </div>
+            </section>
+
+            <!-- ══ ПОЛНЫЙ КОД ══ -->
+            <section class="section" id="full">
+                <div class="section-title">
+                    <div class="section-num">💻</div>
+                    <h2>Полный код программы</h2>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — Полный код
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="using System;
+using System.Windows.Forms;
+using System.Net;
+using System.Text.Json;
+
+namespace AIAssistant
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void buttonAsk_Click(object sender, EventArgs e)
+        {
+            string prompt = textBoxQuestion.Text;
+
+            string apiKey = &quot;ВАШ_ТОКЕН&quot;; // Вставьте свой API-токен DeepSeek
+
+            string jsonBody =
+                &quot;{\&quot;model\&quot;:\&quot;deepseek-chat\&quot;,\&quot;messages\&quot;:[&quot; +
+                &quot;{\&quot;role\&quot;:\&quot;system\&quot;,\&quot;content\&quot;:\&quot;Вы помогающий ассистент.\&quot;},&quot; +
+                &quot;{\&quot;role\&quot;:\&quot;user\&quot;,\&quot;content\&quot;:\&quot;&quot; + prompt + &quot;\&quot;}&quot; +
+                &quot;]}&quot;;
+
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add(&quot;Authorization&quot;, &quot;Bearer &quot; + apiKey);
+                client.Headers.Add(&quot;Content-Type&quot;, &quot;application/json&quot;);
+
+                string response = client.UploadString(&quot;https://api.deepseek.com/chat/completions&quot;, jsonBody);
+
+                using JsonDocument doc = JsonDocument.Parse(response);
+
+                string aiText = doc.RootElement
+                    .GetProperty(&quot;choices&quot;)[0]
+                    .GetProperty(&quot;message&quot;)
+                    .GetProperty(&quot;content&quot;)
+                    .GetString();
+
+                labelAnswer.Text = aiText;
+            }
+        }
+    }
+}"><span class="kw">using</span> System;
+<span class="kw">using</span> System.Windows.Forms;
+<span class="kw">using</span> System.Net;
+<span class="kw">using</span> System.Text.Json;
+
+<span class="kw">namespace</span> AIAssistant
+{
+    <span class="kw">public partial class</span> <span class="cls">Form1</span> : <span class="cls">Form</span>
+    {
+        <span class="kw">public</span> <span class="fn">Form1</span>()
+        {
+            <span class="fn">InitializeComponent</span>();
+        }
+
+        <span class="kw">private void</span> <span class="fn">buttonAsk_Click</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">EventArgs</span> <span class="var">e</span>)
+        {
+            <span class="kw">string</span> <span class="var">prompt</span> = <span class="var">textBoxQuestion</span>.Text;
+
+            <span class="kw">string</span> <span class="var">apiKey</span> = <span class="str">"ВАШ_ТОКЕН"</span>; <span class="cm">// Вставьте свой API-токен DeepSeek</span>
+
+            <span class="kw">string</span> <span class="var">jsonBody</span> =
+                <span class="str">"{\"model\":\"deepseek-chat\",\"messages\":["</span> +
+                <span class="str">"{\"role\":\"system\",\"content\":\"Вы помогающий ассистент.\"},"</span> +
+                <span class="str">"{\"role\":\"user\",\"content\":\""</span> + <span class="var">prompt</span> + <span class="str">"\"}"</span> +
+                <span class="str">"]}"</span>;
+
+            <span class="kw">using</span> (<span class="cls">WebClient</span> <span class="var">client</span> = <span class="kw">new</span> <span class="cls">WebClient</span>())
+            {
+                <span class="var">client</span>.Headers.<span class="fn">Add</span>(<span class="str">"Authorization"</span>, <span class="str">"Bearer "</span> + <span class="var">apiKey</span>);
+                <span class="var">client</span>.Headers.<span class="fn">Add</span>(<span class="str">"Content-Type"</span>, <span class="str">"application/json"</span>);
+
+                <span class="kw">string</span> <span class="var">response</span> = <span class="var">client</span>.<span class="fn">UploadString</span>(<span class="str">"https://api.deepseek.com/chat/completions"</span>, <span class="var">jsonBody</span>);
+
+                <span class="kw">using</span> <span class="cls">JsonDocument</span> <span class="var">doc</span> = <span class="cls">JsonDocument</span>.<span class="fn">Parse</span>(<span class="var">response</span>);
+
+                <span class="kw">string</span> <span class="var">aiText</span> = <span class="var">doc</span>.RootElement
+                    .<span class="fn">GetProperty</span>(<span class="str">"choices"</span>)[<span class="num">0</span>]
+                    .<span class="fn">GetProperty</span>(<span class="str">"message"</span>)
+                    .<span class="fn">GetProperty</span>(<span class="str">"content"</span>)
+                    .<span class="fn">GetString</span>();
+
+                <span class="var">labelAnswer</span>.Text = <span class="var">aiText</span>;
+            }
+        }
+    }
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 9.5 — Полный код в Visual Studio</span>
+                    </div>
+                    <img src="картинки/9.5.png" alt="Полный код в VS">
+                </div>
+            </section>
+
+            <!-- ══ API КЛЮЧ ══ -->
+            <section class="section" id="api">
+                <div class="section-title">
+                    <div class="section-num">🔑</div>
+                    <h2>Важное — API DeepSeek</h2>
+                </div>
+
+                <div class="api-block">
+                    <div class="api-label">🔑 API-ключ DeepSeek</div>
+                    <div class="api-key-row">
+                        <div class="api-key-text" id="api-key-text">sk-5cb04ed1e7324c12a3aaab46c10ff3e2</div>
+                        <button class="api-copy-btn" id="api-copy-btn" onclick="copyApiKey()">📋 Скопировать
+                            ключ</button>
+                    </div>
+                </div>
+
+                <div class="owner-box">
+                    <div class="icon">⚠️</div>
+                    <p>На данный момент (08.02.2026) его оплачивает <strong>Гафаров Акбар</strong>. Если API будет
+                        недоступен — напишите мне, либо вручную получите его сами и согласуйте 100 рублей у
+                        руководителя. Получить можно тут: <a href="https://platform.deepseek.com/api_keys"
+                            target="_blank">platform.deepseek.com/api_keys</a></p>
+                </div>
+
+                <div class="info-box">
+                    <div class="icon">💡</div>
+                    <p>Замените <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">"ВАШ_ТОКЕН"</code> в коде
+                        на скопированный ключ выше. Не передавайте ключ посторонним — это как пароль!</p>
+                </div>
+            </section>
+
+            <!-- ══ ИТОГ ══ -->
+            <section class="section" id="end">
+                <div class="section-title">
+                    <div class="section-num">🏁</div>
+                    <h2>Итоги урока</h2>
+                </div>
+
+                <div class="theory-box">
+                    <p>Мы сделали приложение, где по нажатию кнопки отправляется текст на AI-сервис DeepSeek, а ответ
+                        выводится в окне программы. В конце урока кратко обсудите с учениками результаты: например,
+                        какой ответ дали дети, чем программа отличается от простого консольного чата.</p>
+                </div>
+
+                <p class="prose" style="font-weight:800;color:var(--white);margin-bottom:12px;">Дети познакомились с
+                    тем, что такое:</p>
+                <ul class="bullet-list" style="margin-bottom:20px;">
+                    <li><strong>API</strong> — набор правил для обмена данными между программами</li>
+                    <li><strong>HTTP-запрос</strong> по сети (по аналогии с «заказом в ресторане»)</li>
+                    <li>Как читать ответы в формате <strong>JSON</strong></li>
+                    <li>Как использовать <strong>WebClient</strong> для отправки POST-запросов</li>
+                    <li>Как парсить JSON с помощью <strong>JsonDocument</strong></li>
+                </ul>
+
+                <div class="chips" style="margin-bottom:24px;">
+                    <div class="chip">API</div>
+                    <div class="chip">HTTP</div>
+                    <div class="chip pink">DeepSeek</div>
+                    <div class="chip pink">JSON</div>
+                    <div class="chip green">WebClient</div>
+                    <div class="chip green">UploadString</div>
+                    <div class="chip cyan">JsonDocument</div>
+                    <div class="chip cyan">GetProperty</div>
+                    <div class="chip yellow">API-токен</div>
+                </div>
+
+                <div class="warn-box">
+                    <div class="icon">🚀</div>
+                    <p><strong>Предложите детям самостоятельно расширить приложение:</strong> при помощи ChatGPT
+                        придумать новые «фишки» — смену роли ассистента (изменить системное сообщение), сохранение
+                        истории переписки в файл или изменение оформления окна (цвета, шрифты) для более интересного
+                        интерфейса. Так ученики поймут, что даже простое приложение можно сделать сложнее с помощью идей
+                        из ChatGPT!</p>
+                </div>
+            </section>
+
+        </div><!-- /content -->
+
+        <div class="download-section">
+            <a href="Урок9.docx" download="Урок9.docx" class="download-btn" id="dl-btn">
+                <span class="dl-icon" id="dl-icon">📄</span>
+                Скачать полный конспект 9 урока
+            </a>
+        </div>
+
+        <footer>
+            <div class="footer-brand">Сделано тьютором <span>KIBERone</span> Калининград 🏰</div>
+            <div class="footer-hint">// Урок 9 · C# · WinForms · DeepSeek API · JSON</div>
+        </footer>
+
+    </div><!-- /main -->
+
+    <div id="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+    <div id="toast">✅ Скопировано!</div>
+    <div id="easter-egg">
+        <span class="big">🤖</span>
+        <h3>AI нашёл тебя!</h3>
+        <p>Ты нашёл секрет урока 🎉<br>Konami code: ↑↑↓↓←→←→BA</p>
+        <button id="egg-close" onclick="closeEgg()">Закрыть</button>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+            updateNav();
+        });
+
+        (function () {
+            const c = document.getElementById('particles');
+            const colors = ['#949cff', '#ff3d68', '#00e5ff', '#00ffb3', '#ffe066'];
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div'); p.className = 'particle';
+                const s = Math.random() * 6 + 3;
+                p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};animation-duration:${Math.random() * 20 + 12}s;animation-delay:-${Math.random() * 20}s;`;
+                c.appendChild(p);
+            }
+        })();
+
+        function toggleQ(h) { h.classList.toggle('open'); h.nextElementSibling.classList.toggle('open'); }
+        document.querySelector('.q-group-header').click();
+
+        function copyCode(btn) {
+            const pre = btn.closest('.code-wrap').querySelector('pre');
+            const raw = (pre.dataset.code || pre.innerText).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+            navigator.clipboard.writeText(raw).then(() => {
+                btn.textContent = '✅ Скопировано!'; btn.classList.add('copied');
+                showToast('Код скопирован!');
+                setTimeout(() => { btn.textContent = '📋 Копировать'; btn.classList.remove('copied'); }, 2000);
+            });
+        }
+
+        function copyApiKey() {
+            const key = document.getElementById('api-key-text').textContent.trim();
+            navigator.clipboard.writeText(key).then(() => {
+                const btn = document.getElementById('api-copy-btn');
+                btn.textContent = '✅ Скопирован!';
+                btn.classList.add('copied');
+                showToast('API-ключ скопирован!');
+                setTimeout(() => { btn.textContent = '📋 Скопировать ключ'; btn.classList.remove('copied'); }, 2500);
+            });
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = '✅ ' + msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function openLightbox(w) { document.getElementById('lightbox-img').src = w.querySelector('img').src; document.getElementById('lightbox').classList.add('open'); }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEgg(); } });
+
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('open'); }
+        function closeMenu() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('open'); }
+
+        const sects = ['hero', 'theory', 'ch1', 'ch2', 'explain', 'ch3', 'full', 'api', 'end'];
+        function updateNav() {
+            let cur = sects[0];
+            sects.forEach(id => { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < 130) cur = id; });
+            document.querySelectorAll('.nav-item').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+        }
+
+        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let ki = 0;
+        document.addEventListener('keydown', e => { ki = (e.key === konami[ki]) ? ki + 1 : 0; if (ki === konami.length) { document.getElementById('easter-egg').classList.add('show'); ki = 0; } });
+        function closeEgg() { document.getElementById('easter-egg').classList.remove('show'); }
+
+        document.getElementById('dl-btn').addEventListener('click', function () {
+            const icon = document.getElementById('dl-icon'); icon.textContent = '✅';
+            setTimeout(() => { icon.textContent = '📄'; }, 2500);
+        });
+
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => { chip.style.transform = 'scale(1.15)'; setTimeout(() => chip.style.transform = '', 200); showToast('🏷️ ' + chip.textContent); });
+        });
+    </script>
+</body>
+
+</html>
