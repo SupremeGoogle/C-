@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C# Курс — Орбитальный Каталог Уроков</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Nunito', sans-serif; color: white; display: block; height: 100vh; width: 100vw; }
+        
+        /* WebGL Шейдер Фон на весь экран */
+        .shader-bg { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 1; }
+
+        /* Оболочка для интерфейса (по центру) */
+        #ui-layer { position: absolute; z-index: 10; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; }
+        
+        /* Разрешаем клики внутри UI */
+        #ui-layer > * { pointer-events: auto; }
+
+        /* Ядро по центру */
+        .core-pulse { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, #a855f7, #3b82f6, #14b8a6); z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 50px rgba(168, 85, 247, 0.8); }
+        .core-pulse::before, .core-pulse::after { content: ''; position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); animation: ping 2s cubic-bezier(0,0,0.2,1) infinite; }
+        .core-pulse::before { width: 100px; height: 100px; }
+        .core-pulse::after { width: 120px; height: 120px; animation-delay: 0.5s; opacity: 0.5; }
+        .core-inner { width: 40px; height: 40px; background: rgba(255,255,255,0.9); border-radius: 50%; box-shadow: 0 0 20px #fff; }
+
+        /* Орбитальное кольцо */
+        .orbit-ring { position: absolute; width: 600px; height: 600px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); }
+
+        /* Элемент урока (Узел) */
+        .node { position: absolute; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; } /* Убрали transition, он мешает JS анимации */
+        .node-icon-wrap { width: 80px; height: 80px; border-radius: 50%; background: #000; color: #fff; border: 2px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; font-size: 2.3rem; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); position: relative; z-index: 2; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .node:hover .node-icon-wrap { border-color: #fff; transform: scale(1.15); box-shadow: 0 0 20px rgba(255,255,255,0.4); background: rgba(255,255,255,0.1); }
+        .node.active .node-icon-wrap { background: #fff; color: #000; border-color: #fff; transform: scale(1.3); box-shadow: 0 0 30px rgba(255,255,255,0.8); }
+        
+        .node-label { position: absolute; top: 95px; white-space: nowrap; font-size: 1.15rem; font-weight: 800; color: rgba(255,255,255,0.7); transition: all 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,0.8); pointer-events: none; }
+        .node.active .node-label { color: #fff; transform: scale(1.1); top: 105px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+
+        /* Всплывающая карточка активного урока */
+        .card-popup { position: absolute; top: 150px; left: 50%; transform: translateX(-50%); width: 420px; background: rgba(10, 10, 15, 0.90); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.05); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); z-index: 100; display: flex; flex-direction: column; gap: 16px; text-align: left; }
+        .node.active .card-popup { opacity: 1; pointer-events: auto; }
+        .card-popup::before { content: ''; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 1px; height: 14px; background: rgba(255,255,255,0.5); }
+
+        /* Кнопка закрытия карточки */
+        .popup-close { position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; z-index: 10; padding: 0; }
+        .popup-close:hover { background: rgba(255, 61, 104, 0.2); border-color: #ff3d68; color: #ff3d68; transform: scale(1.1); }
+
+        .card-tag { display: inline-block; background: #fff; color: #000; font-size: 0.8rem; font-weight: 900; padding: 6px 14px; border-radius: 100px; letter-spacing: 1px; width: fit-content; text-transform: uppercase; }
+        .card-title { font-size: 1.6rem; font-weight: 900; margin: 0; line-height: 1.2; }
+        .card-desc { font-size: 1.05rem; color: rgba(255,255,255,0.85); line-height: 1.6; margin: 0; }
+        
+        /* Кнопки как в shadcn React, но БОЛЬШЕ и ЯРЧЕ */
+        .btns-row { display: flex; gap: 14px; margin-top: 14px; flex-wrap: wrap; }
+        
+        .card-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.6); border-radius: 12px; padding: 16px 22px; color: #fff; font-size: 1.15rem; font-weight: 900; cursor: pointer; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); text-decoration: none; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .card-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(255,255,255,0.4); }
+        .card-btn:active { transform: scale(0.95); }
+        
+        .card-btn.primary { background: linear-gradient(135deg, #949cff, #ff3d68); border: none; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4); box-shadow: 0 6px 20px rgba(255, 61, 104, 0.6); }
+        .card-btn.primary:hover { background: linear-gradient(135deg, #a3aaff, #ff577b); box-shadow: 0 8px 30px rgba(255, 61, 104, 0.9); }
+
+        /* Всплывающее уведомление (Toast) */
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 100px); background: rgba(13,15,26,0.95); backdrop-filter: blur(10px); border: 2px solid #00ffb3; color: #00ffb3; font-weight: 800; font-size: 0.95rem; padding: 14px 28px; border-radius: 100px; z-index: 10000; opacity: 0; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none; box-shadow: 0 10px 40px rgba(0,255,179,0.3); }
+        #toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+        @keyframes ping { 75%, 100% { transform: scale(2.5); opacity: 0; } }
+
+        /* Адаптивность для мобильных */
+        @media (max-width: 1024px) {
+            body { overflow-y: auto; overflow-x: hidden; }
+            #ui-layer { width: 100%; height: 100vh; position: relative; }
+            .shader-bg { position: fixed; inset: 0; width: 100vw; height: 100vh; opacity: 0.6; }
+            .orbit-ring { display: none; } /* скрываем статичное кольцо для мобилок, чтобы не было скролла */
+        }
+        @media (max-width: 768px) {
+            .node-icon-wrap { width: 56px; height: 56px; font-size: 1.5rem; }
+            .node-label { font-size: 0.9rem; top: 65px; }
+            .node.active .node-label { top: 75px; }
+            .card-popup { width: 90vw; padding: 20px; top: 110px; gap: 12px; }
+            .card-title { font-size: 1.3rem; padding-right: 20px; }
+            .card-desc { font-size: 0.95rem; }
+            .btns-row { flex-direction: column; gap: 10px; }
+            .card-btn { padding: 12px 14px; font-size: 1rem; }
+            .core-pulse { width: 50px; height: 50px; }
+            .core-pulse::before { width: 70px; height: 70px; }
+            .core-pulse::after { width: 85px; height: 85px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="shader-bg" class="shader-bg"></canvas>
+
+    <div id="ui-layer">
+        <div id="app">
+            <div id="orbit-container">
+                <div class="core-pulse"><div class="core-inner"></div></div>
+                <div class="orbit-ring"></div>
+                <!-- Узлы уроков генерируются через JS -->
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">✅ Анонс скопирован!</div>
+
+    <script>
+        const lessons = [
+            { id: 1, icon: '🚀', title: 'Урок 1: Первый запуск C#', desc: '🔹 Установка и настройка Visual Studio<br>🔹 Создание первого проекта на C#<br>🔹 Вывод текста через Console.WriteLine<br>🔹 Переменные, типы данных и условия if', link: 'урок 1/Урок1.html' },
+            { id: 2, icon: '🎮', title: 'Урок 2: Угадайка 2.0', desc: '🔹 Изучение цикла while (повтор действий)<br>🔹 Создание игры «Угадай число»<br>🔹 Добавление счётчика попыток<br>🔹 Введение уровней сложности', link: 'урок 2/Урок2.html' },
+            { id: 3, icon: '🐾', title: 'Урок 3: Питомец Тамагочи', desc: '🔹 Знакомство с ООП (классы и объекты)<br>🔹 Создание класса виртуального питомца<br>🔹 Добавление действий: кормить, играть<br>🔹 Разработка игрового цикла', link: 'урок 3/Урок3.html' },
+            { id: 4, icon: '🔐', title: 'Урок 4: Хакерский сейф', desc: '🔹 Проектирование программы-сейфа<br>🔹 Генерация секретного кода<br>🔹 Написание алгоритма проверки ввода<br>🔹 Эффект «блокировки системы»', link: 'урок 4/Урок4.html' },
+            { id: 5, icon: '🎨', title: 'Урок 5: AI-Галерея', desc: '🔹 Знакомство с Windows Forms<br>🔹 Добавление изображений через PictureBox<br>🔹 Управление файлами и массивами данных<br>🔹 Переключение изображений по кнопке', link: 'урок 5/Урок5.html' },
+            { id: 6, icon: '🖱️', title: 'Урок 6: Кликер PRO', desc: '🔹 Создание игры-кликера с системой очков<br>🔹 Обработка событий нажатия кнопок<br>🔹 Внедрение системы улучшений (апгрейдов)<br>🔹 Написание автокликера через Timer', link: 'урок 6/Урок6.html' },
+            { id: 7, icon: '⚡', title: 'Урок 7: Реакшн-тест', desc: '🔹 Разработка игры «Тест на реакцию»<br>🔹 Случайное появление сигнала-индикатора<br>🔹 Засекание времени через Stopwatch<br>🔹 Расчет скорости реакции', link: 'урок 7/Урок7.html' },
+            { id: 8, icon: '🖌️', title: 'Урок 8: Mini-Paint', desc: '🔹 Создание визуального редактора<br>🔹 Рисование курсором мыши по экрану<br>🔹 Использование компонентов Graphics и Pen<br>🔹 Добавление палитры цветов', link: 'урок 8/Урок8.html' },
+            { id: 9, icon: '✨', title: 'Урок 9: AI-Ассистент', desc: '🔹 Интеграция с нейросетью DeepSeek<br>🔹 Разбор API и интернет-запросов<br>🔹 Расшифровка ответов в формате JSON<br>🔹 Вывод данных нейросети в программу', link: 'урок 9/Урок9.html' },
+            { id: 10, icon: '🤖', title: 'Урок 10: Telegram-бот', desc: '🔹 Создание бота в панели BotFather<br>🔹 Настройка библиотеки Telegram.Bot<br>🔹 Связь бота с ИИ-моделью DeepSeek<br>🔹 Добавление хэндлеров для команд', link: 'урок 10/Урок10.html' },
+            { id: 11, icon: '🔊', title: 'Урок 11: Звуковая панель', desc: '🔹 Работа со звуковыми дорожками<br>🔹 Воспроизведение через библиотеку System.Media<br>🔹 Подготовка файлов формата .wav<br>🔹 Сборка готового приложения в формате .exe', link: 'урок 11/Урок11.html' },
+            { id: 12, icon: '🧠', title: 'Урок 12: AI-разработчик', desc: '🔹 Создание нескольких 2D-игр<br>🔹 Проектирование архитектуры игры<br>🔹 Написание правильных промптов для нейросети<br>🔹 Тестирование и дебаггинг кода через AI', link: 'урок 12/Урок12.html' }
+        ];
+
+        const announcements = {
+            1: `Добрый вечер, уважаемые родители! 🌟\n\nЗавтра у ребят — первый урок нового модуля по C#, где они сделают свой первый настоящий запуск программы 💻🚀\n\n🔹 Что будем делать на уроке:\n• Установим и настроим Visual Studio\n• Создадим первый проект на C#\n• Научимся выводить текст через Console.WriteLine\n• Разберём переменные и типы данных (string, int, bool)\n• Познакомимся с условиями if\n• Сделаем мини-проект — генератор IQ 😄\n\n🔸 Что это даст детям:\n• Понимание основ программирования\n• Первый рабочий код, написанный самостоятельно\n• Уверенность в работе с новой средой разработки\n\nС уважением,\n_____ тьютор KIBERone 👨‍💻💛`,
+            2: `Добрый вечер, уважаемые родители! 🌟\n\nНа следующем занятии у ребят — уже полноценная мини-игра на C# 🎮\n\n🔹 Что будем делать на уроке:\n• Повторим переменные, условия и Random\n• Изучим цикл while (повтор действий)\n• Сделаем игру «Угадай число»\n• Добавим счётчик попыток\n• Введём уровни сложности\n\n🔸 Что это даст детям:\n• Понимание, как работает игровая логика\n• Навык создания циклов и повторяющихся действий\n• Первый опыт создания интерактивной игры\n\nС уважением,\n_____ тьютор KIBERone 👨‍💻💛`,
+            3: `Добрый вечер, уважаемые родители! 🌟\n\nНа занятии ребята создадут своего виртуального питомца 🐾\n\n🔹 Что будем делать на уроке:\n• Познакомимся с ООП (классы и объекты)\n• Создадим класс питомца (Pet)\n• Добавим действия: кормить, играть и т.д.\n• Сделаем игровой цикл\n• Управляем питомцем через команды\n\n🔸 Что это даст детям:\n• Понимание более «взрослого» программирования\n• Навык создания собственных структур (классов)\n• Опыт разработки полноценной логики игры\n\nС уважением,\n_____ тьютор KIBERone 👨‍💻💛`,
+            4: `Добрый вечер, уважаемые родители! 🌟\n\nНа следующем уроке ребята почувствуют себя настоящими хакерами 😎\n\n🔹 Что будем делать на уроке:\n• Создадим программу «цифровой сейф»\n• Сгенерируем секретный код\n• Реализуем проверку ввода\n• Добавим ограничение попыток\n• Сделаем эффект «блокировки системы»\n\n🔸 Что это даст детям:\n• Навык построения алгоритмов\n• Понимание логики защиты и проверки данных\n• Умение комбинировать циклы и условия\n\nС уважением,\n_____ тьютор KIBERone 👨‍💻💛`,
+            5: `Добрый вечер, уважаемые родители! 🌟\n\nНа этом занятии дети выйдут на новый уровень — создадут настоящее приложение с интерфейсом 🪟\n\n🔹 Что будем делать на уроке:\n• Познакомимся с Windows Forms\n• Создадим окно приложения с кнопками\n• Добавим изображения через PictureBox\n• Научимся работать с массивами\n• Реализуем переключение картинок\n\n🔸 Что это даст детям:\n• Понимание, как создаются настоящие программы с интерфейсом\n• Навык работы с файлами и изображениями\n• Переход от консоли к полноценным приложениям\n\nС уважением,\n_____ тьютор KIBERone 👨‍💻💛`,
+            6: `Добрый вечер, уважаемые родители! 🌟\n\nНа занятии ребята создадут свою первую «залипательную» игру 😄\n\n🔹 Что будем делать на уроке:\n• Сделаем игру-кликер с очками\n• Обработаем нажатия кнопок (Click)\n• Добавим систему улучшений (апгрейды)\n• Реализуем автокликер через Timer\n• Улучшим интерфейс приложения\n\n🔸 Что это даст детям:\n• Понимание событий в интерфейсе\n• Навык работы с логикой состояния (очки, бонусы)\n• Опыт создания полноценной игры\n\nС уважением,\n_____ тьютор KIBERone 👨‍💻💛`,
+            7: `Добрый вечер, уважаемые родители! 🌟\n\nНа следующем занятии ребята создадут игру на реакцию — проверим, кто самый быстрый 😏⚡\n\n🔹 Что будем делать на уроке:\n• Создадим игру «Тест на реакцию»\n• Добавим таймер (Timer)\n• Сделаем случайное появление сигнала\n• Засечём время реакции игрока\n• Выведем результат на экран\n\n🔸 Что это даст детям:\n• Понимание работы времени в программах\n• Навык работы с событиями и таймерами\n• Опыт создания динамичной игры\n\nС уважением,\n_____ тьютор KIBERone 👨‍💻💛`,
+            8: `Добрый вечер, уважаемые родители! 🌟\n\nНа этом занятии дети создадут своё собственное приложение для рисования 🖌️🎨\n\n🔹 Что будем делать на уроке:\n• Создадим мини-аналог Paint\n• Научимся рисовать мышкой по экрану\n• Добавим выбор цвета\n• Реализуем очистку холста\n• Улучшим интерфейс приложения\n\n🔸 Что это даст детям:\n• Понимание работы с графикой\n• Навык обработки движения мыши\n• Опыт создания интерактивных приложений\n\nС уважением,\n_____ тьютор KIBERone 👨‍💻💛`,
+            9: `Добрый вечер, уважаемые родители! 🌟\n\nНа этом уроке ребята создадут собственного AI-помощника прямо внутри программы 🤖💬\n\n🔹 Что будем делать на уроке:\n• Создадим приложение с интерфейсом (WinForms)\n• Подключимся к нейросети DeepSeek через API\n• Отправим запрос и получим ответ от AI\n• Разберём формат данных JSON\n• Выведем ответы прямо в приложении\n\n🔸 Что это даст детям:\n• Понимание, как работают нейросети в реальных приложениях\n• Навык работы с API и интернет-запросами\n• Опыт создания «умных» программы\n\nС уважением,\n_____ тьютор KIBERone 👨‍💻💛`,
+            10: `Добрый вечер, уважаемые родители! 🌟\n\nНа занятии ребята создадут своего Telegram-бота 😎📲\n\n🔹 Что будем делать на уроке:\n• Создадим бота через BotFather\n• Подключим библиотеку Telegram.Bot\n• Настроим получение сообщений\n• Свяжем бота с нейросетью DeepSeek\n• Добавим команды (например, /secret)\n\n🔸 Что это даст детям:\n• Понимание, как создаются реальные боты\n• Навык работы с внешними сервисами\n• Возможность сделать собственного помощника в Telegram\n\nС уважением,\n_____ тьютор KIBERone 👨‍💻💛`,
+            11: `Добрый вечер, уважаемые родители! 🌟\n\nНа этом уроке дети создадут настоящее приложение со звуками 🔊🎵\n\n🔹 Что будем делать на уроке:\n• Добавим кнопки со звуками\n• Подключим библиотеку для воспроизведения аудио\n• Научимся работать с файлами (.wav)\n• Сделаем удобный интерфейс\n• Соберём приложение в .exe файл\n\n🔸 Что это даст детям:\n• Понимание работы со звуком в программах\n• Навык подготовки файлов для проекта\n• Опыт создания готового приложения\n\nС уважением,\n_____ тьютор KIBERone 👨‍💻💛`,
+            12: `Добрый вечер, уважаемые родители! 🌟\n\nФинальный урок модуля — дети станут настоящими AI-разработчиками 🚀🤖\n\n🔹 Что будем делать на уроке:\n• Придумаем идею игры\n• Сгенерируем код с помощью нейросети DeepSeek\n• Вставим код в проект и запустим\n• Исправим ошибки через AI\n• Создадим несколько мини-игр (Змейка, Арканоид и др.)\n\n🔸 Что это даст детям:\n• Понимание современного подхода к разработке с AI\n• Навык работы с промптами\n• Умение быстро создавать собственные проекты\n\nС уважением,\n_____ тьютор KIBERone 👨‍💻💛`
+        };
+
+        const container = document.getElementById('orbit-container');
+        // Адаптивный радиус для мобильных
+        let RADIUS = window.innerWidth < 1024 ? 160 : 300;
+        let ring = document.querySelector('.orbit-ring');
+        if (ring) {
+            ring.style.display = window.innerWidth < 1024 ? 'none' : 'block';
+            ring.style.width = RADIUS * 2 + 'px';
+            ring.style.height = RADIUS * 2 + 'px';
+        }
+
+        window.addEventListener('resize', () => {
+            RADIUS = window.innerWidth < 1024 ? 160 : 300;
+            if (ring) {
+                ring.style.display = window.innerWidth < 1024 ? 'none' : 'block';
+                ring.style.width = RADIUS * 2 + 'px';
+                ring.style.height = RADIUS * 2 + 'px';
+            }
+            updatePositions();
+        });
+
+        let globalRotation = 0;
+        let activeNodeId = null;
+        let autoRotate = true;
+        
+        const nodeEls = {};
+
+        // Отрисовка планет (уроков)
+        lessons.forEach((l, i) => {
+            const el = document.createElement('div');
+            el.className = 'node';
+            
+            el.innerHTML = `
+                <div class="node-icon-wrap">${l.icon}</div>
+                <div class="node-label">Урок ${l.id}</div>
+                <div class="card-popup" onclick="event.stopPropagation()">
+                    <button class="popup-close" onclick="closePopup(event)">&times;</button>
+                    <div class="card-tag">УРОК C#</div>
+                    <h3 class="card-title">${l.title}</h3>
+                    <p class="card-desc">${l.desc}</p>
+                    <div class="btns-row">
+                        <a href="${l.link}" target="_blank" class="card-btn" onclick="event.stopPropagation()">📖 Открыть</a>
+                        <button class="card-btn primary" onclick="copyAnn(event, ${l.id}, this)">📋 Анонс</button>
+                    </div>
+                </div>
+            `;
+            
+            // Клик по планете -> открыть карточку
+            el.onclick = (e) => {
+                e.stopPropagation();
+                if(activeNodeId === l.id) {
+                    activeNodeId = null;
+                    autoRotate = true;
+                    el.classList.remove('active');
+                } else {
+                    if(activeNodeId) nodeEls[activeNodeId].classList.remove('active');
+                    activeNodeId = l.id;
+                    autoRotate = false;
+                    el.classList.add('active');
+                    
+                    // Поворачиваем активный урок ВВЕРХ по центру орбиты (270 градусов)
+                    // Теперь карточка падает вниз прямо по центру и не уходит за край экрана!
+                    const nodeIndex = i;
+                    const targetAngle = (nodeIndex / lessons.length) * 360;
+                    globalRotation = 270 - targetAngle; 
+                    updatePositions();
+                }
+            };
+            
+            nodeEls[l.id] = el;
+            container.appendChild(el);
+        });
+
+        // Клик в любом другом месте закрывает карточку
+        document.getElementById('app').onclick = (e) => {
+            if(e.target === document.getElementById('app') || e.target === container) {
+                if(activeNodeId) nodeEls[activeNodeId].classList.remove('active');
+                activeNodeId = null;
+                autoRotate = true;
+            }
+        };
+
+        // Обновление позиций по окружности
+        function updatePositions() {
+            lessons.forEach((l, i) => {
+                const angle = ((i / lessons.length) * 360 + globalRotation) % 360;
+                const radian = angle * Math.PI / 180;
+                const x = RADIUS * Math.cos(radian);
+                const y = RADIUS * Math.sin(radian);
+                
+                // Чтобы имитировать 3D наклон, используем sin для z-индекса (глубины) и масштаба
+                const z = Math.round(100 + 50 * Math.sin(radian));
+                const scale = Math.max(0.6, Math.min(1.2, 0.8 + 0.4 * Math.sin(radian)));
+                const opacity = Math.max(0.3, Math.min(1, 0.5 + 0.5 * Math.sin(radian)));
+                
+                const el = nodeEls[l.id];
+                
+                // Фикс мерцания: CSS анимация включается только когда мы кликнули (остановили вращение JS)
+                el.style.transition = autoRotate ? 'none' : 'all 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+
+                if(activeNodeId === l.id) {
+                    // Возвышаем активную карточку поверх всего
+                    el.style.transform = `translate(${x}px, ${y}px) scale(1.1)`;
+                    el.style.zIndex = 1000;
+                    el.style.opacity = 1;
+                } else {
+                    el.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+                    el.style.zIndex = z;
+                    el.style.opacity = opacity; // Планеты больше не пропадают!
+                }
+            });
+        }
+
+        // Анимационный цикл
+        function animate() {
+            if(autoRotate) {
+                globalRotation += 0.15; // Скорость вращения
+                updatePositions();
+            }
+            requestAnimationFrame(animate);
+        }
+        
+        updatePositions();
+        animate();
+
+        // Логика закрытия карточки по крестику
+        window.closePopup = function(e) {
+            e.stopPropagation();
+            if(activeNodeId) nodeEls[activeNodeId].classList.remove('active');
+            activeNodeId = null;
+            autoRotate = true;
+        };
+
+        // Логика кнопки копирования как в shadcn React с анимацией
+        window.copyAnn = function(e, id, btn) {
+            e.stopPropagation();
+            navigator.clipboard.writeText(announcements[id]).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Скопировано!';
+                btn.style.background = 'linear-gradient(135deg, rgba(0, 255, 179, 0.4), rgba(0, 255, 179, 0.2))';
+                btn.style.boxShadow = '0 0 20px rgba(0, 255, 179, 0.5)';
+                btn.style.borderColor = '#00ffb3';
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                    btn.style.boxShadow = '';
+                    btn.style.borderColor = '';
+                }, 2500);
+            });
+        };
+
+        // WebGL Shader Background Logic
+        (function() {
+            const canvas = document.getElementById('shader-bg');
+            if (!canvas) return;
+            const gl = canvas.getContext('webgl');
+            if (!gl) { console.warn('WebGL not supported.'); return; }
+
+            const vsSource = `
+                attribute vec4 aVertexPosition;
+                void main() { gl_Position = aVertexPosition; }
+            `;
+
+            const fsSource = `
+                precision highp float;
+                uniform vec2 iResolution;
+                uniform float iTime;
+
+                const float overallSpeed = 0.2;
+                const float gridSmoothWidth = 0.015;
+                const float axisWidth = 0.05;
+                const float majorLineWidth = 0.025;
+                const float minorLineWidth = 0.0125;
+                const float majorLineFrequency = 5.0;
+                const float minorLineFrequency = 1.0;
+                const vec4 gridColor = vec4(0.5);
+                const float scale = 5.0;
+                const vec4 lineColor = vec4(0.4, 0.2, 0.8, 1.0);
+                const float minLineWidth = 0.01;
+                const float maxLineWidth = 0.2;
+                const float lineSpeed = 1.0 * overallSpeed;
+                const float lineAmplitude = 1.0;
+                const float lineFrequency = 0.2;
+                const float warpSpeed = 0.2 * overallSpeed;
+                const float warpFrequency = 0.5;
+                const float warpAmplitude = 1.0;
+                const float offsetFrequency = 0.5;
+                const float offsetSpeed = 1.33 * overallSpeed;
+                const float minOffsetSpread = 0.6;
+                const float maxOffsetSpread = 2.0;
+
+                #define drawCircle(pos, radius, coord) smoothstep(radius + gridSmoothWidth, radius, length(coord - (pos)))
+                #define drawSmoothLine(pos, halfWidth, t) smoothstep(halfWidth, 0.0, abs(pos - (t)))
+                #define drawCrispLine(pos, halfWidth, t) smoothstep(halfWidth + gridSmoothWidth, halfWidth, abs(pos - (t)))
+                #define drawPeriodicLine(freq, width, t) drawCrispLine(freq / 2.0, width, abs(mod(t, freq) - (freq) / 2.0))
+
+                float drawGridLines(float axis) {
+                    return drawCrispLine(0.0, axisWidth, axis) + drawPeriodicLine(majorLineFrequency, majorLineWidth, axis) + drawPeriodicLine(minorLineFrequency, minorLineWidth, axis);
+                }
+
+                float drawGrid(vec2 space) {
+                    return min(1.0, drawGridLines(space.x) + drawGridLines(space.y));
+                }
+
+                float random(float t) {
+                    return (cos(t) + cos(t * 1.3 + 1.3) + cos(t * 1.4 + 1.4)) / 3.0;
+                }
+
+                float getPlasmaY(float x, float horizontalFade, float offset) {
+                    return random(x * lineFrequency + iTime * lineSpeed) * horizontalFade * lineAmplitude + offset;
+                }
+
+                void main() {
+                    vec2 fragCoord = gl_FragCoord.xy;
+                    vec4 fragColor;
+                    vec2 uv = fragCoord.xy / iResolution.xy;
+                    vec2 space = (fragCoord - iResolution.xy / 2.0) / iResolution.x * 2.0 * scale;
+
+                    float horizontalFade = 1.0 - (cos(uv.x * 6.28) * 0.5 + 0.5);
+                    float verticalFade = 1.0 - (cos(uv.y * 6.28) * 0.5 + 0.5);
+
+                    space.y += random(space.x * warpFrequency + iTime * warpSpeed) * warpAmplitude * (0.5 + horizontalFade);
+                    space.x += random(space.y * warpFrequency + iTime * warpSpeed + 2.0) * warpAmplitude * horizontalFade;
+
+                    vec4 lines = vec4(0.0);
+                    vec4 bgColor1 = vec4(0.1, 0.1, 0.3, 1.0);
+                    vec4 bgColor2 = vec4(0.3, 0.1, 0.5, 1.0);
+
+                    for(int l = 0; l < 16; l++) {
+                        float normalizedLineIndex = float(l) / 16.0;
+                        float offsetTime = iTime * offsetSpeed;
+                        float offsetPosition = float(l) + space.x * offsetFrequency;
+                        float rand = random(offsetPosition + offsetTime) * 0.5 + 0.5;
+                        float halfWidth = mix(minLineWidth, maxLineWidth, rand * horizontalFade) / 2.0;
+                        float offset = random(offsetPosition + offsetTime * (1.0 + normalizedLineIndex)) * mix(minOffsetSpread, maxOffsetSpread, horizontalFade);
+                        float linePosition = getPlasmaY(space.x, horizontalFade, offset);
+                        float line = drawSmoothLine(linePosition, halfWidth, space.y) / 2.0 + drawCrispLine(linePosition, halfWidth * 0.15, space.y);
+
+                        float circleX = mod(float(l) + iTime * lineSpeed, 25.0) - 12.0;
+                        vec2 circlePosition = vec2(circleX, getPlasmaY(circleX, horizontalFade, offset));
+                        float circle = drawCircle(circlePosition, 0.01, space) * 4.0;
+
+                        line = line + circle;
+                        lines += line * lineColor * rand;
+                    }
+
+                    fragColor = mix(bgColor1, bgColor2, uv.x);
+                    fragColor *= verticalFade;
+                    fragColor.a = 1.0;
+                    fragColor += lines;
+
+                    gl_FragColor = fragColor;
+                }
+            `;
+
+            function loadShader(gl, type, source) {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                    console.error('Shader error: ', gl.getShaderInfoLog(shader));
+                    gl.deleteShader(shader);
+                    return null;
+                }
+                return shader;
+            }
+
+            const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
+            const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+            const shaderProgram = gl.createProgram();
+            gl.attachShader(shaderProgram, vertexShader);
+            gl.attachShader(shaderProgram, fragmentShader);
+            gl.linkProgram(shaderProgram);
+
+            const positionBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            const positions = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+            const programInfo = {
+                program: shaderProgram,
+                attribLocations: { vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition') },
+                uniformLocations: { resolution: gl.getUniformLocation(shaderProgram, 'iResolution'), time: gl.getUniformLocation(shaderProgram, 'iTime') },
+            };
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                gl.viewport(0, 0, canvas.width, canvas.height);
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            let startTime = Date.now();
+            function render() {
+                const currentTime = (Date.now() - startTime) / 1000;
+                gl.useProgram(programInfo.program);
+                gl.uniform2f(programInfo.uniformLocations.resolution, canvas.width, canvas.height);
+                gl.uniform1f(programInfo.uniformLocations.time, currentTime);
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+                gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, 2, gl.FLOAT, false, 0, 0);
+                gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+                requestAnimationFrame(render);
+            }
+            requestAnimationFrame(render);
+        })();
+    </script>
+</body>
+</html>
