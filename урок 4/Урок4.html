@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок 4 — Хакерский сейф 🔐</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<!-- Кнопка Назад в Каталог -->
+<a href="../index.html" class="back-to-index" style="position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #a855f7, #3b82f6); color: white; text-decoration: none; border-radius: 8px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 99999; display: flex; align-items: center; gap: 8px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);">
+  &#8592; Вернуться в каталог
+</a>
+<style>
+    .back-to-index:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.8); border-color: white; }
+    .back-to-index:active { transform: scale(0.95); }
+    @media (max-width: 768px) { .back-to-index { font-size: 12px !important; padding: 7px 10px !important; top: 8px !important; right: 8px !important; border-radius: 6px !important; gap: 4px !important; } }
+</style>
+
+
+    <div id="progress-bar"></div>
+    <div id="particles"></div>
+
+    <!-- ── SIDEBAR ── -->
+    <nav id="sidebar">
+        <div class="sidebar-logo">
+            <div class="k">🎮 KIBERone</div>
+            <span class="t">Калининград · Урок 4</span>
+        </div>
+        <a class="nav-item active" href="#hero"> <span class="nav-emoji">🏠</span> Главная <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#repeat"> <span class="nav-emoji">📝</span> Повторение <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#algo"> <span class="nav-emoji">🧠</span> Алгоритм <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch1"> <span class="nav-emoji">🎲</span> Глава 1 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch2"> <span class="nav-emoji">🔍</span> Глава 2 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch3"> <span class="nav-emoji">🛡️</span> Глава 3 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch4"> <span class="nav-emoji">💥</span> Глава 4 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#full"> <span class="nav-emoji">💻</span> Полный код <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#end"> <span class="nav-emoji">🏁</span> Итог <span class="nav-dot"></span></a>
+        <div class="sidebar-footer">Тьютор <span>KIBERone</span><br>Калининград 🏰</div>
+    </nav>
+
+    <div id="sidebar-overlay" onclick="closeMenu()"></div>
+    <button id="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <div id="main">
+
+        <!-- ── HERO ── -->
+        <section class="hero" id="hero">
+            <div class="hero-badge">⚡ Урок 4 · C# · Строки & Циклы</div>
+            <h1>
+                <span class="line1">Хакерский сейф</span>
+                <span class="line2">🔐 взломай систему</span>
+            </h1>
+            <p class="hero-desc">
+                Цель: научиться применять строки, условия и циклы вместе для создания простой алгоритмической задачи —
+                взлом цифрового сейфа. Закрепить счётчики попыток и логику блокировки.
+            </p>
+            <div class="hero-tags">
+                <div class="hero-tag"><span>🔤</span>string</div>
+                <div class="hero-tag"><span>🔁</span>for + while</div>
+                <div class="hero-tag"><span>🔀</span>if / else</div>
+                <div class="hero-tag"><span>🔢</span>Счётчик попыток</div>
+                <div class="hero-tag"><span>🚀</span>Process.Start</div>
+            </div>
+        </section>
+
+        <div class="content">
+
+            <!-- ══ ЛЕГЕНДА ══ -->
+            <section class="section" id="legend" style="margin-bottom:32px;">
+                <div class="info-box">
+                    <div class="icon">🕵️</div>
+                    <p>
+                        <strong>Легенда (вход в урок):</strong> Представьте, что вы — хакеры, пытающиеся открыть
+                        цифровой сейф. У сейфа есть код из 4 цифр, и у вас ограниченное число попыток, чтобы подобрать
+                        правильную комбинацию. Если исчерпаете все попытки, данные в виртуальном сейфе удалятся! В конце
+                        урока мы создадим программу-сейф, которая генерирует секретный код и проверяет вводимые коды,
+                        как настоящий сейф.
+                    </p>
+                </div>
+            </section>
+
+            <!-- ══ ПОВТОРЕНИЕ ══ -->
+            <section class="section" id="repeat">
+                <div class="section-title">
+                    <div class="section-num">📝</div>
+                    <h2>Блок 1 — Повторение</h2>
+                </div>
+                <p class="prose" style="margin-bottom:16px;color:var(--muted);">Задай эти вопросы детям перед началом 👇
+                </p>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🔤</span> Вопросы по строкам
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item"><span class="q-num">1</span>Что такое строка в программировании?</div>
+                        <div class="q-item"><span class="q-num">2</span>Для чего нужны строки в программах? Где вы уже
+                            использовали тип string? (например, вводили имя, отображали сообщения и т.д.)</div>
+                        <div class="q-item"><span class="q-num">3</span>Можно ли хранить цифры в строковой переменной?
+                            Чем строка из цифр отличается от числа того же значения?</div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🔄</span> Вопросы по циклам
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item"><span class="q-num">1</span>Что такое цикл и зачем он нужен в программе?
+                        </div>
+                        <div class="q-item"><span class="q-num">2</span>Какие виды циклов вы знаете в C#? (вспомним
+                            while, поговорим про for)</div>
+                        <div class="q-item"><span class="q-num">3</span>В чём отличие между циклом while и for? Когда
+                            удобнее использовать каждый из них?</div>
+                        <div class="q-item"><span class="q-num">4</span>Что произойдет, если условие цикла никогда не
+                            станет ложным? (понятие бесконечного цикла)</div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🔀</span> Вопросы по условиям
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item"><span class="q-num">1</span>Для чего в программе используются условные
+                            операторы (if/else)?</div>
+                        <div class="q-item"><span class="q-num">2</span>Что происходит, когда условие в if ложно —
+                            выполняется ли код внутри него?</div>
+                        <div class="q-item"><span class="q-num">3</span>Какой командой можно выполнить альтернативный
+                            блок кода, если условие не выполнилось? (ответ: else)</div>
+                        <div class="q-item"><span class="q-num">4</span>Чем отличается оператор присваивания (=) от
+                            оператора сравнения (==)? Почему важно не перепутать их внутри условий?</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ АЛГОРИТМ ══ -->
+            <section class="section" id="algo">
+                <div class="section-title">
+                    <div class="section-num">🧠</div>
+                    <h2>Блок 2 — Алгоритм взлома сейфа</h2>
+                </div>
+                <p class="prose">Теперь перейдем к логике «взлома сейфа». Нам предстоит спланировать алгоритм, который
+                    будет проверять правильность вводимого кода и ограничивать попытки. Обсудим по шагам, как должна
+                    работать наша программа:</p>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t"><strong>Генерация кода.</strong> Сейф в начале «загадывает» секретный код —
+                            случайное 4-значное число. Код хранится внутри программы в строковой переменной, и
+                            пользователь его не видит.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t"><strong>Ввод и сравнение.</strong> Программа запрашивает у пользователя ввод
+                            предполагаемого кода. Введённую строку программа сравнивает с секретным кодом.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t"><strong>Проверка условия.</strong> Если введённый код
+                            <strong>совпадает</strong> с загаданным — выводится сообщение об успешном взломе. Если
+                            <strong>не совпадает</strong> — сообщение об ошибке и уменьшение оставшихся попыток.
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">4</div>
+                        <div class="step-t"><strong>Повтор или блокировка.</strong> Шаг ввода повторяется до тех пор,
+                            пока либо пользователь не угадает правильный код, либо не исчерпается лимит попыток
+                            (например, 5 попыток). Как только попытки кончаются до того, как код угадан — сейф
+                            «самоуничтожается».</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">5</div>
+                        <div class="step-t"><strong>Состояние «заблокировано».</strong> После 5 неправильных вводов наш
+                            виртуальный сейф будет делать вид, что удаляет все данные в нём. В реальных устройствах
+                            после нескольких неправильных вводов обычно включается защита.</div>
+                    </div>
+                </div>
+
+                <div class="theory-box" style="margin-top:20px;">
+                    <p>Обратите внимание: мы будем использовать <strong>счётчик попыток</strong> — специальную
+                        переменную, которая увеличивается каждый раз, когда пользователь вводит неправильный код. Это
+                        сочетание условий (код не угадан <strong>и</strong> ещё остались попытки) послужит условием
+                        работы цикла. Как только одно из условий нарушится (угадали код <strong>или</strong> закончились
+                        попытки) — цикл проверки прекращается.</p>
+                </div>
+            </section>
+
+            <!-- ══ ПРАКТИКА ══ -->
+            <section class="section" id="practice-intro" style="margin-bottom:24px;">
+                <div class="info-box">
+                    <div class="icon">🛠️</div>
+                    <p><strong>Практическая часть.</strong> Для работы создадим новый консольный проект. Открой Visual
+                        Studio → <strong>Create a new project</strong> → выбери шаблон <strong>Консольное приложение
+                            (Console App)</strong> → назови проект, например, <strong>ИмяРебенка_Урок4</strong> → нажми
+                        <strong>Create</strong>. После создания проекта приступим к написанию кода в Program.cs.
+                    </p>
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 1 ══ -->
+            <section class="section" id="ch1">
+                <div class="section-title">
+                    <div class="section-num">🎲</div>
+                    <h2>Глава 1 — Генерация кода</h2>
+                </div>
+                <p class="prose">Начнём с того, что сейф будет генерировать случайный 3-значный код. Используем
+                    генератор случайных чисел и сохраним код в строку:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Program.cs — Глава 1
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code"
+                        data-code="Random rand = new Random();
+
+string secretCode = &quot;&quot;;
+
+for (int i = 0; i < 3; i++)
+{
+    secretCode += rand.Next(1, 3);
+}
+
+Console.WriteLine(&quot;Сейф заперт! Загадан секретный код из 3 цифр...&quot;);"><span class="cls">Random</span> <span class="var">rand</span> = <span class="kw">new</span> <span class="cls">Random</span>();
+
+<span class="kw">string</span> <span class="var">secretCode</span> = <span class="str">""</span>;
+
+<span class="kw">for</span> (<span class="kw">int</span> <span class="var">i</span> = <span class="num">0</span>; <span class="var">i</span> &lt; <span class="num">3</span>; <span class="var">i</span>++)
+{
+    <span class="var">secretCode</span> += <span class="var">rand</span>.<span class="fn">Next</span>(<span class="num">1</span>, <span class="num">3</span>);
+}
+
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Сейф заперт! Загадан секретный код из 3 цифр..."</span>);</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 4.1</span>
+                    </div>
+                    <img src="картинки/4.1.jpg" alt="Глава 1 — генерация кода">
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Объяснение:</strong> Сначала мы создаём объект Random для генерации случайных чисел.
+                        Затем заводим пустую строку secretCode, куда будем постепенно добавлять цифры кода. С помощью
+                        цикла <strong>for</strong> повторяем 3 раза: <code
+                            style="color:var(--purple);font-family:'JetBrains Mono',monospace">rand.Next(1, 3)</code>
+                        генерирует случайное число от 1 до 2 (каждая такая цифра станет частью кода), и оператор <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">+=</code> добавляет эту
+                        цифру в конец строковой переменной secretCode.</p>
+                    <p style="margin-top:10px;">После выполнения цикла в secretCode будет храниться, например, <code
+                            style="color:var(--green);font-family:'JetBrains Mono',monospace">"121"</code> — случайная
+                        комбинация из 3 цифр. Обратите внимание: <strong>сам код мы не показываем пользователю</strong>,
+                        иначе взломать сейф не составит труда! 😉 Пользователь должен отгадать код самостоятельно.</p>
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 2 ══ -->
+            <section class="section" id="ch2">
+                <div class="section-title">
+                    <div class="section-num">🔍</div>
+                    <h2>Глава 2 — Проверка совпадений</h2>
+                </div>
+                <p class="prose">Теперь реализуем ввод кода пользователем и сравнение с секретом. Нам понадобится цикл,
+                    который позволит вводить новые попытки до успешного угадывания. Будем читать строку от пользователя
+                    и сравнивать её с secretCode:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Program.cs — Глава 2
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="string userCode = &quot;&quot;;
+
+while (userCode != secretCode)
+{
+    Console.Write(&quot;Введите код: &quot;);
+    userCode = Console.ReadLine();
+
+    if (userCode == secretCode)
+    {
+        Console.WriteLine(&quot;Код верный! Сейф открыт.&quot;);
+    }
+    else
+    {
+        Console.WriteLine(&quot;Неверный код, попробуйте еще раз.&quot;);
+    }
+}"><span class="kw">string</span> <span class="var">userCode</span> = <span class="str">""</span>;
+
+<span class="kw">while</span> (<span class="var">userCode</span> != <span class="var">secretCode</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">Write</span>(<span class="str">"Введите код: "</span>);
+    <span class="var">userCode</span> = <span class="cls">Console</span>.<span class="fn">ReadLine</span>();
+
+    <span class="kw">if</span> (<span class="var">userCode</span> == <span class="var">secretCode</span>)
+    {
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Код верный! Сейф открыт."</span>);
+    }
+    <span class="kw">else</span>
+    {
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Неверный код, попробуйте еще раз."</span>);
+    }
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 4.2</span>
+                    </div>
+                    <img src="картинки/4.2.jpg" alt="Глава 2 — проверка совпадений">
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Объяснение:</strong> Здесь мы объявили переменную userCode для ввода пользователя
+                        (изначально пустая строка, чтобы условие цикла while сразу было истинным и запросился ввод).
+                        Цикл <code
+                            style="color:var(--purple);font-family:'JetBrains Mono',monospace">while (userCode != secretCode)</code>
+                        будет повторяться, пока введённый код не совпадёт с секретным. Внутри цикла <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">Console.ReadLine()</code>
+                        читает строку, введённую с клавиатуры.</p>
+                    <ul>
+                        <li>Если <code
+                                style="color:var(--green);font-family:'JetBrains Mono',monospace">userCode == secretCode</code>
+                            — строка полностью совпала с загаданным кодом: ✅ <strong>Код верный! Сейф открыт.</strong> —
+                            пользователь угадал.</li>
+                        <li>Иначе — выполняется блок else: ❌ <strong>Неверный код, попробуйте еще раз.</strong> —
+                            попытка не удалась.</li>
+                    </ul>
+                    <p style="margin-top:10px;">Фактически мы реализовали бесконечный подбор кода до успеха. Но реальный
+                        сейф так не работает — у вас не было бы бесконечного количества попыток. Поэтому следующий шаг —
+                        добавить ограничение на число попыток.</p>
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 3 ══ -->
+            <section class="section" id="ch3">
+                <div class="section-title">
+                    <div class="section-num">🛡️</div>
+                    <h2>Глава 3 — Защита сейфа (ограничение попыток)</h2>
+                </div>
+                <p class="prose">Добавим счётчик и лимит попыток. Пусть у нашего сейфа будет максимум 5 попыток для
+                    ввода кода. После 5 неверных вводов сейф блокируется. Внесём изменения в код цикла и добавим
+                    переменные для попыток:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Program.cs — Глава 3
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="Random rand = new Random();
+
+string userCode = &quot;&quot;;
+string secretCode = &quot;&quot;;
+int attempts = 0;
+int maxAttempts = 5;
+
+for (int i = 0; i < 3; i++)
+{
+    secretCode += rand.Next(1, 3);
+}
+
+Console.WriteLine(&quot;Сейф заперт! Загадан секретный код из 3 цифр...&quot;);
+
+while (userCode != secretCode && attempts < maxAttempts)
+{
+    Console.Write(&quot;Введите код: &quot;);
+    userCode = Console.ReadLine();
+    attempts++; // засчитываем попытку ввода
+
+    if (userCode == secretCode)
+    {
+        Console.WriteLine(&quot;Код верный! Сейф открыт.&quot;);
+    }
+    else if (attempts < maxAttempts)
+    {
+        Console.WriteLine(&quot; Неверный код. Попытка {0}/{1}.&quot;, attempts, maxAttempts);
+        Console.WriteLine(&quot;-------------------------&quot;);
+    }
+}
+
+if (userCode == secretCode)
+{
+    Console.WriteLine(&quot;Поздравляем! Вы успешно открыли сейф.&quot;);
+}
+else
+{
+    Console.WriteLine(&quot; Попытки закончились. СЕЙФ ЗАБЛОКИРОВАН! &quot;);
+}"><span class="cls">Random</span> <span class="var">rand</span> = <span class="kw">new</span> <span class="cls">Random</span>();
+
+<span class="kw">string</span> <span class="var">userCode</span> = <span class="str">""</span>;
+<span class="kw">string</span> <span class="var">secretCode</span> = <span class="str">""</span>;
+<span class="kw">int</span> <span class="var">attempts</span> = <span class="num">0</span>;
+<span class="kw">int</span> <span class="var">maxAttempts</span> = <span class="num">5</span>;
+
+<span class="kw">for</span> (<span class="kw">int</span> <span class="var">i</span> = <span class="num">0</span>; <span class="var">i</span> &lt; <span class="num">3</span>; <span class="var">i</span>++)
+{
+    <span class="var">secretCode</span> += <span class="var">rand</span>.<span class="fn">Next</span>(<span class="num">1</span>, <span class="num">3</span>);
+}
+
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Сейф заперт! Загадан секретный код из 3 цифр..."</span>);
+
+<span class="kw">while</span> (<span class="var">userCode</span> != <span class="var">secretCode</span> &amp;&amp; <span class="var">attempts</span> &lt; <span class="var">maxAttempts</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">Write</span>(<span class="str">"Введите код: "</span>);
+    <span class="var">userCode</span> = <span class="cls">Console</span>.<span class="fn">ReadLine</span>();
+    <span class="var">attempts</span>++; <span class="cm">// засчитываем попытку ввода</span>
+
+    <span class="kw">if</span> (<span class="var">userCode</span> == <span class="var">secretCode</span>)
+    {
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Код верный! Сейф открыт."</span>);
+    }
+    <span class="kw">else if</span> (<span class="var">attempts</span> &lt; <span class="var">maxAttempts</span>)
+    {
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">" Неверный код. Попытка {0}/{1}."</span>, <span class="var">attempts</span>, <span class="var">maxAttempts</span>);
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"-------------------------"</span>);
+    }
+}
+
+<span class="kw">if</span> (<span class="var">userCode</span> == <span class="var">secretCode</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Поздравляем! Вы успешно открыли сейф."</span>);
+}
+<span class="kw">else</span>
+{
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">" Попытки закончились. СЕЙФ ЗАБЛОКИРОВАН! "</span>);
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 4.3</span>
+                    </div>
+                    <img src="картинки/4.3.jpg" alt="Глава 3 — защита сейфа">
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Объяснение:</strong> Теперь условие цикла стало сложнее: <code
+                            style="color:var(--purple);font-family:'JetBrains Mono',monospace">while (userCode != secretCode &amp;&amp; attempts &lt; maxAttempts)</code>.
+                        Цикл будет работать, <strong>пока</strong> верны оба условия: пользователь ещё не угадал код
+                        <strong>и</strong> число попыток меньше максимума (5).
+                    </p>
+                    <ul>
+                        <li>Внутри каждого прохода мы сразу увеличиваем счётчик <code
+                                style="color:var(--cyan);font-family:'JetBrains Mono',monospace">attempts++</code> после
+                            ввода.</li>
+                        <li>В сообщении об ошибке показываем номер попытки через <code
+                                style="color:var(--green);font-family:'JetBrains Mono',monospace">Console.WriteLine("... {0}/{1}", attempts, maxAttempts)</code>
+                            — вместо {0} подставится значение attempts, а вместо {1} — maxAttempts.</li>
+                        <li>Условие <code
+                                style="color:var(--yellow);font-family:'JetBrains Mono',monospace">else if (attempts &lt; maxAttempts)</code>
+                            — выводим «Неверный код...» только если ещё остались попытки. Это предотвращает вывод
+                            лишнего текста после последней попытки.</li>
+                    </ul>
+                    <p style="margin-top:10px;">Когда цикл while завершается — это означает либо код угадан, либо
+                        исчерпан лимит попыток. После цикла с помощью заключительного if/else проверяем, чем он
+                        закончился: угадали или закончились попытки.</p>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 4.4</span>
+                    </div>
+                    <img src="картинки/4.4.jpg" alt="Глава 3 — результат защиты">
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 4 ══ -->
+            <section class="section" id="ch4">
+                <div class="section-title">
+                    <div class="section-num">💥</div>
+                    <h2>Глава 4 — Самоуничтожение</h2>
+                </div>
+                <p class="prose">Теперь добавим финальный эффект, чтобы сейф выглядел по-настоящему «хакерским». В
+                    реальных системах после нескольких неправильных попыток доступа часто срабатывает защита: система
+                    может заблокироваться, вывести служебные сообщения или показать внутреннюю структуру. Мы сделаем
+                    <strong>безопасную имитацию</strong> такого поведения — после блокировки сейфа программа откроет
+                    <strong>командную строку Windows</strong> и выполнит команду <code
+                        style="color:var(--green);font-family:'JetBrains Mono',monospace">dir /s</code>.
+                </p>
+
+                <div class="info-box">
+                    <div class="icon">ℹ️</div>
+                    <p>Команда <code style="color:var(--cyan);font-family:'JetBrains Mono',monospace">dir /s</code>
+                        выводит список всех папок и файлов, начиная с текущей директории, рекурсивно. Она <strong>ничего
+                            не удаляет</strong> и <strong>ничего не ломает</strong>, а только показывает структуру
+                        файлов. Для пользователя это выглядит как серьёзная системная операция.</p>
+                </div>
+
+                <p class="prose">Чтобы запустить командную строку из C#, нам понадобится класс Process. В начале файла
+                    Program.cs добавим строку:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Program.cs — using
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code"
+                        data-code="using System.Diagnostics;"><span class="kw">using</span> System.Diagnostics;</pre>
+                </div>
+
+                <p class="prose">Теперь дополним блок, который выполняется, если сейф заблокирован:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Program.cs — Глава 4
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="else
+{
+    Console.WriteLine(&quot; Попытки закончились. СЕЙФ ЗАБЛОКИРОВАН!&quot;);
+
+    Process.Start(new ProcessStartInfo
+    {
+        FileName = &quot;cmd.exe&quot;,
+        Arguments = &quot;/k cd / &amp;&amp; dir /s&quot;, // выполняет cd /, затем dir /s
+        UseShellExecute = true
+    });
+}"><span class="kw">else</span>
+{
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">" Попытки закончились. СЕЙФ ЗАБЛОКИРОВАН!"</span>);
+
+    <span class="cls">Process</span>.<span class="fn">Start</span>(<span class="kw">new</span> <span class="cls">ProcessStartInfo</span>
+    {
+        FileName = <span class="str">"cmd.exe"</span>,
+        Arguments = <span class="str">"/k cd / &amp;&amp; dir /s"</span>, <span class="cm">// выполняет cd /, затем dir /s</span>
+        UseShellExecute = <span class="kw">true</span>
+    });
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 4.5</span>
+                    </div>
+                    <img src="картинки/4.5.jpg" alt="Глава 4 — самоуничтожение">
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Объяснение:</strong> Здесь мы снова используем условие <code
+                            style="color:var(--purple);font-family:'JetBrains Mono',monospace">if (userCode != secretCode)</code>.
+                        Оно означает: <strong>если код так и не был угадан</strong>, значит, пользователь израсходовал
+                        все попытки.</p>
+                    <ul>
+                        <li><code style="color:var(--cyan);font-family:'JetBrains Mono',monospace">Process</code> — это
+                            класс, который позволяет запускать <strong>внешние программы</strong> из C#.</li>
+                        <li><code
+                                style="color:var(--green);font-family:'JetBrains Mono',monospace">FileName = "cmd.exe"</code>
+                            — указываем, что хотим запустить командную строку Windows.</li>
+                        <li><code
+                                style="color:var(--green);font-family:'JetBrains Mono',monospace">Arguments = "/c dir /s"</code>
+                            — говорим командной строке: <strong>/c</strong> — выполнить команду и закрыться, <strong>dir
+                                /s</strong> — вывести список всех файлов и папок.</li>
+                        <li><code
+                                style="color:var(--green);font-family:'JetBrains Mono',monospace">UseShellExecute = true</code>
+                            — разрешаем Windows открыть командную строку стандартным способом (в отдельном окне).</li>
+                    </ul>
+                    <p style="margin-top:10px;">В результате, сразу после сообщения о блокировке: открывается окно
+                        командной строки, в нём автоматически выполняется команда dir /s, пользователь видит поток
+                        системного вывода — как будто система начала внутреннюю проверку. Важно: <strong>никакие файлы
+                            не удаляются</strong>, это только визуальный и обучающий эффект.</p>
+                </div>
+
+                <div class="warn-box">
+                    <div class="icon">⚠️</div>
+                    <p><strong>МОЖНО ДЕТЯМ ПОКАЗАТЬ В КОНЦЕ команду</strong> <code
+                            style="color:var(--yellow);font-family:'JetBrains Mono',monospace">shutdown /s /t 1</code>.
+                        Её нужно написать вместо <code>dir /s</code> — и у вас отключится компьютер через секунду 😈</p>
+                </div>
+            </section>
+
+            <!-- ══ ПОЛНЫЙ КОД ══ -->
+            <section class="section" id="full">
+                <div class="section-title">
+                    <div class="section-num">💻</div>
+                    <h2>Полный код программы</h2>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Program.cs — Полный код
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="using System.Diagnostics;
+
+Random rand = new Random();
+
+string userCode = &quot;&quot;;
+string secretCode = &quot;&quot;;
+int attempts = 0;
+int maxAttempts = 5;
+
+for (int i = 0; i < 3; i++)
+{
+    secretCode += rand.Next(1, 3);
+}
+
+Console.WriteLine(&quot;Сейф заперт! Загадан секретный код из 3 цифр...&quot;);
+
+while (userCode != secretCode &amp;&amp; attempts < maxAttempts)
+{
+    Console.Write(&quot;Введите код: &quot;);
+    userCode = Console.ReadLine();
+    attempts++; // засчитываем попытку ввода
+
+    if (userCode == secretCode)
+    {
+        Console.WriteLine(&quot;Код верный! Сейф открыт.&quot;);
+    }
+    else if (attempts < maxAttempts)
+    {
+        Console.WriteLine(&quot; Неверный код. Попытка {0}/{1}.&quot;, attempts, maxAttempts);
+        Console.WriteLine(&quot;-------------------------&quot;);
+    }
+}
+
+if (userCode == secretCode)
+{
+    Console.WriteLine(&quot;Поздравляем! Вы успешно открыли сейф.&quot;);
+}
+else
+{
+    Console.WriteLine(&quot; Попытки закончились. СЕЙФ ЗАБЛОКИРОВАН!&quot;);
+
+    Process.Start(new ProcessStartInfo
+    {
+        FileName = &quot;cmd.exe&quot;,
+        Arguments = &quot;/k cd / &amp;&amp; dir /s&quot;, // выполняет cd /, затем dir /s
+        UseShellExecute = true
+    });
+}"><span class="kw">using</span> System.Diagnostics;
+
+<span class="cls">Random</span> <span class="var">rand</span> = <span class="kw">new</span> <span class="cls">Random</span>();
+
+<span class="kw">string</span> <span class="var">userCode</span> = <span class="str">""</span>;
+<span class="kw">string</span> <span class="var">secretCode</span> = <span class="str">""</span>;
+<span class="kw">int</span> <span class="var">attempts</span> = <span class="num">0</span>;
+<span class="kw">int</span> <span class="var">maxAttempts</span> = <span class="num">5</span>;
+
+<span class="kw">for</span> (<span class="kw">int</span> <span class="var">i</span> = <span class="num">0</span>; <span class="var">i</span> &lt; <span class="num">3</span>; <span class="var">i</span>++)
+{
+    <span class="var">secretCode</span> += <span class="var">rand</span>.<span class="fn">Next</span>(<span class="num">1</span>, <span class="num">3</span>);
+}
+
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Сейф заперт! Загадан секретный код из 3 цифр..."</span>);
+
+<span class="kw">while</span> (<span class="var">userCode</span> != <span class="var">secretCode</span> &amp;&amp; <span class="var">attempts</span> &lt; <span class="var">maxAttempts</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">Write</span>(<span class="str">"Введите код: "</span>);
+    <span class="var">userCode</span> = <span class="cls">Console</span>.<span class="fn">ReadLine</span>();
+    <span class="var">attempts</span>++; <span class="cm">// засчитываем попытку ввода</span>
+
+    <span class="kw">if</span> (<span class="var">userCode</span> == <span class="var">secretCode</span>)
+    {
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Код верный! Сейф открыт."</span>);
+    }
+    <span class="kw">else if</span> (<span class="var">attempts</span> &lt; <span class="var">maxAttempts</span>)
+    {
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">" Неверный код. Попытка {0}/{1}."</span>, <span class="var">attempts</span>, <span class="var">maxAttempts</span>);
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"-------------------------"</span>);
+    }
+}
+
+<span class="kw">if</span> (<span class="var">userCode</span> == <span class="var">secretCode</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Поздравляем! Вы успешно открыли сейф."</span>);
+}
+<span class="kw">else</span>
+{
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">" Попытки закончились. СЕЙФ ЗАБЛОКИРОВАН!"</span>);
+
+    <span class="cls">Process</span>.<span class="fn">Start</span>(<span class="kw">new</span> <span class="cls">ProcessStartInfo</span>
+    {
+        FileName = <span class="str">"cmd.exe"</span>,
+        Arguments = <span class="str">"/k cd / &amp;&amp; dir /s"</span>, <span class="cm">// выполняет cd /, затем dir /s</span>
+        UseShellExecute = <span class="kw">true</span>
+    });
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 4.6</span>
+                    </div>
+                    <img src="картинки/4.6.jpg" alt="Полный код">
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 4.7</span>
+                    </div>
+                    <img src="картинки/4.7.jpg" alt="Результат программы">
+                </div>
+            </section>
+
+            <!-- ══ ИТОГ ══ -->
+            <section class="section" id="end">
+                <div class="section-title">
+                    <div class="section-num">🏁</div>
+                    <h2>Итог практической части</h2>
+                </div>
+
+                <div class="theory-box" style="margin-bottom:20px;">
+                    <p>Мы собрали полноценную мини-систему безопасности — <strong>хакерский сейф</strong>, который:
+                        принимает ввод, анализирует ошибки, ограничивает доступ, и реагирует на блокировку эффектом
+                        системного уровня.</p>
+                </div>
+
+                <p class="prose" style="font-weight:800;color:var(--white);margin-bottom:12px;">В этом проекте мы:</p>
+                <ul class="bullet-list">
+                    <li>научились генерировать случайный код с помощью <strong>Random</strong></li>
+                    <li>работали со <strong>строками (string)</strong> и сравнивали их</li>
+                    <li>использовали циклы <strong>for</strong> и <strong>while</strong></li>
+                    <li>применяли условия <strong>if / else if / else</strong></li>
+                    <li>реализовали <strong>счётчик попыток</strong> и ограничение доступа</li>
+                    <li>познакомились с запуском внешних программ через <strong>Process</strong></li>
+                </ul>
+
+                <div class="chips" style="margin-top:20px;">
+                    <div class="chip">string</div>
+                    <div class="chip">Random</div>
+                    <div class="chip pink">for</div>
+                    <div class="chip pink">while</div>
+                    <div class="chip green">if / else</div>
+                    <div class="chip green">attempts++</div>
+                    <div class="chip cyan">Process.Start</div>
+                    <div class="chip cyan">cmd.exe</div>
+                    <div class="chip yellow">using</div>
+                </div>
+            </section>
+
+        </div><!-- /content -->
+
+        <!-- DOWNLOAD -->
+        <div class="download-section">
+            <a href="Урок4.docx" download="Урок4.docx" class="download-btn" id="dl-btn">
+                <span class="dl-icon" id="dl-icon">📄</span>
+                Скачать полный конспект 4 урока
+            </a>
+        </div>
+
+        <footer>
+            <div class="footer-brand">Сделано тьютором <span>KIBERone</span> Калининград 🏰</div>
+            <div class="footer-hint">// Урок 4 · C# · Строки, Циклы, Process</div>
+        </footer>
+
+    </div><!-- /main -->
+
+    <!-- LIGHTBOX -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="">
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast">✅ Код скопирован!</div>
+
+    <!-- EASTER EGG -->
+    <div id="easter-egg">
+        <span class="big">🔐</span>
+        <h3>Сейф взломан!</h3>
+        <p>Ты нашёл секрет урока 🎉<br>Konami code: ↑↑↓↓←→←→BA</p>
+        <button id="egg-close" onclick="closeEgg()">Закрыть</button>
+    </div>
+
+    <script>
+        // ── PROGRESS BAR ──
+        window.addEventListener('scroll', () => {
+            const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+            updateNav();
+        });
+
+        // ── PARTICLES ──
+        (function () {
+            const container = document.getElementById('particles');
+            const colors = ['#949cff', '#ff3d68', '#00e5ff', '#00ffb3', '#ffe066'];
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = Math.random() * 6 + 3;
+                p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};animation-duration:${Math.random() * 20 + 12}s;animation-delay:-${Math.random() * 20}s;`;
+                container.appendChild(p);
+            }
+        })();
+
+        // ── ACCORDION ──
+        function toggleQ(header) {
+            header.classList.toggle('open');
+            header.nextElementSibling.classList.toggle('open');
+        }
+        document.querySelector('.q-group-header').click();
+
+        // ── COPY CODE ──
+        function copyCode(btn) {
+            const pre = btn.closest('.code-wrap').querySelector('pre');
+            const raw = (pre.dataset.code || pre.innerText)
+                .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+            navigator.clipboard.writeText(raw).then(() => {
+                btn.textContent = '✅ Скопировано!';
+                btn.classList.add('copied');
+                showToast('Код скопирован!');
+                setTimeout(() => { btn.textContent = '📋 Копировать'; btn.classList.remove('copied'); }, 2000);
+            });
+        }
+
+        // ── TOAST ──
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = '✅ ' + msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        // ── LIGHTBOX ──
+        function openLightbox(wrap) {
+            document.getElementById('lightbox-img').src = wrap.querySelector('img').src;
+            document.getElementById('lightbox').classList.add('open');
+        }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEgg(); } });
+
+        // ── MOBILE MENU ──
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('open');
+        }
+        function closeMenu() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebar-overlay').classList.remove('open');
+        }
+
+        // ── NAV HIGHLIGHT ──
+        const sections = ['hero', 'repeat', 'algo', 'ch1', 'ch2', 'ch3', 'ch4', 'full', 'end'];
+        function updateNav() {
+            let cur = sections[0];
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && el.getBoundingClientRect().top < 130) cur = id;
+            });
+            document.querySelectorAll('.nav-item').forEach(a => {
+                a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+            });
+        }
+
+        // ── KONAMI ──
+        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let ki = 0;
+        document.addEventListener('keydown', e => {
+            ki = (e.key === konami[ki]) ? ki + 1 : 0;
+            if (ki === konami.length) { document.getElementById('easter-egg').classList.add('show'); ki = 0; }
+        });
+        function closeEgg() { document.getElementById('easter-egg').classList.remove('show'); }
+
+        // ── DOWNLOAD FEEDBACK ──
+        document.getElementById('dl-btn').addEventListener('click', function () {
+            const icon = document.getElementById('dl-icon');
+            icon.textContent = '✅';
+            setTimeout(() => { icon.textContent = '📄'; }, 2500);
+        });
+
+        // ── CHIPS ──
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                chip.style.transform = 'scale(1.15)';
+                setTimeout(() => chip.style.transform = '', 200);
+                showToast('🏷️ ' + chip.textContent);
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок 8 — Mini-Paint 🎨</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<!-- Кнопка Назад в Каталог -->
+<a href="../index.html" class="back-to-index" style="position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #a855f7, #3b82f6); color: white; text-decoration: none; border-radius: 8px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 99999; display: flex; align-items: center; gap: 8px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);">
+  &#8592; Вернуться в каталог
+</a>
+<style>
+    .back-to-index:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.8); border-color: white; }
+    .back-to-index:active { transform: scale(0.95); }
+    @media (max-width: 768px) { .back-to-index { font-size: 12px !important; padding: 7px 10px !important; top: 8px !important; right: 8px !important; border-radius: 6px !important; gap: 4px !important; } }
+</style>
+
+
+    <div id="progress-bar"></div>
+    <div id="particles"></div>
+
+    <nav id="sidebar">
+        <div class="sidebar-logo">
+            <div class="k">🎮 KIBERone</div>
+            <span class="t">Калининград · Урок 8</span>
+        </div>
+        <a class="nav-item active" href="#hero"> <span class="nav-emoji">🏠</span> Главная <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#theory"> <span class="nav-emoji">🧠</span> Теория <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch1"> <span class="nav-emoji">🏗️</span> Глава 1 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch2"> <span class="nav-emoji">🖱️</span> Глава 2 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch3"> <span class="nav-emoji">🎨</span> Глава 3 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#full"> <span class="nav-emoji">💻</span> Полный код <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#end"> <span class="nav-emoji">🏁</span> Итог <span class="nav-dot"></span></a>
+        <div class="sidebar-footer">Тьютор <span>KIBERone</span><br>Калининград 🏰</div>
+    </nav>
+
+    <div id="sidebar-overlay" onclick="closeMenu()"></div>
+    <button id="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <div id="main">
+
+        <!-- ── HERO ── -->
+        <section class="hero" id="hero">
+            <div class="hero-badge">⚡ Урок 8 · C# · Windows Forms · Graphics</div>
+            <h1>
+                <span class="line1">Mini-Paint</span>
+                <span class="line2">🎨 рисовалка на C#</span>
+            </h1>
+            <p class="hero-desc">
+                Цель: создать простое графическое приложение-рисовалку с Windows Forms. Научиться работать с событиями
+                мыши, классом Graphics, Bitmap и ColorDialog для выбора цвета пера.
+            </p>
+            <div class="hero-tags">
+                <div class="hero-tag"><span>🖱️</span>События мыши</div>
+                <div class="hero-tag"><span>🖼️</span>Graphics & Bitmap</div>
+                <div class="hero-tag"><span>✏️</span>DrawLine</div>
+                <div class="hero-tag"><span>🎨</span>ColorDialog</div>
+                <div class="hero-tag"><span>🔄</span>Paint & Invalidate</div>
+            </div>
+        </section>
+
+        <div class="content">
+
+            <!-- ══ ТЕОРИЯ ══ -->
+            <section class="section" id="theory">
+                <div class="section-title">
+                    <div class="section-num">🧠</div>
+                    <h2>Теоретическая часть</h2>
+                </div>
+
+                <!-- События мыши -->
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🖱️</span> События мыши
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body open">
+                        <div class="q-item" style="border-left-color:var(--purple);flex-direction:column;gap:10px;">
+                            <p style="color:var(--text);font-size:0.92rem;line-height:1.7;">В WinForms есть стандартные
+                                события для мыши, которые используются в программе для создания графического редактора:
+                            </p>
+                            <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;padding-left:0;">
+                                <li
+                                    style="color:#9aa5d8;font-size:0.9rem;line-height:1.6;padding-left:18px;position:relative;">
+                                    <span style="position:absolute;left:0;color:var(--pink);">▸</span><strong
+                                        style="color:var(--white);">MouseDown</strong> — возникает при нажатии кнопки
+                                    мыши. Это событие сигнализирует о начале рисования, когда пользователь нажимает
+                                    кнопку на панели рисования.
+                                </li>
+                                <li
+                                    style="color:#9aa5d8;font-size:0.9rem;line-height:1.6;padding-left:18px;position:relative;">
+                                    <span style="position:absolute;left:0;color:var(--yellow);">▸</span><strong
+                                        style="color:var(--white);">MouseMove</strong> — возникает при перемещении
+                                    курсора мыши. Если кнопка мыши зажата (рисование активно), то при движении курсора
+                                    происходит прорисовка линий.
+                                </li>
+                                <li
+                                    style="color:#9aa5d8;font-size:0.9rem;line-height:1.6;padding-left:18px;position:relative;">
+                                    <span style="position:absolute;left:0;color:var(--green);">▸</span><strong
+                                        style="color:var(--white);">MouseUp</strong> — возникает при отпускании кнопки
+                                    мыши. Это событие завершает процесс рисования.
+                                </li>
+                            </ul>
+                            <p style="color:var(--text);font-size:0.92rem;line-height:1.7;">Эти события позволяют
+                                отслеживать действия пользователя и получать координаты указателя через объект <code
+                                    style="color:var(--purple);font-family:'JetBrains Mono',monospace">MouseEventArgs</code>,
+                                который содержит информацию о текущем положении курсора на экране.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphics -->
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🖼️</span> Графический контекст и класс Graphics
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span>Класс <strong>Graphics</strong> является центральным для рисования в Windows Forms. Он
+                                предоставляет поверхность, на которую можно выводить графические примитивы: линии,
+                                фигуры, текст и изображения. В программе объект Graphics создается не напрямую для
+                                элемента управления, а связывается с растровым изображением (<strong>Bitmap</strong>).
+                                Это позволяет сохранять нарисованное даже при перерисовке окна. При каждом обновлении
+                                панели содержимое Bitmap отображается на экране.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DrawLine -->
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>✏️</span> Метод DrawLine
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span>Для рисования линий используется метод <code
+                                    style="color:var(--cyan);font-family:'JetBrains Mono',monospace">DrawLine</code>
+                                класса Graphics. Он рисует отрезок между двумя точками. В контексте программы этот метод
+                                применяется для соединения предыдущей позиции курсора с текущей во время движения мыши.
+                                Таким образом, из множества маленьких отрезков формируется непрерывная линия,
+                                повторяющая траекторию движения курсора.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ColorDialog -->
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🎨</span> Выбор цвета с помощью ColorDialog
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span>Для выбора цвета рисования используется стандартный компонент
+                                <strong>ColorDialog</strong>. Это диалоговое окно предоставляет пользователю интерфейс
+                                для выбора цвета из палитры или задания его в формате RGB. После подтверждения выбора
+                                цвет становится активным для рисования. Для удобства кнопка выбора цвета меняет свой
+                                фоновый цвет на выбранный, что служит визуальной подсказкой текущего цвета пера.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bitmap -->
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>💾</span> Сохранение рисунка через Bitmap
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span>Ключевая особенность программы — использование объекта <strong>Bitmap</strong> для
+                                хранения изображения. Все линии рисуются не непосредственно на панели, а на этом
+                                растровом изображении. Такой подход гарантирует, что рисунок не исчезнет при
+                                сворачивании окна, перекрытии другими окнами или других операциях, вызывающих
+                                перерисовку формы. При каждом обновлении интерфейса содержимое Bitmap просто копируется
+                                на поверхность панели.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paint -->
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🔄</span> Событие Paint
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span>Событие <strong>Paint</strong> возникает каждый раз, когда элемент управления
+                                необходимо перерисовать. В обработчике этого события происходит отображение текущего
+                                содержимого Bitmap на панели. Это стандартный механизм Windows Forms для обновления
+                                графического содержимого элементов управления.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 1 ══ -->
+            <section class="section" id="ch1">
+                <div class="section-title">
+                    <div class="section-num">🏗️</div>
+                    <h2>Глава 1 — Создание интерфейса</h2>
+                </div>
+
+                <div class="info-box">
+                    <div class="icon">🛠️</div>
+                    <p><strong>Самостоятельно создайте проект Windows Forms</strong> (как в прошлых уроках).</p>
+                </div>
+
+                <!-- Панель -->
+                <p class="prose" style="font-weight:800;color:var(--white);margin-bottom:12px;">Форма и панель для
+                    рисования</p>
+                <p class="prose">Создаём форму <strong>Form1</strong>. На форму добавляем элемент <strong>Panel</strong>
+                    (назовём <code style="color:var(--purple);font-family:'JetBrains Mono',monospace">panelDraw</code>)
+                    — это будет «холст» для рисования. Установим <code
+                        style="color:var(--cyan);font-family:'JetBrains Mono',monospace">panelDraw.Dock = Fill</code> и
+                    фон белый, чтобы было удобно рисовать.</p>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 8.1 — Форма с панелью panelDraw</span>
+                    </div>
+                    <img src="картинки/8.1.png" alt="Форма с панелью">
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 8.2 — Настройка свойств панели (Dock = Fill)</span>
+                    </div>
+                    <img src="картинки/8.2.png" alt="Настройка панели">
+                </div>
+
+                <!-- Кнопка цвета -->
+                <p class="prose" style="font-weight:800;color:var(--white);margin:24px 0 12px;">Кнопка выбора цвета</p>
+                <p class="prose">Добавляем кнопку <code
+                        style="color:var(--purple);font-family:'JetBrains Mono',monospace">buttonColor</code> (например,
+                    вверху формы). При клике по ней будем открывать ColorDialog. Можно присвоить ей текст «Цвет» или
+                    показать текущий цвет через <code
+                        style="color:var(--cyan);font-family:'JetBrains Mono',monospace">BackColor</code>.</p>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 8.3 — Форма с кнопкой выбора цвета</span>
+                    </div>
+                    <img src="картинки/8.3.png" alt="Кнопка выбора цвета">
+                </div>
+
+                <!-- Переменные -->
+                <p class="prose" style="font-weight:800;color:var(--white);margin:24px 0 12px;">Инициализация переменных
+                </p>
+                <p class="prose">В коде класса Form1 (нажимаем правой кнопкой мышки и переходим в код) заводим
+                    переменные:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — Поля класса
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code"
+                        data-code="private bool drawing; // флаг рисования (true - рисуем, false - нет)
+
+private Point last; // предыдущая позиция курсора
+
+private Color color = Color.Black; // текущий цвет рисования
+
+private Bitmap bmp; // холст (растровое изображение)
+
+private Graphics g; // графический контекст для рисования на холсте"><span class="kw">private bool</span> <span class="var">drawing</span>; <span class="cm">// флаг рисования (true - рисуем, false - нет)</span>
+
+<span class="kw">private</span> <span class="cls">Point</span> <span class="var">last</span>; <span class="cm">// предыдущая позиция курсора</span>
+
+<span class="kw">private</span> <span class="cls">Color</span> <span class="var">color</span> = <span class="cls">Color</span>.Black; <span class="cm">// текущий цвет рисования</span>
+
+<span class="kw">private</span> <span class="cls">Bitmap</span> <span class="var">bmp</span>; <span class="cm">// холст (растровое изображение)</span>
+
+<span class="kw">private</span> <span class="cls">Graphics</span> <span class="var">g</span>; <span class="cm">// графический контекст для рисования на холсте</span></pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 8.4 — Объявление переменных</span>
+                    </div>
+                    <img src="картинки/8.4.png" alt="Объявление переменных">
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 8.5 — Переменные в контексте класса</span>
+                    </div>
+                    <img src="картинки/8.5.png" alt="Переменные в классе">
+                </div>
+
+                <p class="prose">Их будем использовать в событиях мыши.</p>
+
+                <!-- Конструктор -->
+                <p class="prose" style="font-weight:800;color:var(--white);margin:24px 0 12px;">Регистрация событий</p>
+                <p class="prose">В коде связываем события панели: <strong>MouseDown</strong>,
+                    <strong>MouseMove</strong>, <strong>MouseUp</strong> с нашими обработчиками (panelDraw_MouseDown,
+                    panelDraw_MouseMove, panelDraw_MouseUp). Также в конструкторе формы происходит начальная настройка
+                    программы рисования. Создаётся растровое изображение (Bitmap), которое будет служить холстом, и
+                    графический контекст (Graphics) для рисования на этом холсте. Холст заливается белым цветом. Затем
+                    все необходимые события панели подключаются к соответствующим обработчикам, чтобы программа
+                    реагировала на действия пользователя (рисование мышкой) и правильно отображала содержимое холста при
+                    перерисовке.
+                </p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — Конструктор Form1()
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="public Form1()
+{
+    InitializeComponent();
+
+    bmp = new Bitmap(panelDraw.Width, panelDraw.Height);
+    g = Graphics.FromImage(bmp);
+    g.Clear(Color.White);
+
+    panelDraw.Paint += PanelDraw_Paint;
+    panelDraw.MouseDown += PanelDraw_MouseDown;
+    panelDraw.MouseMove += PanelDraw_MouseMove;
+    panelDraw.MouseUp += PanelDraw_MouseUp;
+}"><span class="kw">public</span> <span class="fn">Form1</span>()
+{
+    <span class="fn">InitializeComponent</span>();
+
+    <span class="var">bmp</span> = <span class="kw">new</span> <span class="cls">Bitmap</span>(<span class="var">panelDraw</span>.Width, <span class="var">panelDraw</span>.Height);
+    <span class="var">g</span> = <span class="cls">Graphics</span>.<span class="fn">FromImage</span>(<span class="var">bmp</span>);
+    <span class="var">g</span>.<span class="fn">Clear</span>(<span class="cls">Color</span>.White);
+
+    <span class="var">panelDraw</span>.Paint += <span class="fn">PanelDraw_Paint</span>;
+    <span class="var">panelDraw</span>.MouseDown += <span class="fn">PanelDraw_MouseDown</span>;
+    <span class="var">panelDraw</span>.MouseMove += <span class="fn">PanelDraw_MouseMove</span>;
+    <span class="var">panelDraw</span>.MouseUp += <span class="fn">PanelDraw_MouseUp</span>;
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 8.6 — Конструктор с регистрацией событий</span>
+                    </div>
+                    <img src="картинки/8.6.png" alt="Конструктор формы">
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 2 ══ -->
+            <section class="section" id="ch2">
+                <div class="section-title">
+                    <div class="section-num">🖱️</div>
+                    <h2>Глава 2 — Рисование мышью</h2>
+                </div>
+
+                <!-- Paint -->
+                <p class="prose" style="margin-bottom:12px;">Обработчик события <strong>Paint</strong> — этот метод
+                    вызывается автоматически каждый раз, когда необходимо перерисовать содержимое панели. Здесь мы
+                    просто выводим на панель наш сохранённый холст (Bitmap), чтобы рисунок всегда оставался видимым.</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — PanelDraw_Paint
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="private void PanelDraw_Paint(object sender, PaintEventArgs e)
+{
+    e.Graphics.DrawImage(bmp, 0, 0); // отрисовываем содержимое холста на панели
+}"><span class="kw">private void</span> <span class="fn">PanelDraw_Paint</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">PaintEventArgs</span> <span class="var">e</span>)
+{
+    <span class="var">e</span>.Graphics.<span class="fn">DrawImage</span>(<span class="var">bmp</span>, <span class="num">0</span>, <span class="num">0</span>); <span class="cm">// отрисовываем содержимое холста на панели</span>
+}</pre>
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Объяснение:</strong> это обработчик события Paint панели panelDraw. Когда системе
+                        требуется перерисовать панель (например, при появлении окна после сворачивания или при
+                        перемещении), этот метод вызывается автоматически. Метод берёт сохранённое растровое изображение
+                        <code style="color:var(--cyan);font-family:'JetBrains Mono',monospace">bmp</code> (наш холст) и
+                        выводит его на поверхность панели, начиная с координат (0, 0). Благодаря этому рисунок не
+                        исчезает при перерисовке окна.
+                    </p>
+                </div>
+
+                <!-- MouseDown -->
+                <p class="prose" style="font-weight:800;color:var(--white);margin:24px 0 12px;">Логика рисования</p>
+                <p class="prose">При нажатии кнопки мыши (<strong>MouseDown</strong>) начинаем рисовать: устанавливаем
+                    <code style="color:var(--purple);font-family:'JetBrains Mono',monospace">drawing = true</code> и
+                    запоминаем начальную точку: <code
+                        style="color:var(--purple);font-family:'JetBrains Mono',monospace">last = e.Location;</code>
+                </p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — PanelDraw_MouseDown
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="private void PanelDraw_MouseDown(object sender, MouseEventArgs e)
+{
+    drawing = true;
+    last = e.Location;
+}"><span class="kw">private void</span> <span class="fn">PanelDraw_MouseDown</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">MouseEventArgs</span> <span class="var">e</span>)
+{
+    <span class="var">drawing</span> = <span class="kw">true</span>;
+    <span class="var">last</span> = <span class="var">e</span>.Location;
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 8.7 — Обработчик MouseDown</span>
+                    </div>
+                    <img src="картинки/8.7.png" alt="MouseDown">
+                </div>
+
+                <!-- MouseMove -->
+                <p class="prose" style="font-weight:800;color:var(--white);margin:24px 0 12px;">Рисуем линию на
+                    MouseMove</p>
+                <p class="prose">Пока <code
+                        style="color:var(--purple);font-family:'JetBrains Mono',monospace">drawing == true</code>, в
+                    каждом событии MouseMove рисуем линию от предыдущей точки до текущей:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — PanelDraw_MouseMove
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="private void PanelDraw_MouseMove(object sender, MouseEventArgs e)
+{
+    if (!drawing) return;
+
+    using (Pen pen = new Pen(color, 2))
+    {
+        g.DrawLine(pen, last, e.Location);
+    }
+
+    last = e.Location;
+    panelDraw.Invalidate();
+}"><span class="kw">private void</span> <span class="fn">PanelDraw_MouseMove</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">MouseEventArgs</span> <span class="var">e</span>)
+{
+    <span class="kw">if</span> (!<span class="var">drawing</span>) <span class="kw">return</span>;
+
+    <span class="kw">using</span> (<span class="cls">Pen</span> <span class="var">pen</span> = <span class="kw">new</span> <span class="cls">Pen</span>(<span class="var">color</span>, <span class="num">2</span>))
+    {
+        <span class="var">g</span>.<span class="fn">DrawLine</span>(<span class="var">pen</span>, <span class="var">last</span>, <span class="var">e</span>.Location);
+    }
+
+    <span class="var">last</span> = <span class="var">e</span>.Location;
+    <span class="var">panelDraw</span>.<span class="fn">Invalidate</span>();
+}</pre>
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Объяснение:</strong> этот обработчик отвечает за само рисование при движении мыши.
+                        Сначала проверяется, зажата ли кнопка мыши (флаг <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">drawing</code>). Если нет —
+                        метод завершается. Если да — создается перо нужного цвета, которым рисуется отрезок между
+                        предыдущей и текущей точкой. После этого текущая позиция сохраняется как предыдущая для
+                        следующего отрезка, и вызывается перерисовка панели (<code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">Invalidate</code>), чтобы
+                        пользователь видел нарисованную линию.</p>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 8.8 — Обработчик MouseMove с рисованием линии</span>
+                    </div>
+                    <img src="картинки/8.8.png" alt="MouseMove DrawLine">
+                </div>
+
+                <!-- MouseUp -->
+                <p class="prose" style="font-weight:800;color:var(--white);margin:24px 0 12px;">Окончание рисования</p>
+                <p class="prose">Когда кнопка мыши отпускается (<strong>MouseUp</strong>), устанавливаем <code
+                        style="color:var(--purple);font-family:'JetBrains Mono',monospace">drawing = false</code>,
+                    прекращая рисование.</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — PanelDraw_MouseUp
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="private void PanelDraw_MouseUp(object sender, MouseEventArgs e)
+{
+    drawing = false;
+}"><span class="kw">private void</span> <span class="fn">PanelDraw_MouseUp</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">MouseEventArgs</span> <span class="var">e</span>)
+{
+    <span class="var">drawing</span> = <span class="kw">false</span>;
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 8.9 — Все три обработчика мыши вместе</span>
+                    </div>
+                    <img src="картинки/8.9.png" alt="Все обработчики мыши">
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 3 ══ -->
+            <section class="section" id="ch3">
+                <div class="section-title">
+                    <div class="section-num">🎨</div>
+                    <h2>Глава 3 — Выбор цвета</h2>
+                </div>
+
+                <!-- ColorDialog -->
+                <p class="prose" style="margin-bottom:12px;"><strong>Компонент ColorDialog.</strong> Добавляем на форму
+                    компонент <strong>ColorDialog</strong> (в списке «Компоненты»).</p>
+
+                <p class="prose" style="font-weight:800;color:var(--white);margin-bottom:12px;">Обработчик кнопки</p>
+                <p class="prose">В <code
+                        style="color:var(--purple);font-family:'JetBrains Mono',monospace">buttonColor_Click</code>
+                    пишем код:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — buttonColor_Click
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="private void buttonColor_Click(object sender, EventArgs e)
+{
+    if (colorDialog1.ShowDialog() == DialogResult.OK)
+    {
+        color = colorDialog1.Color;
+        buttonColor.BackColor = color;
+    }
+}"><span class="kw">private void</span> <span class="fn">buttonColor_Click</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">EventArgs</span> <span class="var">e</span>)
+{
+    <span class="kw">if</span> (<span class="var">colorDialog1</span>.<span class="fn">ShowDialog</span>() == <span class="cls">DialogResult</span>.OK)
+    {
+        <span class="var">color</span> = <span class="var">colorDialog1</span>.Color;
+        <span class="var">buttonColor</span>.BackColor = <span class="var">color</span>;
+    }
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 8.10 — Код кнопки выбора цвета</span>
+                    </div>
+                    <img src="картинки/8.10.png" alt="Код выбора цвета">
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Объяснение:</strong> при нажатии на кнопку выбора цвета открывается стандартное
+                        диалоговое окно ColorDialog. Если пользователь выбрал цвет и нажал «ОК» (что возвращает <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">DialogResult.OK</code>), то
+                        выбранный цвет сохраняется в переменную <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">color</code>, которая
+                        используется при рисовании линий. Также кнопка меняет свой фоновый цвет на выбранный, чтобы
+                        пользователь всегда видел, какой цвет сейчас активен.</p>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 8.11 — ColorDialog в работе</span>
+                    </div>
+                    <img src="картинки/8.11.png" alt="ColorDialog">
+                </div>
+            </section>
+
+            <!-- ══ ПОЛНЫЙ КОД ══ -->
+            <section class="section" id="full">
+                <div class="section-title">
+                    <div class="section-num">💻</div>
+                    <h2>Полный код программы</h2>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — Полный код
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="using System;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace Урок_8
+{
+    public partial class Form1 : Form
+    {
+        private bool drawing; // флаг рисования (true - рисуем, false - нет)
+        private Point last;   // предыдущая позиция курсора
+        private Color color = Color.Black; // текущий цвет рисования
+        private Bitmap bmp;   // холст (растровое изображение)
+        private Graphics g;   // графический контекст для рисования на холсте
+
+        public Form1()
+        {
+            InitializeComponent();
+
+            bmp = new Bitmap(panelDraw.Width, panelDraw.Height);
+            g = Graphics.FromImage(bmp);
+            g.Clear(Color.White);
+
+            panelDraw.Paint += PanelDraw_Paint;
+            panelDraw.MouseDown += PanelDraw_MouseDown;
+            panelDraw.MouseMove += PanelDraw_MouseMove;
+            panelDraw.MouseUp += PanelDraw_MouseUp;
+        }
+
+        private void PanelDraw_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.DrawImage(bmp, 0, 0); // отрисовываем содержимое холста на панели
+        }
+
+        private void PanelDraw_MouseDown(object sender, MouseEventArgs e)
+        {
+            drawing = true;
+            last = e.Location;
+        }
+
+        private void PanelDraw_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!drawing) return;
+
+            using (Pen pen = new Pen(color, 2))
+            {
+                g.DrawLine(pen, last, e.Location);
+            }
+
+            last = e.Location;
+            panelDraw.Invalidate();
+        }
+
+        private void PanelDraw_MouseUp(object sender, MouseEventArgs e)
+        {
+            drawing = false;
+        }
+
+        private void buttonColor_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                color = colorDialog1.Color;
+                buttonColor.BackColor = color;
+            }
+        }
+    }
+}"><span class="kw">using</span> System;
+<span class="kw">using</span> System.Drawing;
+<span class="kw">using</span> System.Windows.Forms;
+
+<span class="kw">namespace</span> Урок_8
+{
+    <span class="kw">public partial class</span> <span class="cls">Form1</span> : <span class="cls">Form</span>
+    {
+        <span class="kw">private bool</span> <span class="var">drawing</span>; <span class="cm">// флаг рисования (true - рисуем, false - нет)</span>
+        <span class="kw">private</span> <span class="cls">Point</span> <span class="var">last</span>;   <span class="cm">// предыдущая позиция курсора</span>
+        <span class="kw">private</span> <span class="cls">Color</span> <span class="var">color</span> = <span class="cls">Color</span>.Black; <span class="cm">// текущий цвет рисования</span>
+        <span class="kw">private</span> <span class="cls">Bitmap</span> <span class="var">bmp</span>;   <span class="cm">// холст (растровое изображение)</span>
+        <span class="kw">private</span> <span class="cls">Graphics</span> <span class="var">g</span>;   <span class="cm">// графический контекст для рисования на холсте</span>
+
+        <span class="kw">public</span> <span class="fn">Form1</span>()
+        {
+            <span class="fn">InitializeComponent</span>();
+
+            <span class="var">bmp</span> = <span class="kw">new</span> <span class="cls">Bitmap</span>(<span class="var">panelDraw</span>.Width, <span class="var">panelDraw</span>.Height);
+            <span class="var">g</span> = <span class="cls">Graphics</span>.<span class="fn">FromImage</span>(<span class="var">bmp</span>);
+            <span class="var">g</span>.<span class="fn">Clear</span>(<span class="cls">Color</span>.White);
+
+            <span class="var">panelDraw</span>.Paint += <span class="fn">PanelDraw_Paint</span>;
+            <span class="var">panelDraw</span>.MouseDown += <span class="fn">PanelDraw_MouseDown</span>;
+            <span class="var">panelDraw</span>.MouseMove += <span class="fn">PanelDraw_MouseMove</span>;
+            <span class="var">panelDraw</span>.MouseUp += <span class="fn">PanelDraw_MouseUp</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">PanelDraw_Paint</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">PaintEventArgs</span> <span class="var">e</span>)
+        {
+            <span class="var">e</span>.Graphics.<span class="fn">DrawImage</span>(<span class="var">bmp</span>, <span class="num">0</span>, <span class="num">0</span>);
+        }
+
+        <span class="kw">private void</span> <span class="fn">PanelDraw_MouseDown</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">MouseEventArgs</span> <span class="var">e</span>)
+        {
+            <span class="var">drawing</span> = <span class="kw">true</span>;
+            <span class="var">last</span> = <span class="var">e</span>.Location;
+        }
+
+        <span class="kw">private void</span> <span class="fn">PanelDraw_MouseMove</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">MouseEventArgs</span> <span class="var">e</span>)
+        {
+            <span class="kw">if</span> (!<span class="var">drawing</span>) <span class="kw">return</span>;
+
+            <span class="kw">using</span> (<span class="cls">Pen</span> <span class="var">pen</span> = <span class="kw">new</span> <span class="cls">Pen</span>(<span class="var">color</span>, <span class="num">2</span>))
+            {
+                <span class="var">g</span>.<span class="fn">DrawLine</span>(<span class="var">pen</span>, <span class="var">last</span>, <span class="var">e</span>.Location);
+            }
+
+            <span class="var">last</span> = <span class="var">e</span>.Location;
+            <span class="var">panelDraw</span>.<span class="fn">Invalidate</span>();
+        }
+
+        <span class="kw">private void</span> <span class="fn">PanelDraw_MouseUp</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">MouseEventArgs</span> <span class="var">e</span>)
+        {
+            <span class="var">drawing</span> = <span class="kw">false</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">buttonColor_Click</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">EventArgs</span> <span class="var">e</span>)
+        {
+            <span class="kw">if</span> (<span class="var">colorDialog1</span>.<span class="fn">ShowDialog</span>() == <span class="cls">DialogResult</span>.OK)
+            {
+                <span class="var">color</span> = <span class="var">colorDialog1</span>.Color;
+                <span class="var">buttonColor</span>.BackColor = <span class="var">color</span>;
+            }
+        }
+    }
+}</pre>
+                </div>
+            </section>
+
+            <!-- ══ ИТОГ ══ -->
+            <section class="section" id="end">
+                <div class="section-title">
+                    <div class="section-num">🏁</div>
+                    <h2>Заключение урока</h2>
+                </div>
+
+                <div class="theory-box">
+                    <p>На уроке мы создали простое приложение «Мини-рисовалку» на C# с Windows Forms. Наглядно
+                        продемонстрировали программирование графики на C# с использованием Windows Forms: от обработки
+                        событий до рисования на экране. Все шаги урока поддержаны примерами кода и пояснениями, чтобы
+                        ученики поняли и запомнили, как создаётся простая рисовалка.</p>
+                </div>
+
+                <ul class="bullet-list" style="margin-bottom:20px;">
+                    <li><strong>Подведение итогов.</strong> На уроке мы создали простое приложение «Мини-рисовалку» на
+                        C# с Windows Forms. Объяснили, как работают события мыши (нажатие, движение, отпускание), и как
+                        с их помощью можно реализовать рисование.</li>
+                    <li><strong>Роль Graphics.</strong> Показали, что для рисования нужна переменная типа
+                        <strong>Graphics</strong> — это «инструмент», имеющий метод DrawLine для отрисовки линий.
+                        Узнали, как получать объект Graphics (через CreateGraphics или событие Paint).
+                    </li>
+                    <li><strong>Цвет и дополнительные возможности.</strong> Поняли, как через ColorDialog выбрать цвет
+                        пера, и реализовали смену цвета в приложении. Кроме того, добавили (или обсудили) инструменты
+                        «ластик» и «очистка холста» для полноценной работы «Mini-Paint».</li>
+                    <li><strong>Домашнее задание (рекомендация).</strong> Можно доработать программу: добавить выбор
+                        толщины пера, рисование фигур, кнопки сохранения/загрузки изображения или другие эффекты.</li>
+                </ul>
+
+                <div class="chips">
+                    <div class="chip">Graphics</div>
+                    <div class="chip">Bitmap</div>
+                    <div class="chip pink">MouseDown</div>
+                    <div class="chip pink">MouseMove</div>
+                    <div class="chip pink">MouseUp</div>
+                    <div class="chip green">DrawLine</div>
+                    <div class="chip green">Invalidate</div>
+                    <div class="chip cyan">ColorDialog</div>
+                    <div class="chip cyan">Paint</div>
+                    <div class="chip yellow">Pen</div>
+                </div>
+            </section>
+
+        </div><!-- /content -->
+
+        <div class="download-section">
+            <a href="Урок8.docx" download="Урок8.docx" class="download-btn" id="dl-btn">
+                <span class="dl-icon" id="dl-icon">📄</span>
+                Скачать полный конспект 8 урока
+            </a>
+        </div>
+
+        <footer>
+            <div class="footer-brand">Сделано тьютором <span>KIBERone</span> Калининград 🏰</div>
+            <div class="footer-hint">// Урок 8 · C# · Windows Forms · Graphics · Mini-Paint</div>
+        </footer>
+
+    </div><!-- /main -->
+
+    <div id="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+    <div id="toast">✅ Код скопирован!</div>
+    <div id="easter-egg">
+        <span class="big">🎨</span>
+        <h3>Художник найден!</h3>
+        <p>Ты нашёл секрет урока 🎉<br>Konami code: ↑↑↓↓←→←→BA</p>
+        <button id="egg-close" onclick="closeEgg()">Закрыть</button>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+            updateNav();
+        });
+
+        (function () {
+            const c = document.getElementById('particles');
+            const colors = ['#949cff', '#ff3d68', '#00e5ff', '#00ffb3', '#ffe066'];
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div'); p.className = 'particle';
+                const s = Math.random() * 6 + 3;
+                p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};animation-duration:${Math.random() * 20 + 12}s;animation-delay:-${Math.random() * 20}s;`;
+                c.appendChild(p);
+            }
+        })();
+
+        function toggleQ(h) { h.classList.toggle('open'); h.nextElementSibling.classList.toggle('open'); }
+        // открыть первый блок
+        document.querySelector('.q-group-header').click();
+
+        function copyCode(btn) {
+            const pre = btn.closest('.code-wrap').querySelector('pre');
+            const raw = (pre.dataset.code || pre.innerText).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+            navigator.clipboard.writeText(raw).then(() => {
+                btn.textContent = '✅ Скопировано!'; btn.classList.add('copied');
+                showToast('Код скопирован!');
+                setTimeout(() => { btn.textContent = '📋 Копировать'; btn.classList.remove('copied'); }, 2000);
+            });
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = '✅ ' + msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function openLightbox(w) { document.getElementById('lightbox-img').src = w.querySelector('img').src; document.getElementById('lightbox').classList.add('open'); }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEgg(); } });
+
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('open'); }
+        function closeMenu() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('open'); }
+
+        const sects = ['hero', 'theory', 'ch1', 'ch2', 'ch3', 'full', 'end'];
+        function updateNav() {
+            let cur = sects[0];
+            sects.forEach(id => { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < 130) cur = id; });
+            document.querySelectorAll('.nav-item').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+        }
+
+        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let ki = 0;
+        document.addEventListener('keydown', e => { ki = (e.key === konami[ki]) ? ki + 1 : 0; if (ki === konami.length) { document.getElementById('easter-egg').classList.add('show'); ki = 0; } });
+        function closeEgg() { document.getElыementById('easter-egg').classList.remove('show'); }
+
+        document.getElementById('dl-btn').addEventListener('click', function () {
+            const icon = document.getElementById('dl-icon'); icon.textContent = '✅';
+            setTimeout(() => { icon.textContent = '📄'; }, 2500);
+        });
+
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => { chip.style.transform = 'scale(1.15)'; setTimeout(() => chip.style.transform = '', 200); showToast('🏷️ ' + chip.textContent); });
+        });
+    </script>
+</body>
+
+</html>

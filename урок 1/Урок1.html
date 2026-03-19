@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок 1 — Первый запуск C# 🚀</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* ── TABS ── */
+        .tabs-bar {
+            display: flex;
+            gap: 0;
+            background: var(--bg2);
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tabs-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 14px 26px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--muted);
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn:hover {
+            color: var(--white);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .tab-btn.active {
+            color: var(--white);
+            border-bottom-color: var(--purple);
+            background: rgba(148, 156, 255, 0.07);
+        }
+
+        .tab-btn .tab-emoji {
+            font-size: 1.1rem;
+        }
+
+        .tab-btn .tab-badge {
+            background: var(--pink);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 2px 7px;
+            border-radius: 100px;
+            letter-spacing: 0.5px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* ── VIDEO CARD ── */
+        .video-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: linear-gradient(135deg, rgba(255, 61, 104, 0.1), rgba(148, 156, 255, 0.08));
+            border: 1px solid rgba(255, 61, 104, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 22px 26px;
+            margin: 20px 0;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--glow-pink);
+        }
+
+        .video-card .play-icon {
+            width: 52px;
+            height: 52px;
+            background: var(--pink);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            box-shadow: var(--glow-pink);
+        }
+
+        .video-card .video-info h4 {
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .video-card .video-info p {
+            color: var(--muted);
+            font-size: 0.83rem;
+        }
+
+        /* ── INSTALL STEPS ── */
+        .install-step {
+            display: flex;
+            gap: 20px;
+            padding: 22px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            transition: border-color 0.2s;
+        }
+
+        .install-step:hover {
+            border-color: rgba(148, 156, 255, 0.4);
+        }
+
+        .install-num {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: var(--glow-pink);
+        }
+
+        .install-body h3 {
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .install-body p {
+            color: var(--text);
+            font-size: 0.92rem;
+            line-height: 1.7;
+        }
+
+        .install-body a {
+            color: var(--cyan);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .install-body a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── TYPE TABLE ── */
+        .type-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+
+        .type-table th {
+            background: rgba(148, 156, 255, 0.12);
+            color: var(--purple);
+            font-weight: 800;
+            padding: 10px 16px;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+            font-size: 0.82rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .type-table td {
+            padding: 11px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            vertical-align: top;
+        }
+
+        .type-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .type-kw {
+            color: var(--purple);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+        }
+
+        .type-ex {
+            color: var(--green);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Кнопка Назад в Каталог -->
+<a href="../index.html" class="back-to-index" style="position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #a855f7, #3b82f6); color: white; text-decoration: none; border-radius: 8px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 99999; display: flex; align-items: center; gap: 8px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);">
+  &#8592; Вернуться в каталог
+</a>
+<style>
+    .back-to-index:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.8); border-color: white; }
+    .back-to-index:active { transform: scale(0.95); }
+    @media (max-width: 768px) { .back-to-index { font-size: 12px !important; padding: 7px 10px !important; top: 8px !important; right: 8px !important; border-radius: 6px !important; gap: 4px !important; } }
+</style>
+
+
+    <div id="progress-bar"></div>
+    <div id="particles"></div>
+
+    <nav id="sidebar">
+        <div class="sidebar-logo">
+            <div class="k">🎮 KIBERone</div>
+            <span class="t">Калининград · Урок 1</span>
+        </div>
+        <!-- lesson tab nav -->
+        <div id="nav-lesson">
+            <a class="nav-item active" href="#hero"> <span class="nav-emoji">🏠</span> Главная <span
+                    class="nav-dot"></span></a>
+            <a class="nav-item" href="#theory"> <span class="nav-emoji">🧠</span> Теория <span
+                    class="nav-dot"></span></a>
+            <a class="nav-item" href="#ch1"> <span class="nav-emoji">📁</span> Глава 1 <span class="nav-dot"></span></a>
+            <a class="nav-item" href="#ch2"> <span class="nav-emoji">💬</span> Глава 2 <span class="nav-dot"></span></a>
+            <a class="nav-item" href="#ch3"> <span class="nav-emoji">🐛</span> Глава 3 <span class="nav-dot"></span></a>
+            <a class="nav-item" href="#ch4"> <span class="nav-emoji">📦</span> Глава 4 <span class="nav-dot"></span></a>
+            <a class="nav-item" href="#ch5"> <span class="nav-emoji">⚙️</span> Глава 5 <span class="nav-dot"></span></a>
+            <a class="nav-item" href="#ch6"> <span class="nav-emoji">➕</span> Глава 6 <span class="nav-dot"></span></a>
+            <a class="nav-item" href="#ch7"> <span class="nav-emoji">🔢</span> Глава 7 <span class="nav-dot"></span></a>
+            <a class="nav-item" href="#ch8"> <span class="nav-emoji">🎯</span> Глава 8 <span class="nav-dot"></span></a>
+            <a class="nav-item" href="#ifblock"><span class="nav-emoji">🔀</span> if <span class="nav-dot"></span></a>
+            <a class="nav-item" href="#iq"> <span class="nav-emoji">🧠</span> IQ-генератор <span
+                    class="nav-dot"></span></a>
+            <a class="nav-item" href="#end"> <span class="nav-emoji">🏁</span> Итог <span class="nav-dot"></span></a>
+        </div>
+        <!-- install tab nav -->
+        <div id="nav-install" style="display:none;">
+            <a class="nav-item" href="#install-top" onclick="void(0)"><span class="nav-emoji">⬇️</span> Скачивание <span
+                    class="nav-dot"></span></a>
+            <a class="nav-item" href="#install-top" onclick="void(0)"><span class="nav-emoji">▶️</span> Установщик <span
+                    class="nav-dot"></span></a>
+            <a class="nav-item" href="#install-top" onclick="void(0)"><span class="nav-emoji">⚙️</span> Компоненты <span
+                    class="nav-dot"></span></a>
+        </div>
+        <div class="sidebar-footer">Тьютор <span>KIBERone</span><br>Калининград 🏰</div>
+    </nav>
+
+    <div id="sidebar-overlay" onclick="closeMenu()"></div>
+    <button id="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <div id="main">
+
+        <!-- ══ TABS BAR ══ -->
+        <div class="tabs-bar">
+            <button class="tab-btn active" onclick="switchTab('lesson', this)">
+                <span class="tab-emoji">📚</span> Урок 1 — Первый запуск
+            </button>
+            <button class="tab-btn" onclick="switchTab('install', this)">
+                <span class="tab-emoji">🔧</span> Установка Visual Studio
+                <span class="tab-badge">NEW</span>
+            </button>
+        </div>
+
+        <!-- ══════════════════════════════
+     TAB: LESSON
+══════════════════════════════ -->
+        <div id="tab-lesson" class="tab-panel active">
+
+            <section class="hero" id="hero">
+                <div class="hero-badge">⚡ Урок 1 · C# · Первый запуск</div>
+                <h1>
+                    <span class="line1">Первый запуск</span>
+                    <span class="line2">базовые команды C# 🚀</span>
+                </h1>
+                <p class="hero-desc">
+                    Цель: создать первый проект, научиться выводить текст, разобрать переменные и типы данных, написать
+                    первые условия с if и сделать шуточный генератор IQ.
+                </p>
+                <div class="hero-tags">
+                    <div class="hero-tag"><span>💬</span>Console.WriteLine</div>
+                    <div class="hero-tag"><span>📦</span>string · int · bool</div>
+                    <div class="hero-tag"><span>🔀</span>if</div>
+                    <div class="hero-tag"><span>🎲</span>Random</div>
+                    <div class="hero-tag"><span>🔄</span>Convert.ToInt32</div>
+                </div>
+            </section>
+
+            <div class="content">
+
+                <!-- ══ ТЕОРИЯ ══ -->
+                <section class="section" id="theory">
+                    <div class="section-title">
+                        <div class="section-num">🧠</div>
+                        <h2>Теоретическая часть (10 минут)</h2>
+                    </div>
+
+                    <!-- 1. Что такое C# -->
+                    <div class="section-title"
+                        style="margin-top:0;margin-bottom:14px;padding-bottom:10px;border-bottom-color:rgba(255,61,104,0.2);">
+                        <div class="section-num" style="width:34px;height:34px;font-size:0.9rem;">1</div>
+                        <h2 style="font-size:1.05rem;">Что такое C# и зачем он вам</h2>
+                    </div>
+                    <p class="prose">C# — это язык программирования, на котором можно делать <strong>реальные
+                            продукты</strong>, а не только учебные задачки. В этом модуле вы будете создавать штуки,
+                        которыми можно пользоваться: мини-игры, приложения с кнопками, таймеры, заметки, простые
+                        «продукты» под Windows.</p>
+                    <p class="prose">Важная мысль: язык программирования — это способ объяснить компьютеру действия
+                        <strong>очень точно</strong>. Компьютер не угадывает и не «понимает намёки»: он выполняет то,
+                        что написано. Поэтому в программировании ценится ясность и порядок.</p>
+                    <div class="mini-card" style="margin:16px 0;">
+                        <h4>Почему именно C# для вашей группы:</h4>
+                        <ul>
+                            <li>Он <strong>логичный</strong> и «честный»: если написано неправильно — покажет ошибку
+                            </li>
+                            <li>Он <strong>популярный и прикладной</strong>: навыки реально пригодятся дальше (и в
+                                проектах, и в будущем обучении)</li>
+                            <li>Он отлично работает с Visual Studio: это один из самых удобных комплектов «язык + среда
+                                разработки»</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <div class="icon">🎵</div>
+                        <p><strong>Короткий факт:</strong> название C# читается «си-шарп», где <em>sharp</em> —
+                            музыкальный знак ♯ (как «прокачанный уровень»).</p>
+                    </div>
+
+                    <!-- 2. C# .NET VS -->
+                    <div class="section-title"
+                        style="margin-top:28px;margin-bottom:14px;padding-bottom:10px;border-bottom-color:rgba(255,61,104,0.2);">
+                        <div class="section-num" style="width:34px;height:34px;font-size:0.9rem;">2</div>
+                        <h2 style="font-size:1.05rem;">Из чего состоит «магия»: C#, .NET и Visual Studio</h2>
+                    </div>
+                    <p class="prose">Чтобы дети не путались, сразу закрепи простую модель:</p>
+                    <div class="grid2" style="margin:14px 0;">
+                        <div class="mini-card" style="border-color:rgba(148,156,255,0.3);">
+                            <h4>🔤 C#</h4>
+                            <ul>
+                                <li>Это <strong>язык</strong> (как мы пишем команды)</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card" style="border-color:rgba(0,255,179,0.3);">
+                            <h4>⚙️ .NET</h4>
+                            <ul>
+                                <li>Это <strong>платформа и набор готовых возможностей</strong> (готовые детали и
+                                    суперсилы)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mini-card" style="border-color:rgba(255,224,102,0.3);margin-bottom:16px;">
+                        <h4 style="color:var(--yellow);">🏭 Visual Studio</h4>
+                        <ul>
+                            <li>Это <strong>мастерская</strong>, где всё создаётся (пишем, собираем, запускаем, находим
+                                ошибки)</li>
+                        </ul>
+                    </div>
+                    <div class="theory-box">
+                        <p>Если объяснять совсем на пальцах — вы хотите сделать «приложение». Вам нужен:</p>
+                        <ul>
+                            <li>язык, чтобы описать логику — <strong>C#</strong></li>
+                            <li>набор готовых функций, чтобы не изобретать всё заново — <strong>.NET</strong></li>
+                            <li>инструмент, где удобно всё собрать в проект и запускать — <strong>Visual Studio</strong>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 3. .NET -->
+                    <div class="section-title"
+                        style="margin-top:28px;margin-bottom:14px;padding-bottom:10px;border-bottom-color:rgba(255,61,104,0.2);">
+                        <div class="section-num" style="width:34px;height:34px;font-size:0.9rem;">3</div>
+                        <h2 style="font-size:1.05rem;">Что такое .NET «по-человечески»</h2>
+                    </div>
+                    <p class="prose">.NET нужен, чтобы не писать всё с нуля. Он даёт готовые решения:</p>
+                    <ul class="bullet-list">
+                        <li>вывод текста и работа с вводом</li>
+                        <li>работа с файлами (сохранить/загрузить)</li>
+                        <li>окна, кнопки, формы (это мы будем делать позже в WinForms)</li>
+                        <li>таймеры, работа со временем</li>
+                        <li>изображения, простая графика</li>
+                        <li>и много чего ещё</li>
+                    </ul>
+                    <div class="info-box" style="margin-top:14px;">
+                        <div class="icon">🧩</div>
+                        <p>Детям важнее всего понять: <strong>мы будем собирать проекты как конструктор</strong>,
+                            используя готовые детали .NET. Это сильно ускоряет разработку и делает «похоже на реальную
+                            работу».</p>
+                    </div>
+
+                    <!-- 4. Visual Studio -->
+                    <div class="section-title"
+                        style="margin-top:28px;margin-bottom:14px;padding-bottom:10px;border-bottom-color:rgba(255,61,104,0.2);">
+                        <div class="section-num" style="width:34px;height:34px;font-size:0.9rem;">4</div>
+                        <h2 style="font-size:1.05rem;">Visual Studio: что это и что в ней важно</h2>
+                    </div>
+                    <p class="prose">Visual Studio — это среда разработки (IDE). Это не просто «редактор текста», а
+                        комплект, где:</p>
+                    <ul class="bullet-list">
+                        <li>создают проект</li>
+                        <li>пишут код</li>
+                        <li>запускают программу</li>
+                        <li>видят ошибки</li>
+                        <li>чинят ошибки</li>
+                        <li>и постепенно делают приложение всё больше и красивее</li>
+                    </ul>
+                    <div class="warn-box" style="margin-top:14px;">
+                        <div class="icon">💡</div>
+                        <p><strong>Главная привычка новичка:</strong> если что-то не получается — <strong>не
+                                паника</strong>, а «смотрим, что пишет Error List». Это не наказание, а подсказка.</p>
+                    </div>
+
+                    <!-- 5. Как работает программа -->
+                    <div class="section-title"
+                        style="margin-top:28px;margin-bottom:14px;padding-bottom:10px;border-bottom-color:rgba(255,61,104,0.2);">
+                        <div class="section-num" style="width:34px;height:34px;font-size:0.9rem;">5</div>
+                        <h2 style="font-size:1.05rem;">Как из текста получается работающая программа</h2>
+                    </div>
+                    <p class="prose">Когда программист пишет программу, сначала это просто текст — <strong>исходный
+                            код</strong>. Чтобы этот текст стал «работающим приложением», происходит
+                        <strong>сборка</strong> (build / компиляция). Сборка — это проверка и превращение кода в то, что
+                        компьютер может выполнить.</p>
+                    <p class="prose" style="font-weight:800;color:var(--white);margin-bottom:10px;">Ошибки бывают двух
+                        типов (и это супер-база на весь модуль):</p>
+                    <div class="grid2">
+                        <div class="mini-card" style="border-color:rgba(255,61,104,0.4);">
+                            <h4 style="color:var(--pink);">🔴 Ошибки компиляции</h4>
+                            <ul>
+                                <li>Программа <strong>не запускается вообще</strong>, потому что написано «не по
+                                    правилам языка»</li>
+                                <li>Как если в рецепте пропущены шаги — повар не начнёт</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card" style="border-color:rgba(255,224,102,0.4);">
+                            <h4 style="color:var(--yellow);">🟡 Ошибки логики</h4>
+                            <ul>
+                                <li>Программа <strong>запускается, но делает не то</strong>, что задумано</li>
+                                <li>Как если рецепт выполнен, но ты добавил соль вместо сахара</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="info-box" style="margin-top:14px;">
+                        <div class="icon">✅</div>
+                        <p>Нормализуй для детей: <strong>ошибки — это часть разработки</strong>. Программисты не «пишут
+                            идеально с первого раза», они пишут → проверяют → исправляют.</p>
+                    </div>
+
+                    <!-- 6. Дорожная карта -->
+                    <div class="section-title"
+                        style="margin-top:28px;margin-bottom:14px;padding-bottom:10px;border-bottom-color:rgba(255,61,104,0.2);">
+                        <div class="section-num" style="width:34px;height:34px;font-size:0.9rem;">6</div>
+                        <h2 style="font-size:1.05rem;">Что вы будете делать в модуле (чётко, без деталей)</h2>
+                    </div>
+                    <p class="prose">Скажи это как дорожную карту, чтобы появился смысл:</p>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-n">1</div>
+                            <div class="step-t">Сначала вы научитесь делать <strong>быстрые программы</strong> (чтобы
+                                видеть результат сразу)</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-n">2</div>
+                            <div class="step-t">Потом перейдёте к приложениям с интерфейсом: <strong>окна, кнопки, формы
+                                    (WinForms)</strong></div>
+                        </div>
+                        <div class="step">
+                            <div class="step-n">3</div>
+                            <div class="step-t">Затем добавите «продуктовость»: сохранения, рекорды, удобство,
+                                оформление — чтобы это было похоже на настоящий софт</div>
+                        </div>
+                    </div>
+                    <div class="info-box" style="margin-top:14px;">
+                        <div class="icon">🎯</div>
+                        <p>И главное: каждый урок будет заканчиваться чем-то, что <strong>можно показать</strong>: «вот
+                            моя программа, она делает X».</p>
+                    </div>
+
+                    <!-- ВИДЕО -->
+                    <a href="https://www.youtube.com/watch?v=Re8qmc2qjhY" target="_blank" class="video-card"
+                        style="margin-top:24px;">
+                        <div class="play-icon">▶️</div>
+                        <div class="video-info">
+                            <h4>🔥 ВИДЕО НА 5 МИН — смотрим ровно до 4:50. Дальше не надо.</h4>
+                            <p>youtube.com/watch?v=Re8qmc2qjhY</p>
+                        </div>
+                    </a>
+                </section>
+
+                <!-- ══ ГЛАВА 1 ══ -->
+                <section class="section" id="ch1">
+                    <div class="section-title">
+                        <div class="section-num">📁</div>
+                        <h2>Глава 1 — Создание проекта</h2>
+                    </div>
+                    <div class="info-box">
+                        <div class="icon">🛠️</div>
+                        <p><strong>Открыть Visual Studio → Create a new project → Консольное приложение (Microsoft) →
+                                назвать проект (Имя ребёнка) → Create.</strong></p>
+                    </div>
+
+                    <div class="shot-wrap" onclick="openLightbox(this)">
+                        <div class="shot-bar">
+                            <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span
+                                    class="s3"></span></div>
+                            <span class="shot-label">📷 Картинка 1.1 — Создание нового проекта</span>
+                        </div>
+                        <img src="картинки/1.1.jpg" alt="Создание проекта">
+                    </div>
+
+                    <p class="prose"><strong>Запустить проект через <code
+                                style="color:var(--cyan);font-family:'JetBrains Mono',monospace">Ctrl + F5</code>.</strong>
+                    </p>
+                    <div class="info-box">
+                        <div class="icon">💬</div>
+                        <p><strong>Объяснение:</strong> консоль — это окно, где программа будет выводить результат своей
+                            работы.</p>
+                    </div>
+
+                    <div class="shot-wrap" onclick="openLightbox(this)">
+                        <div class="shot-bar">
+                            <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span
+                                    class="s3"></span></div>
+                            <span class="shot-label">📷 Картинка 1.2 — Запущенная консоль</span>
+                        </div>
+                        <img src="картинки/1.2.jpg" alt="Консоль запущена">
+                    </div>
+                </section>
+
+                <!-- ══ ГЛАВА 2 ══ -->
+                <section class="section" id="ch2">
+                    <div class="section-title">
+                        <div class="section-num">💬</div>
+                        <h2>Глава 2 — Первый текст на экран</h2>
+                    </div>
+                    <p class="prose">В файле <strong>Program.cs</strong> изменить строку:</p>
+
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Program.cs
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code"
+                            data-code="Console.WriteLine(&quot;Hello, World!&quot;);"><span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Hello, World!"</span>);</pre>
+                    </div>
+
+                    <div class="shot-wrap" onclick="openLightbox(this)">
+                        <div class="shot-bar">
+                            <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span
+                                    class="s3"></span></div>
+                            <span class="shot-label">📷 Картинка 1.3 — Program.cs в редакторе</span>
+                        </div>
+                        <img src="картинки/1.3.jpg" alt="Program.cs">
+                    </div>
+
+                    <p class="prose">На своё имя или фразу <code
+                            style="color:var(--green);font-family:'JetBrains Mono',monospace">"Я изучаю C#"</code>.
+                        Запустить программу.</p>
+                    <div class="info-box">
+                        <div class="icon">🎯</div>
+                        <p><strong>Вывод:</strong> текст в кавычках появляется в окне консоли.</p>
+                    </div>
+
+                    <p class="prose">Добавить ещё две строки:</p>
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Program.cs
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code"
+                            data-code="Console.WriteLine(&quot;Мне 13 лет&quot;);
+Console.WriteLine(&quot;Я буду делать игры&quot;);"><span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Мне 13 лет"</span>);
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Я буду делать игры"</span>);</pre>
+                    </div>
+                    <p class="prose">Запустить.</p>
+                    <div class="info-box">
+                        <div class="icon">💬</div>
+                        <p><strong>Объяснение:</strong> каждая строка — отдельная команда, в конце каждой строки
+                            обязательно стоит <code
+                                style="color:var(--pink);font-family:'JetBrains Mono',monospace">;</code></p>
+                    </div>
+                </section>
+
+                <!-- ══ ГЛАВА 3 ══ -->
+                <section class="section" id="ch3">
+                    <div class="section-title">
+                        <div class="section-num">🐛</div>
+                        <h2>Глава 3 — Ошибки — это нормально</h2>
+                    </div>
+                    <p class="prose">Удалить одну точку с запятой <code
+                            style="color:var(--pink);font-family:'JetBrains Mono',monospace">;</code> и попробовать
+                        запустить программу. Открыть вкладку <strong>Error List</strong>.</p>
+                    <div class="info-box">
+                        <div class="icon">💬</div>
+                        <p><strong>Объяснение:</strong> если нарушены правила языка, программа не запускается. Ошибка —
+                            это подсказка, а не проблема. Вернуть <code
+                                style="color:var(--pink);font-family:'JetBrains Mono',monospace">;</code> обратно.</p>
+                    </div>
+
+                    <div class="shot-wrap" onclick="openLightbox(this)">
+                        <div class="shot-bar">
+                            <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span
+                                    class="s3"></span></div>
+                            <span class="shot-label">📷 Картинка 1.4 — Error List с ошибкой</span>
+                        </div>
+                        <img src="картинки/1.4.jpg" alt="Error List">
+                    </div>
+                </section>
+
+                <!-- ══ ГЛАВА 4 ══ -->
+                <section class="section" id="ch4">
+                    <div class="section-title">
+                        <div class="section-num">📦</div>
+                        <h2>Глава 4 — Типы данных и переменные</h2>
+                    </div>
+                    <div class="theory-box">
+                        <p><strong>Переменная</strong> — это <em>коробка с именем</em>, в которой хранится значение. В
+                            C# каждая переменная должна иметь тип данных.</p>
+                    </div>
+
+                    <p class="prose" style="font-weight:800;color:var(--white);margin-bottom:12px;">Основные типы:</p>
+
+                    <table class="type-table">
+                        <thead>
+                            <tr>
+                                <th>Тип</th>
+                                <th>Что хранит</th>
+                                <th>Пример</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="type-kw">string</span></td>
+                                <td style="color:var(--text);">текст</td>
+                                <td><span class="type-ex">string name = "Макс";</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="type-kw">int</span></td>
+                                <td style="color:var(--text);">целое число</td>
+                                <td><span class="type-ex">int age = 13;</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="type-kw">bool</span></td>
+                                <td style="color:var(--text);">правда / ложь</td>
+                                <td><span class="type-ex">bool isWin = true;</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Примеры
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code" data-code="string name = &quot;Макс&quot;;
+int age = 13;
+bool isWin = true;"><span class="kw">string</span> <span class="var">name</span> = <span class="str">"Макс"</span>;
+<span class="kw">int</span> <span class="var">age</span> = <span class="num">13</span>;
+<span class="kw">bool</span> <span class="var">isWin</span> = <span class="kw">true</span>;</pre>
+                    </div>
+                </section>
+
+                <!-- ══ ГЛАВА 5 ══ -->
+                <section class="section" id="ch5">
+                    <div class="section-title">
+                        <div class="section-num">⚙️</div>
+                        <h2>Глава 5 — Работа с переменными</h2>
+                    </div>
+                    <p class="prose">Добавить в код:</p>
+
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Program.cs
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code" data-code="string name = &quot;Артём&quot;;
+int age = 14;
+
+Console.WriteLine(name);
+Console.WriteLine(age);"><span class="kw">string</span> <span class="var">name</span> = <span class="str">"Артём"</span>;
+<span class="kw">int</span> <span class="var">age</span> = <span class="num">14</span>;
+
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="var">name</span>);
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="var">age</span>);</pre>
+                    </div>
+                    <div class="info-box">
+                        <div class="icon">💬</div>
+                        <p><strong>Объяснение:</strong> переменные выводятся так же, как обычный текст.</p>
+                    </div>
+
+                    <p class="prose" style="margin-top:20px;font-weight:800;color:var(--white);">Соединение текста и
+                        переменных:</p>
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Program.cs
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code"
+                            data-code="Console.WriteLine(&quot;Меня зовут &quot; + name);
+Console.WriteLine(&quot;Мне &quot; + age + &quot; лет&quot;);"><span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Меня зовут "</span> + <span class="var">name</span>);
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Мне "</span> + <span class="var">age</span> + <span class="str">" лет"</span>);</pre>
+                    </div>
+                    <div class="info-box">
+                        <div class="icon">💬</div>
+                        <p><strong>Объяснение:</strong> знак <code
+                                style="color:var(--pink);font-family:'JetBrains Mono',monospace">+</code> соединяет
+                            данные.</p>
+                    </div>
+                </section>
+
+                <!-- ══ ГЛАВА 6 ══ -->
+                <section class="section" id="ch6">
+                    <div class="section-title">
+                        <div class="section-num">➕</div>
+                        <h2>Глава 6 — Можно ли сложить типы данных? Здесь задаём максимум вопросов детям</h2>
+                    </div>
+
+                    <p class="prose" style="font-weight:800;color:var(--white);margin-bottom:10px;">Число + число —
+                        обычная математика:</p>
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Результат: 8
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code"
+                            data-code="int a = 5;
+int b = 3;
+Console.WriteLine(a + b);"><span class="kw">int</span> <span class="var">a</span> = <span class="num">5</span>;
+<span class="kw">int</span> <span class="var">b</span> = <span class="num">3</span>;
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="var">a</span> + <span class="var">b</span>);</pre>
+                    </div>
+
+                    <p class="prose" style="font-weight:800;color:var(--white);margin:20px 0 10px;">Текст + текст —
+                        соединение:</p>
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Результат: Артём Иванов
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code"
+                            data-code="string firstName = &quot;Артём&quot;;
+string lastName = &quot; Иванов&quot;;
+Console.WriteLine(firstName + lastName);"><span class="kw">string</span> <span class="var">firstName</span> = <span class="str">"Артём"</span>;
+<span class="kw">string</span> <span class="var">lastName</span> = <span class="str">" Иванов"</span>;
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="var">firstName</span> + <span class="var">lastName</span>);</pre>
+                    </div>
+
+                    <p class="prose" style="font-weight:800;color:var(--white);margin:20px 0 10px;">Текст + число —
+                        число превращается в текст:</p>
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Результат: Мне 14 лет
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code"
+                            data-code="int age = 14;
+Console.WriteLine(&quot;Мне &quot; + age + &quot; лет&quot;);"><span class="kw">int</span> <span class="var">age</span> = <span class="num">14</span>;
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Мне "</span> + <span class="var">age</span> + <span class="str">" лет"</span>);</pre>
+                    </div>
+
+                    <p class="prose" style="font-weight:800;color:var(--white);margin:20px 0 10px;">Число + текст — тоже
+                        соединение, а не сложение:</p>
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Результат: 105
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code"
+                            data-code="int number = 10;
+string text = &quot;5&quot;;
+Console.WriteLine(number + text);"><span class="kw">int</span> <span class="var">number</span> = <span class="num">10</span>;
+<span class="kw">string</span> <span class="var">text</span> = <span class="str">"5"</span>;
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="var">number</span> + <span class="var">text</span>);</pre>
+                    </div>
+                </section>
+
+                <!-- ══ ГЛАВА 7 ══ -->
+                <section class="section" id="ch7">
+                    <div class="section-title">
+                        <div class="section-num">🔢</div>
+                        <h2>Глава 7 — Настоящее сложение чисел</h2>
+                    </div>
+                    <p class="prose">Чтобы сложить как числа, нужно преобразование:</p>
+
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Результат: 15
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code" data-code="int number = 10;
+string text = &quot;5&quot;;
+int result = number + Convert.ToInt32(text);
+Console.WriteLine(result);"><span class="kw">int</span> <span class="var">number</span> = <span class="num">10</span>;
+<span class="kw">string</span> <span class="var">text</span> = <span class="str">"5"</span>;
+<span class="kw">int</span> <span class="var">result</span> = <span class="var">number</span> + <span class="cls">Convert</span>.<span class="fn">ToInt32</span>(<span class="var">text</span>);
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="var">result</span>);</pre>
+                    </div>
+                    <div class="info-box">
+                        <div class="icon">💬</div>
+                        <p><strong>Объяснение:</strong> <code
+                                style="color:var(--cyan);font-family:'JetBrains Mono',monospace">Convert.ToInt32()</code>
+                            превращает текст в число.</p>
+                    </div>
+
+                    <div class="shot-wrap" onclick="openLightbox(this)">
+                        <div class="shot-bar">
+                            <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span
+                                    class="s3"></span></div>
+                            <span class="shot-label">📷 Картинка 1.5 — Convert.ToInt32 в действии</span>
+                        </div>
+                        <img src="картинки/1.5.jpg" alt="Convert ToInt32">
+                    </div>
+                </section>
+
+                <!-- ══ ГЛАВА 8 ══ -->
+                <section class="section" id="ch8">
+                    <div class="section-title">
+                        <div class="section-num">🎯</div>
+                        <h2>Глава 8 — Закрепление</h2>
+                    </div>
+                    <div class="warn-box">
+                        <div class="icon">🎯</div>
+                        <p><strong>Задача:</strong> создать программу, которая спрашивает имя, спрашивает возраст и
+                            выводит сообщение: «Тебе X лет — ты начинающий программист».</p>
+                    </div>
+
+                    <p class="prose">Добавить в код:</p>
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Program.cs — Закрепление
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code"
+                            data-code="Console.WriteLine(&quot;Как тебя зовут?&quot;);
+string userName = Console.ReadLine();
+
+Console.WriteLine(&quot;Сколько тебе лет?&quot;);
+int userAge = Convert.ToInt32(Console.ReadLine());
+
+Console.WriteLine(&quot;Тебе &quot; + userAge + &quot; лет --- ты начинающий программист&quot;);"><span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Как тебя зовут?"</span>);
+<span class="kw">string</span> <span class="var">userName</span> = <span class="cls">Console</span>.<span class="fn">ReadLine</span>();
+
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Сколько тебе лет?"</span>);
+<span class="kw">int</span> <span class="var">userAge</span> = <span class="cls">Convert</span>.<span class="fn">ToInt32</span>(<span class="cls">Console</span>.<span class="fn">ReadLine</span>());
+
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Тебе "</span> + <span class="var">userAge</span> + <span class="str">" лет --- ты начинающий программист"</span>);</pre>
+                    </div>
+
+                    <p class="prose">Если нужно вывести имя:</p>
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 С именем
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code"
+                            data-code="Console.WriteLine(userName + &quot;, тебе &quot; + userAge + &quot; лет --- ты начинающий программист&quot;);"><span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="var">userName</span> + <span class="str">", тебе "</span> + <span class="var">userAge</span> + <span class="str">" лет --- ты начинающий программист"</span>);</pre>
+                    </div>
+
+                    <div class="warn-box">
+                        <div class="icon">✅</div>
+                        <p><strong>Проверить:</strong> в конце строк стоит <code
+                                style="color:var(--yellow);font-family:'JetBrains Mono',monospace">;</code>, число не в
+                            кавычках, используется <code
+                                style="color:var(--yellow);font-family:'JetBrains Mono',monospace">Convert.ToInt32()</code>.
+                        </p>
+                    </div>
+
+                    <div class="shot-wrap" onclick="openLightbox(this)">
+                        <div class="shot-bar">
+                            <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span
+                                    class="s3"></span></div>
+                            <span class="shot-label">📷 Картинка 1.6 — Результат программы закрепления</span>
+                        </div>
+                        <img src="картинки/1.6.jpg" alt="Результат закрепления">
+                    </div>
+                </section>
+
+                <!-- ══ IF ══ -->
+                <section class="section" id="ifblock">
+                    <div class="section-title">
+                        <div class="section-num">🔀</div>
+                        <h2>Что такое if</h2>
+                    </div>
+                    <div class="theory-box">
+                        <p><strong>if</strong> — это условие. Программа проверяет выражение в скобках. Если условие
+                            верное (<code style="color:var(--green);font-family:'JetBrains Mono',monospace">true</code>)
+                            — выполняется код в <code
+                                style="color:var(--purple);font-family:'JetBrains Mono',monospace">{ }</code>. Если
+                            неверное (<code
+                                style="color:var(--pink);font-family:'JetBrains Mono',monospace">false</code>) —
+                            программа идёт дальше.</p>
+                    </div>
+
+                    <p class="prose">Пример:</p>
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Пример if
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code" data-code="int number = 5;
+
+if (number &gt; 3)
+{
+    Console.WriteLine(&quot;Больше трёх&quot;);
+}"><span class="kw">int</span> <span class="var">number</span> = <span class="num">5</span>;
+
+<span class="kw">if</span> (<span class="var">number</span> &gt; <span class="num">3</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Больше трёх"</span>);
+}</pre>
+                    </div>
+
+                    <div class="grid2" style="margin-top:16px;">
+                        <div class="mini-card" style="border-color:rgba(255,61,104,0.4);">
+                            <h4 style="color:var(--pink);">= присвоение</h4>
+                            <ul>
+                                <li>Записать значение в переменную</li>
+                                <li><code
+                                        style="color:var(--green);font-family:'JetBrains Mono',monospace">int iq = 100;</code>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mini-card" style="border-color:rgba(0,255,179,0.4);">
+                            <h4 style="color:var(--green);">== сравнение</h4>
+                            <ul>
+                                <li>Проверить: равны ли два значения?</li>
+                                <li><code
+                                        style="color:var(--green);font-family:'JetBrains Mono',monospace">if (iq == 100)</code>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══ IQ ГЕНЕРАТОР ══ -->
+                <section class="section" id="iq">
+                    <div class="section-title">
+                        <div class="section-num">🧠</div>
+                        <h2>Мини-проект — Шуточный генератор IQ</h2>
+                    </div>
+
+                    <div class="code-wrap">
+                        <div class="code-header">
+                            <div class="code-lang">
+                                <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                        class="d3"></span></div>📄 Program.cs — Генератор IQ
+                            </div>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                        </div>
+                        <pre class="code" data-code="Console.WriteLine(&quot;Как тебя зовут?&quot;);
+string name = Console.ReadLine();
+
+Random random = new Random();
+int iq = random.Next(60, 181);
+
+Console.WriteLine(name + &quot;, твой программистский IQ: &quot; + iq);
+
+if (iq &lt; 90)
+{
+    Console.WriteLine(&quot;Начальный уровень 😄&quot;);
+}
+
+if (iq &gt;= 90 &amp;&amp; iq &lt; 130)
+{
+    Console.WriteLine(&quot;Хороший уровень 🎮&quot;);
+}
+
+if (iq &gt;= 130)
+{
+    Console.WriteLine(&quot;Ты почти гений 🚀&quot;);
+}
+
+if (iq == 180)
+{
+    Console.WriteLine(&quot;Максимум! Это легенда 🔥&quot;);
+}"><span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Как тебя зовут?"</span>);
+<span class="kw">string</span> <span class="var">name</span> = <span class="cls">Console</span>.<span class="fn">ReadLine</span>();
+
+<span class="cls">Random</span> <span class="var">random</span> = <span class="kw">new</span> <span class="cls">Random</span>();
+<span class="kw">int</span> <span class="var">iq</span> = <span class="var">random</span>.<span class="fn">Next</span>(<span class="num">60</span>, <span class="num">181</span>);
+
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="var">name</span> + <span class="str">", твой программистский IQ: "</span> + <span class="var">iq</span>);
+
+<span class="kw">if</span> (<span class="var">iq</span> &lt; <span class="num">90</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Начальный уровень 😄"</span>);
+}
+
+<span class="kw">if</span> (<span class="var">iq</span> &gt;= <span class="num">90</span> &amp;&amp; <span class="var">iq</span> &lt; <span class="num">130</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Хороший уровень 🎮"</span>);
+}
+
+<span class="kw">if</span> (<span class="var">iq</span> &gt;= <span class="num">130</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Ты почти гений 🚀"</span>);
+}
+
+<span class="kw">if</span> (<span class="var">iq</span> == <span class="num">180</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Максимум! Это легенда 🔥"</span>);
+}</pre>
+                    </div>
+
+                    <div class="shot-wrap" onclick="openLightbox(this)">
+                        <div class="shot-bar">
+                            <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span
+                                    class="s3"></span></div>
+                            <span class="shot-label">📷 Картинка 1.7 — Генератор IQ в работе</span>
+                        </div>
+                        <img src="картинки/1.7.jpg" alt="IQ генератор">
+                    </div>
+                </section>
+
+                <!-- ══ ИТОГ ══ -->
+                <section class="section" id="end">
+                    <div class="section-title">
+                        <div class="section-num">🏁</div>
+                        <h2>Подведение итогов урока</h2>
+                    </div>
+
+                    <div class="theory-box">
+                        <p><strong>Главное: программа выполняет команды по порядку и может принимать решения.</strong>
+                        </p>
+                    </div>
+
+                    <p class="prose" style="font-weight:800;color:var(--white);margin-bottom:12px;">Сегодня мы:</p>
+                    <ul class="bullet-list">
+                        <li>создали первый проект в Visual Studio</li>
+                        <li>научились выводить текст в консоль</li>
+                        <li>разобрали переменные и типы данных (<strong>string, int, bool</strong>)</li>
+                        <li>научились соединять данные с помощью <strong>+</strong></li>
+                        <li>использовали случайные числа</li>
+                        <li>написали первые условия с помощью <strong>if</strong></li>
+                        <li>разобрали разницу между <code
+                                style="color:var(--pink);font-family:'JetBrains Mono',monospace">=</code> (присвоение) и
+                            <code style="color:var(--green);font-family:'JetBrains Mono',monospace">==</code>
+                            (сравнение)</li>
+                    </ul>
+
+                    <div class="chips" style="margin-top:20px;">
+                        <div class="chip">Console.WriteLine</div>
+                        <div class="chip pink">string</div>
+                        <div class="chip pink">int</div>
+                        <div class="chip pink">bool</div>
+                        <div class="chip green">if</div>
+                        <div class="chip green">Random</div>
+                        <div class="chip cyan">Convert.ToInt32</div>
+                        <div class="chip yellow">= vs ==</div>
+                    </div>
+
+                    <div class="warn-box" style="margin-top:24px;">
+                        <div class="icon">🏆</div>
+                        <p><strong>Дополнительное задание (для быстрых):</strong> усложнить проект «Генератор IQ»:
+                            добавить ещё один вопрос пользователю (например, про количество часов кодинга или любимую
+                            игру) и сделать так, чтобы итоговый комментарий зависел не только от IQ, но и от ответа на
+                            этот вопрос.</p>
+                    </div>
+                </section>
+
+            </div><!-- /content -->
+
+            <div class="download-section">
+                <a href="Урок1.docx" download="Урок1.docx" class="download-btn" id="dl-btn">
+                    <span class="dl-icon" id="dl-icon">📄</span>
+                    Скачать полный конспект 1 урока
+                </a>
+            </div>
+
+            <footer>
+                <div class="footer-brand">Сделано тьютором <span>KIBERone</span> Калининград 🏰</div>
+                <div class="footer-hint">// Урок 1 · C# · Первый запуск · Visual Studio</div>
+            </footer>
+
+        </div><!-- /tab-lesson -->
+
+
+        <!-- ══════════════════════════════
+     TAB: УСТАНОВКА
+══════════════════════════════ -->
+        <div id="tab-install" class="tab-panel">
+
+            <section class="hero" id="install-top" style="padding-bottom:40px;">
+                <div class="hero-badge">🔧 Установка · Visual Studio</div>
+                <h1>
+                    <span class="line1">Установка</span>
+                    <span class="line2">Visual Studio + C# 🔧</span>
+                </h1>
+                <p class="hero-desc">Пошаговая инструкция по установке Visual Studio Community и настройке компонентов
+                    для разработки на C#.</p>
+            </section>
+
+            <div class="content">
+
+                <div class="install-step">
+                    <div class="install-num">1️⃣</div>
+                    <div class="install-body">
+                        <h3>Скачивание</h3>
+                        <p>Перейти на официальный сайт Microsoft:<br>
+                            👉 <a href="https://visualstudio.microsoft.com/ru/downloads/"
+                                target="_blank">https://visualstudio.microsoft.com/ru/downloads/</a></p>
+                        <p style="margin-top:10px;">Нажать <strong>«Скачать Visual Studio Community»</strong></p>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Сайт загрузки Visual Studio</span>
+                    </div>
+                    <img src="картинки/vs_1.png" alt="Сайт Visual Studio">
+                </div>
+
+                <div class="install-step">
+                    <div class="install-num">2️⃣</div>
+                    <div class="install-body">
+                        <h3>Запуск установщика</h3>
+                        <p>После скачивания запускается <strong>Visual Studio Installer</strong>. Проходим установку.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="install-step" style="border-color:rgba(255,61,104,0.4);background:rgba(255,61,104,0.04);">
+                    <div class="install-num" style="background:linear-gradient(135deg,#ff3d68,#ff6b35);">3️⃣</div>
+                    <div class="install-body">
+                        <h3>Самый важный шаг — выбор компонентов</h3>
+                        <p>Выбираем <strong>«Разработка классических приложений .NET»</strong></p>
+                        <p style="margin-top:8px;color:var(--muted);font-size:0.87rem;">Именно этот компонент нужен для
+                            создания консольных приложений и Windows Forms, которые мы будем делать на уроках.</p>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Выбор компонентов — Разработка классических приложений .NET</span>
+                    </div>
+                    <img src="картинки/vs_2.png" alt="Выбор компонентов VS">
+                </div>
+
+                <div class="warn-box">
+                    <div class="icon">🔄</div>
+                    <p>После установки <strong>желательно перезапустить компьютер</strong>.</p>
+                </div>
+
+                <div class="info-box" style="margin-top:20px;">
+                    <div class="icon">✅</div>
+                    <p>После перезагрузки запустите Visual Studio, выберите <strong>Create a new project → Console App
+                            (.NET Framework)</strong> — и можно приступать к первому уроку!</p>
+                </div>
+
+            </div><!-- /content -->
+
+            <footer>
+                <div class="footer-brand">Сделано тьютором <span>KIBERone</span> Калининград 🏰</div>
+                <div class="footer-hint">// Установка Visual Studio · Community Edition</div>
+            </footer>
+
+        </div><!-- /tab-install -->
+
+    </div><!-- /main -->
+
+    <div id="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+    <div id="toast">✅ Готово!</div>
+    <div id="easter-egg">
+        <span class="big">🚀</span>
+        <h3>Первый запуск!</h3>
+        <p>Ты нашёл секрет урока 🎉<br>Konami code: ↑↑↓↓←→←→BA</p>
+        <button id="egg-close" onclick="closeEgg()">Закрыть</button>
+    </div>
+
+    <script>
+        // ── TABS ──
+        function switchTab(tab, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            btn.classList.add('active');
+            document.getElementById('nav-lesson').style.display = (tab === 'lesson') ? 'block' : 'none';
+            document.getElementById('nav-install').style.display = (tab === 'install') ? 'block' : 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ── PROGRESS BAR ──
+        window.addEventListener('scroll', () => {
+            const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+            updateNav();
+        });
+
+        // ── PARTICLES ──
+        (function () {
+            const c = document.getElementById('particles');
+            const colors = ['#949cff', '#ff3d68', '#00e5ff', '#00ffb3', '#ffe066'];
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div'); p.className = 'particle';
+                const s = Math.random() * 6 + 3;
+                p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};animation-duration:${Math.random() * 20 + 12}s;animation-delay:-${Math.random() * 20}s;`;
+                c.appendChild(p);
+            }
+        })();
+
+        // ── ACCORDION ──
+        function toggleQ(h) { h.classList.toggle('open'); h.nextElementSibling.classList.toggle('open'); }
+
+        // ── COPY CODE ──
+        function copyCode(btn) {
+            const pre = btn.closest('.code-wrap').querySelector('pre');
+            const raw = (pre.dataset.code || pre.innerText).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+            navigator.clipboard.writeText(raw).then(() => {
+                btn.textContent = '✅ Скопировано!'; btn.classList.add('copied');
+                showToast('Код скопирован!');
+                setTimeout(() => { btn.textContent = '📋 Копировать'; btn.classList.remove('copied'); }, 2000);
+            });
+        }
+
+        // ── TOAST ──
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = '✅ ' + msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        // ── LIGHTBOX ──
+        function openLightbox(w) { document.getElementById('lightbox-img').src = w.querySelector('img').src; document.getElementById('lightbox').classList.add('open'); }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEgg(); } });
+
+        // ── MOBILE MENU ──
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('open'); }
+        function closeMenu() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('open'); }
+
+        // ── NAV HIGHLIGHT ──
+        const sects = ['hero', 'theory', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'ch6', 'ch7', 'ch8', 'ifblock', 'iq', 'end'];
+        function updateNav() {
+            let cur = sects[0];
+            sects.forEach(id => { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < 130) cur = id; });
+            document.querySelectorAll('#nav-lesson .nav-item').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+        }
+
+        // ── KONAMI ──
+        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let ki = 0;
+        document.addEventListener('keydown', e => { ki = (e.key === konami[ki]) ? ki + 1 : 0; if (ki === konami.length) { document.getElementById('easter-egg').classList.add('show'); ki = 0; } });
+        function closeEgg() { document.getElementById('easter-egg').classList.remove('show'); }
+
+        // ── DOWNLOAD ──
+        const dlBtn = document.getElementById('dl-btn');
+        if (dlBtn) dlBtn.addEventListener('click', function () {
+            const icon = document.getElementById('dl-icon'); icon.textContent = '✅';
+            setTimeout(() => { icon.textContent = '📄'; }, 2500);
+        });
+
+        // ── CHIPS ──
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => { chip.style.transform = 'scale(1.15)'; setTimeout(() => chip.style.transform = '', 200); showToast('🏷️ ' + chip.textContent); });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок 2 — Угадайка 2.0 🎮</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<!-- Кнопка Назад в Каталог -->
+<a href="../index.html" class="back-to-index" style="position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #a855f7, #3b82f6); color: white; text-decoration: none; border-radius: 8px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 99999; display: flex; align-items: center; gap: 8px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);">
+  &#8592; Вернуться в каталог
+</a>
+<style>
+    .back-to-index:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.8); border-color: white; }
+    .back-to-index:active { transform: scale(0.95); }
+    @media (max-width: 768px) { .back-to-index { font-size: 12px !important; padding: 7px 10px !important; top: 8px !important; right: 8px !important; border-radius: 6px !important; gap: 4px !important; } }
+</style>
+
+
+    <div id="progress-bar"></div>
+    <div id="particles"></div>
+
+    <nav id="sidebar">
+        <div class="sidebar-logo">
+            <div class="k">🎮 KIBERone</div>
+            <span class="t">Калининград · Урок 2</span>
+        </div>
+        <a class="nav-item active" href="#hero"> <span class="nav-emoji">🏠</span> Главная <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#repeat"> <span class="nav-emoji">📝</span> Повторение <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#theory"> <span class="nav-emoji">🧠</span> Цикл while <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#example"><span class="nav-emoji">💡</span> Пример <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#game"> <span class="nav-emoji">🎮</span> Угадайка 2.0 <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#explain"><span class="nav-emoji">🔍</span> Объяснение <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#levels"> <span class="nav-emoji">📈</span> Уровни <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#full"> <span class="nav-emoji">💻</span> Полный код <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#end"> <span class="nav-emoji">🏁</span> Итог <span class="nav-dot"></span></a>
+        <div class="sidebar-footer">Тьютор <span>KIBERone</span><br>Калининград 🏰</div>
+    </nav>
+
+    <div id="sidebar-overlay" onclick="closeMenu()"></div>
+    <button id="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <div id="main">
+
+        <!-- ── HERO ── -->
+        <section class="hero" id="hero">
+            <div class="hero-badge">⚡ Урок 2 · C# · Цикл while</div>
+            <h1>
+                <span class="line1">Мини-игра</span>
+                <span class="line2">«Угадайка 2.0» 🎮</span>
+            </h1>
+            <p class="hero-desc">
+                Цель: научить детей управлять повторяющимися действиями через цикл while, добавлять ограничения и логику
+                игры.
+            </p>
+            <div class="hero-tags">
+                <div class="hero-tag"><span>🔄</span>Цикл while</div>
+                <div class="hero-tag"><span>🎲</span>Random</div>
+                <div class="hero-tag"><span>🔀</span>if / else if</div>
+                <div class="hero-tag"><span>🔢</span>Счётчик попыток</div>
+                <div class="hero-tag"><span>📈</span>Уровни сложности</div>
+            </div>
+        </section>
+
+        <div class="content">
+
+            <!-- ══ ПОВТОРЕНИЕ ══ -->
+            <section class="section" id="repeat">
+                <div class="section-title">
+                    <div class="section-num">📝</div>
+                    <h2>Блок 1 — Повторение прошлого урока</h2>
+                </div>
+                <p class="prose" style="color:var(--muted);margin-bottom:16px;">Задай эти вопросы детям перед началом 👇
+                </p>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>💾</span> Вопросы по переменным
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item"><span class="q-num">1</span>Что такое переменная?</div>
+                        <div class="q-item"><span class="q-num">2</span>Зачем в игре нам хранить загаданное число
+                            отдельно?</div>
+                        <div class="q-item"><span class="q-num">3</span>Можно ли изменить значение переменной во время
+                            работы программы?</div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🎲</span> Вопросы по Random
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item"><span class="q-num">1</span>Как компьютер может «загадать» число?</div>
+                        <div class="q-item"><span class="q-num">2</span>Что делает <code
+                                style="color:var(--purple);font-family:'JetBrains Mono',monospace">rand.Next(1, 101)</code>?
+                        </div>
+                        <div class="q-item"><span class="q-num">3</span>Почему 101, а не 100?</div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🔀</span> Вопросы по if
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item"><span class="q-num">1</span>Когда срабатывает if?</div>
+                        <div class="q-item"><span class="q-num">2</span>Что произойдёт, если условие false?</div>
+                        <div class="q-item"><span class="q-num">3</span>В чём разница между <code
+                                style="color:var(--pink);font-family:'JetBrains Mono',monospace">=</code> и <code
+                                style="color:var(--pink);font-family:'JetBrains Mono',monospace">==</code>?</div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>⌨️</span> Вопросы по Convert
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item"><span class="q-num">1</span>Что возвращает <code
+                                style="color:var(--purple);font-family:'JetBrains Mono',monospace">Console.ReadLine()</code>?
+                        </div>
+                        <div class="q-item"><span class="q-num">2</span>Почему нельзя сравнивать строку и число?</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ ТЕОРИЯ ══ -->
+            <section class="section" id="theory">
+                <div class="section-title">
+                    <div class="section-num">🧠</div>
+                    <h2>Новая тема — Цикл while</h2>
+                </div>
+
+                <div class="theory-box">
+                    <p>На прошлом занятии у нас не было возможности дать игроку несколько попыток — программа спрашивала
+                        число один раз и на этом всё. Но в игре <strong>интереснее</strong> позволить угадывать снова и
+                        снова, пока не получится. Для этого нам нужен <strong>цикл</strong>.</p>
+                </div>
+
+                <p class="prose"><strong>Цикл</strong> позволяет повторять набор команд многократно. Самый простой цикл
+                    — while — выполняет свои действия до тех пор, <strong>пока</strong> условие истинно. Слово
+                    <em>«while»</em> как раз переводится как <em>«пока»</em>.
+                </p>
+
+                <p class="prose">Как это понять? Представь себе жизненную ситуацию: мама говорит тебе: <em>«Убери
+                        комнату!»</em> не один раз, а <strong>каждый час</strong>, пока ты <strong>не
+                        приберёшься</strong> 🤨 Это и есть цикл: одно и то же действие («напоминание») повторяется, пока
+                    условие (комната не убрана) остаётся истинным. Как только комната станет чистой (условие перестанет
+                    быть истинным), мама <strong>перестанет повторять</strong> просьбу.</p>
+
+                <p class="prose">В программировании всё так же. Мы задаём условие, и пока оно выполняется, код внутри
+                    <code style="color:var(--purple);font-family:'JetBrains Mono',monospace">while { ... }</code> будет
+                    повторяться. Как только условие станет ложным — цикл остановится и программа пойдёт дальше.
+                </p>
+            </section>
+
+            <!-- ══ ПРАКТИКА — ПРОСТОЙ ПРИМЕР ══ -->
+            <section class="section" id="example">
+                <div class="section-title">
+                    <div class="section-num">💡</div>
+                    <h2>Практическая часть — простой пример while</h2>
+                </div>
+
+                <div class="info-box">
+                    <div class="icon">🛠️</div>
+                    <p><strong>Открыть Visual Studio → Create a new project → Консольное приложение Microsoft → назвать
+                            проект Имя ребенка_урок2 → Create.</strong></p>
+                </div>
+
+                <p class="prose">Давайте взглянем на простой пример цикла while. Допустим, программа загадала число 7, и
+                    мы хотим, чтобы игрок угадывал, <strong>пока</strong> не назовёт правильный ответ:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Program.cs — Простой while
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code"
+                        data-code="int secretNumber = 7;
+
+int userGuess = -1; // начальное значение, не равное secretNumber
+
+while (userGuess != secretNumber) {
+    Console.Write(&quot;Угадай число: &quot;);
+    userGuess = Convert.ToInt32(Console.ReadLine());
+}
+
+Console.WriteLine(&quot;Правильно! Это было число &quot; + secretNumber);"><span class="kw">int</span> <span class="var">secretNumber</span> = <span class="num">7</span>;
+
+<span class="kw">int</span> <span class="var">userGuess</span> = <span class="num">-1</span>; <span class="cm">// начальное значение, не равное secretNumber</span>
+
+<span class="kw">while</span> (<span class="var">userGuess</span> != <span class="var">secretNumber</span>) {
+    <span class="cls">Console</span>.<span class="fn">Write</span>(<span class="str">"Угадай число: "</span>);
+    <span class="var">userGuess</span> = <span class="cls">Convert</span>.<span class="fn">ToInt32</span>(<span class="cls">Console</span>.<span class="fn">ReadLine</span>());
+}
+
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Правильно! Это было число "</span> + <span class="var">secretNumber</span>);</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 2.1 — Простой пример цикла while</span>
+                    </div>
+                    <img src="картинки/2.1.jpg" alt="Простой пример while">
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Что здесь происходит?</strong> Мы завели переменную userGuess для попытки (начально -1,
+                        заведомо не 7). Далее используем цикл while: условие <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">userGuess != secretNumber</code>
+                        означает <em>«пока ответ не равен загаданному числу»</em>. Каждый проход цикла программа
+                        спрашивает у игрока число и читает его (Console.ReadLine() с конвертацией в int).</p>
+                    <ul>
+                        <li>Если игрок угадал неправильно — условие всё ещё истинно и цикл повторяется снова</li>
+                        <li>Когда userGuess станет равен secretNumber (то есть игрок назвал 7) — условие в while станет
+                            ложным, и цикл завершится</li>
+                        <li>После цикла выполняется <code
+                                style="color:var(--green);font-family:'JetBrains Mono',monospace">Console.WriteLine("Правильно! ...")</code>
+                            — поздравление</li>
+                    </ul>
+                    <p style="margin-top:10px;">Таким образом, с помощью while мы организовали <strong>многократный
+                            ввод</strong> до победного результата. На каждой итерации (повторении) цикл проверяет
+                        условие заново. Важно понимать: если условие с самого начала ложное — код внутри while не
+                        выполнится вовсе ни разу.</p>
+                </div>
+            </section>
+
+            <!-- ══ УГАДАЙКА 2.0 ══ -->
+            <section class="section" id="game">
+                <div class="section-title">
+                    <div class="section-num">🎮</div>
+                    <h2>Угадайка 2.0 — несколько попыток</h2>
+                </div>
+
+                <p class="prose">Теперь перейдём к нашей игре «Угадайка 2.0». Главное улучшение — дать игроку
+                    <strong>несколько попыток</strong>. А значит, нужно поместить логику угадывания внутрь цикла while,
+                    как в примере выше. Только у нас появятся дополнительные условия: ограничение по количеству попыток
+                    и разные подсказки.
+                </p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Program.cs — Угадайка 2.0
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="Random rand = new Random();
+
+int secret = rand.Next(1, 101);   // 1..100
+int attempts = 0;
+int maxAttempts = 7;
+int guess = -1;
+
+Console.WriteLine(&quot;Я загадал число от 1 до 100.&quot;);
+Console.WriteLine(&quot;У тебя &quot; + maxAttempts + &quot; попыток.&quot;);
+
+while (guess != secret &amp;&amp; attempts &lt; maxAttempts)
+{
+    Console.Write(&quot;Ваш ход: &quot;);
+    guess = Convert.ToInt32(Console.ReadLine());
+    attempts++;
+
+    if (guess == secret)
+        Console.WriteLine(&quot;Ура, ты угадал число!&quot;);
+    else if (guess &lt; secret)
+        Console.WriteLine(&quot;Не угадал. Загаданное число больше.&quot;);
+    else
+        Console.WriteLine(&quot;Не угадал. Загаданное число меньше.&quot;);
+
+    Console.WriteLine(&quot;Попытка: &quot; + attempts + &quot;/&quot; + maxAttempts);
+    Console.WriteLine(&quot;---------------------&quot;);
+}
+
+if (guess == secret)
+    Console.WriteLine(&quot;Поздравляю, победа! Число угадано.&quot;);
+else
+    Console.WriteLine(&quot;Попытки закончились. Было загадано число &quot; + secret);
+
+Console.ReadLine();"><span class="cls">Random</span> <span class="var">rand</span> = <span class="kw">new</span> <span class="cls">Random</span>();
+
+<span class="kw">int</span> <span class="var">secret</span> = <span class="var">rand</span>.<span class="fn">Next</span>(<span class="num">1</span>, <span class="num">101</span>);   <span class="cm">// 1..100</span>
+<span class="kw">int</span> <span class="var">attempts</span> = <span class="num">0</span>;
+<span class="kw">int</span> <span class="var">maxAttempts</span> = <span class="num">7</span>;
+<span class="kw">int</span> <span class="var">guess</span> = <span class="num">-1</span>;
+
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Я загадал число от 1 до 100."</span>);
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"У тебя "</span> + <span class="var">maxAttempts</span> + <span class="str">" попыток."</span>);
+
+<span class="kw">while</span> (<span class="var">guess</span> != <span class="var">secret</span> &amp;&amp; <span class="var">attempts</span> &lt; <span class="var">maxAttempts</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">Write</span>(<span class="str">"Ваш ход: "</span>);
+    <span class="var">guess</span> = <span class="cls">Convert</span>.<span class="fn">ToInt32</span>(<span class="cls">Console</span>.<span class="fn">ReadLine</span>());
+    <span class="var">attempts</span>++;
+
+    <span class="kw">if</span> (<span class="var">guess</span> == <span class="var">secret</span>)
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Ура, ты угадал число!"</span>);
+    <span class="kw">else if</span> (<span class="var">guess</span> &lt; <span class="var">secret</span>)
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Не угадал. Загаданное число больше."</span>);
+    <span class="kw">else</span>
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Не угадал. Загаданное число меньше."</span>);
+
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Попытка: "</span> + <span class="var">attempts</span> + <span class="str">"/"</span> + <span class="var">maxAttempts</span>);
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"---------------------"</span>);
+}
+
+<span class="kw">if</span> (<span class="var">guess</span> == <span class="var">secret</span>)
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Поздравляю, победа! Число угадано."</span>);
+<span class="kw">else</span>
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Попытки закончились. Было загадано число "</span> + <span class="var">secret</span>);
+
+<span class="cls">Console</span>.<span class="fn">ReadLine</span>();</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 2.2 — Угадайка 2.0 с несколькими попытками</span>
+                    </div>
+                    <img src="картинки/2.2.jpg" alt="Угадайка 2.0 код">
+                </div>
+            </section>
+
+            <!-- ══ ОБЪЯСНЕНИЕ ══ -->
+            <section class="section" id="explain">
+                <div class="section-title">
+                    <div class="section-num">🔍</div>
+                    <h2>Объяснение кода</h2>
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Как спроектировать такой цикл?</strong> Логика может быть такой: <em>«повторять,
+                            <strong>пока</strong> число не угадано <strong>и пока</strong> остаются попытки»</em>. Иначе
+                        говоря, цикл while должен продолжаться до тех пор, пока <strong>оба</strong> условия
+                        выполняются: (1) игрок ещё не угадал число, (2) лимит попыток не исчерпан. Если любое из условий
+                        нарушается (угадали или кончились попытки) — цикл останавливается.</p>
+                </div>
+
+                <p class="prose" style="font-weight:800;color:var(--white);margin-bottom:12px;">Сперва нужно подготовить
+                    всё перед циклом:</p>
+
+                <ul class="bullet-list">
+                    <li><strong>Загадываем число</strong> с помощью Random. Например: <code
+                            style="color:var(--purple);font-family:'JetBrains Mono',monospace">Random rand = new Random(); int secret = rand.Next(1, 101);</code>
+                        — случайное число от 1 до 100</li>
+                    <li><strong>Настраиваем счётчик попыток.</strong> Заводим <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">int attempts = 0;</code> и
+                        определяем максимум попыток, например <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">int maxAttempts = 7;</code>
+                        (для начала можно задать константу или потом брать из выбора уровня сложности)</li>
+                    <li><strong>Переменная для ответа игрока.</strong> Можно определить <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">int guess = -1;</code>
+                        (если загаданные числа у нас от 1 и выше, то начальное -1 точно не совпадает с secret). Это
+                        нужно, чтобы можно было проверить условие <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">guess != secret</code> при
+                        первой итерации</li>
+                </ul>
+
+                <p class="prose" style="font-weight:800;color:var(--white);margin:20px 0 12px;">Теперь сам цикл
+                    угадывания. Он будет выглядеть примерно так:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Структура цикла
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="while (guess != secret &amp;&amp; attempts &lt; maxAttempts) {
+    Console.Write(&quot;Ваш ход: &quot;);
+    guess = Convert.ToInt32(Console.ReadLine());
+    attempts++; // увеличиваем количество использованных попыток
+
+    if (guess == secret) {
+        Console.WriteLine(&quot;Ура, ты угадал число!&quot;);
+    } else if (guess &lt; secret) {
+        Console.WriteLine(&quot;Не угадал. Загаданное число больше.&quot;);
+    } else {
+        Console.WriteLine(&quot;Не угадал. Загаданное число меньше.&quot;);
+    }
+}"><span class="kw">while</span> (<span class="var">guess</span> != <span class="var">secret</span> &amp;&amp; <span class="var">attempts</span> &lt; <span class="var">maxAttempts</span>) {
+    <span class="cls">Console</span>.<span class="fn">Write</span>(<span class="str">"Ваш ход: "</span>);
+    <span class="var">guess</span> = <span class="cls">Convert</span>.<span class="fn">ToInt32</span>(<span class="cls">Console</span>.<span class="fn">ReadLine</span>());
+    <span class="var">attempts</span>++; <span class="cm">// увеличиваем количество использованных попыток</span>
+
+    <span class="kw">if</span> (<span class="var">guess</span> == <span class="var">secret</span>) {
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Ура, ты угадал число!"</span>);
+    } <span class="kw">else if</span> (<span class="var">guess</span> &lt; <span class="var">secret</span>) {
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Не угадал. Загаданное число больше."</span>);
+    } <span class="kw">else</span> {
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Не угадал. Загаданное число меньше."</span>);
+    }
+}</pre>
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Давайте разберём этот код.</strong> Условие цикла: <code
+                            style="color:var(--purple);font-family:'JetBrains Mono',monospace">guess != secret &amp;&amp; attempts &lt; maxAttempts</code>.
+                        Тут использован логический оператор <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">&amp;&amp;</code> (И),
+                        означающий, что <strong>оба условия</strong> должны быть истинны для продолжения цикла. То есть
+                        цикл работает, пока <strong>не угадали число</strong> <strong>И</strong> <strong>не
+                            израсходовали все попытки</strong>. Если хотя бы одно из этих условий перестанет выполняться
+                        (например, игрок угадал число <em>или</em> достиг лимита попыток) — цикл завершается.</p>
+                </div>
+
+                <p class="prose" style="font-weight:800;color:var(--white);margin-bottom:12px;">Внутри цикла мы:</p>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">Просим игрока ввести число (<code>Console.Write("Ваш ход: ")</code> и чтение
+                            ввода)</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">Считываем и конвертируем ввод в int переменную guess</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t">Увеличиваем счётчик <code>attempts++</code>, потому что использована ещё
+                            одна попытка</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">4</div>
+                        <div class="step-t">Сразу проверяем if-ом результат этой попытки и выдаём подсказку. Если
+                            <code>guess == secret</code> — игрок угадал, сообщаем о победе. Если нет — сообщаем
+                            подсказку: число либо больше загаданного, либо меньше. Обрати внимание: эти <strong>if/else
+                                if/else выполняются каждый проход цикла</strong>, потому что после каждой попытки надо
+                            дать обратную связь игроку
+                        </div>
+                    </div>
+                </div>
+
+                <p class="prose" style="font-weight:800;color:var(--white);margin:20px 0 12px;">После выхода из цикла
+                    нам хорошо бы сообщить итог, особенно если попытки закончились:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Проверка после цикла
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="if (guess == secret) {
+    Console.WriteLine(&quot;Поздравляю, победа! Число угадано.&quot;);
+} else {
+    Console.WriteLine(&quot;Попытки закончились. Было загадано число &quot; + secret);
+}"><span class="kw">if</span> (<span class="var">guess</span> == <span class="var">secret</span>) {
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Поздравляю, победа! Число угадано."</span>);
+} <span class="kw">else</span> {
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Попытки закончились. Было загадано число "</span> + <span class="var">secret</span>);
+}</pre>
+                </div>
+
+                <p class="prose">Эта проверка вне цикла определяет, почему цикл прекратился — из-за угаданного числа или
+                    из-за исчерпанных попыток — и выводит соответствующее сообщение.</p>
+            </section>
+
+            <!-- ══ УРОВНИ ══ -->
+            <section class="section" id="levels">
+                <div class="section-title">
+                    <div class="section-num">📈</div>
+                    <h2>Уровни сложности — Если успеваете 📈📉</h2>
+                </div>
+
+                <p class="prose">Чтобы игра стала ещё интереснее, вводим <strong>уровни сложности</strong>. Разные
+                    уровни могут отличаться диапазоном загадываемого числа и количеством попыток. Новичку можно дать
+                    узкий диапазон и побольше попыток, а искушённому игроку — широкий диапазон и мало попыток.</p>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 2.3 — Уровни сложности</span>
+                    </div>
+                    <img src="картинки/2.3.jpg" alt="Уровни сложности">
+                </div>
+
+                <p class="prose" style="font-weight:800;color:var(--white);margin-bottom:12px;">Как это сделать:</p>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">В начале игры спрашиваем у пользователя, какой уровень он выбирает.
+                            Например: <em>«Выбери уровень: 1 — легкий, 2 — средний, 3 — сложный»</em>. Считываем выбор в
+                            переменную level</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">
+                            В зависимости от level задаём параметры игры:
+                            <ul style="margin-top:10px;list-style:none;display:flex;flex-direction:column;gap:6px;">
+                                <li style="color:#9aa5d8;font-size:0.88rem;padding-left:14px;position:relative;"><span
+                                        style="position:absolute;left:0;color:var(--green);">▸</span><strong
+                                        style="color:var(--white);">Лёгкий:</strong> загадать число от 1 до 50, попыток
+                                    10. (Маленький диапазон + много попыток = легко попасть.)</li>
+                                <li style="color:#9aa5d8;font-size:0.88rem;padding-left:14px;position:relative;"><span
+                                        style="position:absolute;left:0;color:var(--yellow);">▸</span><strong
+                                        style="color:var(--white);">Средний:</strong> число от 1 до 100, попыток 7.
+                                    (Стандартные условия, как мы делали выше.)</li>
+                                <li style="color:#9aa5d8;font-size:0.88rem;padding-left:14px;position:relative;"><span
+                                        style="position:absolute;left:0;color:var(--pink);">▸</span><strong
+                                        style="color:var(--white);">Сложный:</strong> число от 1 до 150 (или 200),
+                                    попыток всего 5. (Большой диапазон + ограниченные попытки = сложно, но интересно!)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t">После этого запускаем основной цикл угадывания с этими параметрами
+                            (maxAttempts, диапазон для rand.Next и т.д.)</div>
+                    </div>
+                </div>
+
+                <p class="prose">Пример фрагмента кода для установки параметров:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Выбор уровня сложности
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code"
+                        data-code="Console.WriteLine(&quot;Выбери уровень (1-легко, 2-нормально, 3-сложно): &quot;);
+int level = Convert.ToInt32(Console.ReadLine());
+
+int maxAttempts;
+int maxNumber;
+
+if (level == 1) {
+    maxAttempts = 10;
+    maxNumber = 50;
+} else if (level == 3) {
+    maxAttempts = 5;
+    maxNumber = 150;
+} else {
+    maxAttempts = 7;
+    maxNumber = 100;
+}
+
+int secret = rand.Next(1, maxNumber + 1);"><span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Выбери уровень (1-легко, 2-нормально, 3-сложно): "</span>);
+<span class="kw">int</span> <span class="var">level</span> = <span class="cls">Convert</span>.<span class="fn">ToInt32</span>(<span class="cls">Console</span>.<span class="fn">ReadLine</span>());
+
+<span class="kw">int</span> <span class="var">maxAttempts</span>;
+<span class="kw">int</span> <span class="var">maxNumber</span>;
+
+<span class="kw">if</span> (<span class="var">level</span> == <span class="num">1</span>) {
+    <span class="var">maxAttempts</span> = <span class="num">10</span>;
+    <span class="var">maxNumber</span> = <span class="num">50</span>;
+} <span class="kw">else if</span> (<span class="var">level</span> == <span class="num">3</span>) {
+    <span class="var">maxAttempts</span> = <span class="num">5</span>;
+    <span class="var">maxNumber</span> = <span class="num">150</span>;
+} <span class="kw">else</span> {
+    <span class="var">maxAttempts</span> = <span class="num">7</span>;
+    <span class="var">maxNumber</span> = <span class="num">100</span>;
+}
+
+<span class="kw">int</span> <span class="var">secret</span> = <span class="var">rand</span>.<span class="fn">Next</span>(<span class="num">1</span>, <span class="var">maxNumber</span> + <span class="num">1</span>);</pre>
+                </div>
+
+                <div class="theory-box">
+                    <p>Здесь мы использовали несколько if/else if для выбора настроек игры по уровню. Обрати внимание:
+                        <code style="color:var(--cyan);font-family:'JetBrains Mono',monospace">maxNumber + 1</code> при
+                        вызове rand.Next — это потому, что верхняя граница в Next не включается, а нам хочется, чтобы
+                        число maxNumber тоже могло загадаться. Например, если maxNumber = 50, вызов <code
+                            style="color:var(--green);font-family:'JetBrains Mono',monospace">rand.Next(1, 51)</code>
+                        генерирует число от 1 до 50 включительно.
+                    </p>
+                    <p style="margin-top:10px;">С уровнями сложности игра приобретает <strong>реиграбельность</strong>:
+                        можно бросить себе вызов на сложном уровне или потренироваться на лёгком.</p>
+                </div>
+            </section>
+
+            <!-- ══ ПОЛНЫЙ КОД ══ -->
+            <section class="section" id="full">
+                <div class="section-title">
+                    <div class="section-num">💻</div>
+                    <h2>Полный код программы</h2>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Program.cs — Полный код
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="Random rand = new Random();
+
+Console.WriteLine(&quot;Выбери уровень сложности:&quot;);
+Console.WriteLine(&quot;1 - Легкий&quot;);
+Console.WriteLine(&quot;2 - Средний&quot;);
+Console.WriteLine(&quot;3 - Сложный&quot;);
+int level = Convert.ToInt32(Console.ReadLine());
+
+int maxAttempts;
+int maxNumber;
+
+if (level == 1) {
+    maxAttempts = 10;
+    maxNumber = 50;
+}
+else if (level == 3) {
+    maxAttempts = 5;
+    maxNumber = 150;
+}
+else {
+    maxAttempts = 7;
+    maxNumber = 100;
+}
+
+int secret = rand.Next(1, maxNumber + 1);
+int attempts = 0;
+int guess = -1;
+
+Console.WriteLine(&quot;Я загадал число от 1 до &quot; + maxNumber);
+Console.WriteLine(&quot;У тебя &quot; + maxAttempts + &quot; попыток.&quot;);
+
+while (guess != secret &amp;&amp; attempts &lt; maxAttempts)
+{
+    Console.Write(&quot;Ваш ход: &quot;);
+    guess = Convert.ToInt32(Console.ReadLine());
+    attempts++;
+
+    if (guess == secret)
+        Console.WriteLine(&quot;Ура, ты угадал число!&quot;);
+    else if (guess &lt; secret)
+        Console.WriteLine(&quot;Не угадал. Загаданное число больше.&quot;);
+    else
+        Console.WriteLine(&quot;Не угадал. Загаданное число меньше.&quot;);
+
+    Console.WriteLine(&quot;Попытка: &quot; + attempts + &quot;/&quot; + maxAttempts);
+    Console.WriteLine(&quot;---------------------&quot;);
+}
+
+if (guess == secret)
+    Console.WriteLine(&quot;Поздравляю! Число было &quot; + secret);
+else
+    Console.WriteLine(&quot;Попытки закончились. Было загадано число &quot; + secret);
+
+Console.ReadLine();"><span class="cls">Random</span> <span class="var">rand</span> = <span class="kw">new</span> <span class="cls">Random</span>();
+
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Выбери уровень сложности:"</span>);
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"1 - Легкий"</span>);
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"2 - Средний"</span>);
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"3 - Сложный"</span>);
+<span class="kw">int</span> <span class="var">level</span> = <span class="cls">Convert</span>.<span class="fn">ToInt32</span>(<span class="cls">Console</span>.<span class="fn">ReadLine</span>());
+
+<span class="kw">int</span> <span class="var">maxAttempts</span>;
+<span class="kw">int</span> <span class="var">maxNumber</span>;
+
+<span class="kw">if</span> (<span class="var">level</span> == <span class="num">1</span>) {
+    <span class="var">maxAttempts</span> = <span class="num">10</span>;
+    <span class="var">maxNumber</span> = <span class="num">50</span>;
+}
+<span class="kw">else if</span> (<span class="var">level</span> == <span class="num">3</span>) {
+    <span class="var">maxAttempts</span> = <span class="num">5</span>;
+    <span class="var">maxNumber</span> = <span class="num">150</span>;
+}
+<span class="kw">else</span> {
+    <span class="var">maxAttempts</span> = <span class="num">7</span>;
+    <span class="var">maxNumber</span> = <span class="num">100</span>;
+}
+
+<span class="kw">int</span> <span class="var">secret</span> = <span class="var">rand</span>.<span class="fn">Next</span>(<span class="num">1</span>, <span class="var">maxNumber</span> + <span class="num">1</span>);
+<span class="kw">int</span> <span class="var">attempts</span> = <span class="num">0</span>;
+<span class="kw">int</span> <span class="var">guess</span> = <span class="num">-1</span>;
+
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Я загадал число от 1 до "</span> + <span class="var">maxNumber</span>);
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"У тебя "</span> + <span class="var">maxAttempts</span> + <span class="str">" попыток."</span>);
+
+<span class="kw">while</span> (<span class="var">guess</span> != <span class="var">secret</span> &amp;&amp; <span class="var">attempts</span> &lt; <span class="var">maxAttempts</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">Write</span>(<span class="str">"Ваш ход: "</span>);
+    <span class="var">guess</span> = <span class="cls">Convert</span>.<span class="fn">ToInt32</span>(<span class="cls">Console</span>.<span class="fn">ReadLine</span>());
+    <span class="var">attempts</span>++;
+
+    <span class="kw">if</span> (<span class="var">guess</span> == <span class="var">secret</span>)
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Ура, ты угадал число!"</span>);
+    <span class="kw">else if</span> (<span class="var">guess</span> &lt; <span class="var">secret</span>)
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Не угадал. Загаданное число больше."</span>);
+    <span class="kw">else</span>
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Не угадал. Загаданное число меньше."</span>);
+
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Попытка: "</span> + <span class="var">attempts</span> + <span class="str">"/"</span> + <span class="var">maxAttempts</span>);
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"---------------------"</span>);
+}
+
+<span class="kw">if</span> (<span class="var">guess</span> == <span class="var">secret</span>)
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Поздравляю! Число было "</span> + <span class="var">secret</span>);
+<span class="kw">else</span>
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Попытки закончились. Было загадано число "</span> + <span class="var">secret</span>);
+
+<span class="cls">Console</span>.<span class="fn">ReadLine</span>();</pre>
+                </div>
+            </section>
+
+            <!-- ══ ИТОГ ══ -->
+            <section class="section" id="end">
+                <div class="section-title">
+                    <div class="section-num">🏁</div>
+                    <h2>Итог урока</h2>
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>В итоге:</strong> Мы разобрали, как с помощью цикла while можно организовать
+                        <strong>многоразовый процесс угадывания</strong> — то есть давать игрокам несколько попыток до
+                        победы или проигрыша. Повторили важные элементы C# (переменные, генератор случайных чисел
+                        Random, условные операторы if, ввод через Convert.ToInt32). Узнали про новый инструмент —
+                        <strong>цикл</strong> — и увидели, как он облегчает жизнь, когда нужно повторять одинаковые
+                        действия.
+                    </p>
+                </div>
+
+                <div class="grid2">
+                    <div class="mini-card" style="border-color:rgba(0,255,179,0.3);">
+                        <h4 style="color:var(--green);">✅ Что изучили</h4>
+                        <ul>
+                            <li>Цикл <strong>while</strong> и его условие</li>
+                            <li>Логический оператор <strong>&amp;&amp;</strong> (И)</li>
+                            <li>Счётчик попыток <strong>attempts++</strong></li>
+                            <li>Проверка итога <strong>после</strong> цикла</li>
+                            <li>Уровни сложности через <strong>if/else if</strong></li>
+                            <li><strong>Реиграбельность</strong> игры</li>
+                        </ul>
+                    </div>
+                    <div class="mini-card" style="border-color:rgba(0,229,255,0.3);">
+                        <h4 style="color:var(--cyan);">🔑 Ключевые понятия</h4>
+                        <ul>
+                            <li><strong>while (условие)</strong> — пока условие истинно</li>
+                            <li><strong>итерация</strong> — один проход цикла</li>
+                            <li><strong>&amp;&amp;</strong> — оба условия должны быть true</li>
+                            <li><strong>attempts++</strong> — увеличить на 1</li>
+                            <li><strong>maxAttempts</strong> — лимит попыток</li>
+                            <li><strong>rand.Next(1, N+1)</strong> — число от 1 до N</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chips" style="margin-top:20px;">
+                    <div class="chip">while</div>
+                    <div class="chip">Random</div>
+                    <div class="chip pink">attempts++</div>
+                    <div class="chip pink">maxAttempts</div>
+                    <div class="chip green">&amp;&amp; оператор</div>
+                    <div class="chip green">if / else if</div>
+                    <div class="chip cyan">Convert.ToInt32</div>
+                    <div class="chip yellow">Уровни сложности</div>
+                </div>
+
+                <div class="info-box" style="margin-top:24px;">
+                    <div class="icon">🏆</div>
+                    <p><strong>Доп интерактив:</strong> Можно устроить конкурс — кто угадает за меньшее количество
+                        попыток — и разыграть 10к!</p>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)" style="margin-top:20px;">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 2.4 — Результат программы в консоли</span>
+                    </div>
+                    <img src="картинки/2.4.jpg" alt="Результат угадайки">
+                </div>
+            </section>
+
+        </div><!-- /content -->
+
+        <!-- DOWNLOAD -->
+        <div class="download-section">
+            <a href="Урок2.docx" download="Урок2.docx" class="download-btn" id="dl-btn">
+                <span class="dl-icon" id="dl-icon">📄</span>
+                Скачать полный конспект 2 урока
+            </a>
+        </div>
+
+        <footer>
+            <div class="footer-brand">Сделано тьютором <span>KIBERone</span> Калининград 🏰</div>
+            <div class="footer-hint">// Урок 2 · C# · while · Угадайка 2.0</div>
+        </footer>
+
+    </div><!-- /main -->
+
+    <div id="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+    <div id="toast">✅ Код скопирован!</div>
+    <div id="easter-egg">
+        <span class="big">🎮</span>
+        <h3>Число угадано!</h3>
+        <p>Ты нашёл секрет урока 🎉<br>Konami code: ↑↑↓↓←→←→BA</p>
+        <button id="egg-close" onclick="closeEgg()">Закрыть</button>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+            updateNav();
+        });
+
+        (function () {
+            const c = document.getElementById('particles');
+            const colors = ['#949cff', '#ff3d68', '#00e5ff', '#00ffb3', '#ffe066'];
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div'); p.className = 'particle';
+                const s = Math.random() * 6 + 3;
+                p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};animation-duration:${Math.random() * 20 + 12}s;animation-delay:-${Math.random() * 20}s;`;
+                c.appendChild(p);
+            }
+        })();
+
+        function toggleQ(h) { h.classList.toggle('open'); h.nextElementSibling.classList.toggle('open'); }
+        document.querySelector('.q-group-header').click();
+
+        function copyCode(btn) {
+            const pre = btn.closest('.code-wrap').querySelector('pre');
+            const raw = (pre.dataset.code || pre.innerText).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+            navigator.clipboard.writeText(raw).then(() => {
+                btn.textContent = '✅ Скопировано!'; btn.classList.add('copied');
+                showToast('Код скопирован!');
+                setTimeout(() => { btn.textContent = '📋 Копировать'; btn.classList.remove('copied'); }, 2000);
+            });
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = '✅ ' + msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function openLightbox(w) { document.getElementById('lightbox-img').src = w.querySelector('img').src; document.getElementById('lightbox').classList.add('open'); }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEgg(); } });
+
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('open'); }
+        function closeMenu() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('open'); }
+
+        const sects = ['hero', 'repeat', 'theory', 'example', 'game', 'explain', 'levels', 'full', 'end'];
+        function updateNav() {
+            let cur = sects[0];
+            sects.forEach(id => { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < 130) cur = id; });
+            document.querySelectorAll('.nav-item').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+        }
+
+        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let ki = 0;
+        document.addEventListener('keydown', e => { ki = (e.key === konami[ki]) ? ki + 1 : 0; if (ki === konami.length) { document.getElementById('easter-egg').classList.add('show'); ki = 0; } });
+        function closeEgg() { document.getElementById('easter-egg').classList.remove('show'); }
+
+        document.getElementById('dl-btn').addEventListener('click', function () {
+            const icon = document.getElementById('dl-icon'); icon.textContent = '✅';
+            setTimeout(() => { icon.textContent = '📄'; }, 2500);
+        });
+
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => { chip.style.transform = 'scale(1.15)'; setTimeout(() => chip.style.transform = '', 200); showToast('🏷️ ' + chip.textContent); });
+        });
+    </script>
+</body>
+
+</html>

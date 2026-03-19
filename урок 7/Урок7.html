@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок 7 — Реакшн-тест ⚡</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<!-- Кнопка Назад в Каталог -->
+<a href="../index.html" class="back-to-index" style="position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #a855f7, #3b82f6); color: white; text-decoration: none; border-radius: 8px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 99999; display: flex; align-items: center; gap: 8px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);">
+  &#8592; Вернуться в каталог
+</a>
+<style>
+    .back-to-index:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.8); border-color: white; }
+    .back-to-index:active { transform: scale(0.95); }
+    @media (max-width: 768px) { .back-to-index { font-size: 12px !important; padding: 7px 10px !important; top: 8px !important; right: 8px !important; border-radius: 6px !important; gap: 4px !important; } }
+</style>
+
+
+    <div id="progress-bar"></div>
+    <div id="particles"></div>
+
+    <nav id="sidebar">
+        <div class="sidebar-logo">
+            <div class="k">🎮 KIBERone</div>
+            <span class="t">Калининград · Урок 7</span>
+        </div>
+        <a class="nav-item active" href="#hero"> <span class="nav-emoji">🏠</span> Главная <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#theory"> <span class="nav-emoji">🧠</span> Теория <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#setup"> <span class="nav-emoji">🏗️</span> Интерфейс <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch1"> <span class="nav-emoji">📦</span> Глава 1 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch2"> <span class="nav-emoji">▶️</span> Глава 2 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch3"> <span class="nav-emoji">⏱️</span> Глава 3 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch4"> <span class="nav-emoji">⚡</span> Глава 4 <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#full"> <span class="nav-emoji">💻</span> Полный код <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#end"> <span class="nav-emoji">🏁</span> Итог <span class="nav-dot"></span></a>
+        <div class="sidebar-footer">Тьютор <span>KIBERone</span><br>Калининград 🏰</div>
+    </nav>
+
+    <div id="sidebar-overlay" onclick="closeMenu()"></div>
+    <button id="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <div id="main">
+
+        <!-- ── HERO ── -->
+        <section class="hero" id="hero">
+            <div class="hero-badge">⚡ Урок 7 · C# · Windows Forms · Stopwatch</div>
+            <h1>
+                <span class="line1">Реакшн-тест</span>
+                <span class="line2">⚡ игра на замер реакции</span>
+            </h1>
+            <p class="hero-desc">
+                Цель: создать игру, которая измеряет скорость реакции пользователя, используя таймеры и класс Stopwatch
+                в Windows Forms. После случайной задержки появляется сигнал «Жми!» и игра измеряет, как быстро
+                пользователь нажал кнопку.
+            </p>
+            <div class="hero-tags">
+                <div class="hero-tag"><span>🪟</span>Windows Forms</div>
+                <div class="hero-tag"><span>⏱️</span>Stopwatch</div>
+                <div class="hero-tag"><span>⏰</span>Timer</div>
+                <div class="hero-tag"><span>🎲</span>Random</div>
+                <div class="hero-tag"><span>🖱️</span>События & Click</div>
+            </div>
+        </section>
+
+        <div class="content">
+
+            <!-- ══ ТЕОРИЯ ══ -->
+            <section class="section" id="theory">
+                <div class="section-title">
+                    <div class="section-num">🧠</div>
+                    <h2>Теоретическая часть</h2>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🪟</span> Форма (Form)
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body open">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>Форма (Form)</strong> — это окно-приложение, на котором размещены кнопки,
+                                надписи и другие элементы. Представьте форму как игровое поле или сцену, где будут
+                                происходить действия.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🖱️</span> Кнопка (Button)
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>Кнопка (Button)</strong> — элемент, на который можно нажать. При клике мыши по
+                                кнопке генерируется событие Click. Мы будем реагировать на эти события в
+                                программе.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🔔</span> Событие и обработчик события
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>Событие</strong> — это «сигнал» о каком-то действии (например, нажатие кнопки
+                                или тикающий таймер). <strong>Обработчик события</strong> — это кусок кода (метод),
+                                который выполняется, когда произошло событие. Например, когда мы нажимаем кнопку,
+                                запускается метод <code
+                                    style="color:var(--purple);font-family:'JetBrains Mono',monospace">btnStart_Click</code>.<br><br>Аналогия:
+                                событие — как звонок в дверь, а обработчик — это ответ хозяина, который открывает
+                                дверь.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>⏰</span> Таймер (Timer)
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>Таймер (Timer)</strong> — это элемент Windows Forms, который срабатывает через
+                                заданный промежуток времени (интервал). Можно представить таймер как будильник: мы
+                                ставим будильник на несколько секунд, а когда время выйдет, срабатывает событие (<code
+                                    style="color:var(--purple);font-family:'JetBrains Mono',monospace">timer1_Tick</code>).
+                                Мы используем таймер, чтобы создать случайную задержку перед тем, как показать сигнал
+                                «Жми!».</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>⏱️</span> Stopwatch (секундомер)
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>Stopwatch (секундомер)</strong> — класс для точного измерения времени.
+                                Представьте настоящий спортивный секундомер: мы запускаем его в начале события и
+                                останавливаем, когда событие закончилось. В программе мы запустим секундомер в момент,
+                                когда пользователь увидит команду «Жми!», и остановим, когда он нажмёт кнопку. Затем
+                                посмотрим значение <code
+                                    style="color:var(--cyan);font-family:'JetBrains Mono',monospace">stopwatch.ElapsedMilliseconds</code>
+                                — это и будет время реакции в миллисекундах.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)">
+                        <span>🎲</span> Random (генератор случайных чисел)
+                        <i class="q-chevron">▾</i>
+                    </div>
+                    <div class="q-group-body">
+                        <div class="q-item" style="border-left-color:var(--purple);">
+                            <span style="flex-shrink:0;font-size:1rem;">🔹</span>
+                            <span><strong>Random</strong> — нужен для того, чтобы задержка перед командой «Жми!» была
+                                непредсказуемой. Это как вытянуть жребий или бросить кубик: после каждого старта игрок
+                                не знает, через сколько секунд появится сигнал.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="theory-box" style="margin-top:20px;">
+                    <p>В этой игре мы будем использовать простые элементы Windows Forms: кнопки, метки, таймер и
+                        секундомер. Мы научимся писать код, который реагирует на нажатие кнопок и использует таймер для
+                        задержки и класс Stopwatch для измерения времени.</p>
+                </div>
+            </section>
+
+            <!-- ══ СОЗДАНИЕ ИНТЕРФЕЙСА ══ -->
+            <section class="section" id="setup">
+                <div class="section-title">
+                    <div class="section-num">🏗️</div>
+                    <h2>Практическая часть — Создание проекта и интерфейса</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">Откройте Visual Studio и создайте новый проект <strong>Windows Forms (как в
+                                прошлом проекте)</strong>. Назовите проект, например, <strong>ИмяУченика_Урок7</strong>.
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">В конструкторе формы (Form1) через окно <strong>Properties</strong> измените
+                            свойство <strong>Text</strong> на <code
+                                style="color:var(--green);font-family:'JetBrains Mono',monospace">"Реакшн-тест"</code>,
+                            чтобы в заголовке окна было название игры.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 7.1 — Настройка свойства Text формы</span>
+                    </div>
+                    <img src="картинки/7.1.png" alt="Настройка Text формы">
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t">
+                            На форму добавьте два элемента <strong>Button</strong> и одну <strong>Label</strong> из
+                            панели Toolbox:
+                            <ul style="margin-top:12px;list-style:none;display:flex;flex-direction:column;gap:8px;">
+                                <li style="color:#9aa5d8;font-size:0.88rem;padding-left:16px;position:relative;"><span
+                                        style="position:absolute;left:0;color:var(--purple);">▸</span>Кнопку <strong
+                                        style="color:var(--white);">btnStart</strong> с текстом «Старт»</li>
+                                <li style="color:#9aa5d8;font-size:0.88rem;padding-left:16px;position:relative;"><span
+                                        style="position:absolute;left:0;color:var(--pink);">▸</span>Кнопку <strong
+                                        style="color:var(--white);">btnReaction</strong> с текстом «Жми!», но <strong
+                                        style="color:var(--pink);">сразу же в свойствах</strong> сделайте её <code
+                                        style="color:var(--pink);font-family:'JetBrains Mono',monospace">Enabled = false</code>
+                                    (чтобы её нельзя было нажать до сигнала) и поставьте фоновый цвет, например, серый
+                                </li>
+                                <li style="color:#9aa5d8;font-size:0.88rem;padding-left:16px;position:relative;"><span
+                                        style="position:absolute;left:0;color:var(--cyan);">▸</span>Метку <strong
+                                        style="color:var(--white);">labelResult</strong> для вывода результата. Можно
+                                    изначально установить <code
+                                        style="color:var(--cyan);font-family:'JetBrains Mono',monospace">labelResult.Text = ""</code>
+                                    (пуста)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 7.2 — Форма с кнопками и меткой</span>
+                    </div>
+                    <img src="картинки/7.2.png" alt="Форма с элементами">
+                </div>
+
+                <div class="steps" style="margin-top:20px;">
+                    <div class="step">
+                        <div class="step-n">4</div>
+                        <div class="step-t">Добавьте компонент <strong>Timer</strong> на форму (такая иконка «таймер» в
+                            панели Toolbox). Он появится внизу, обычно с именем <code
+                                style="color:var(--purple);font-family:'JetBrains Mono',monospace">timer1</code>.
+                            Интервал можно оставить любым — мы будем устанавливать его в коде.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 1 ══ -->
+            <section class="section" id="ch1">
+                <div class="section-title">
+                    <div class="section-num">📦</div>
+                    <h2>Глава 1 — Объявление переменных</h2>
+                </div>
+
+                <p class="prose">Дважды щёлкните по кнопке <strong>btnStart</strong> в дизайнере, чтобы создать
+                    обработчик события <code
+                        style="color:var(--purple);font-family:'JetBrains Mono',monospace">btnStart_Click</code>. В коде
+                    формы (Form1.cs) прямо внутри класса Form1 (снаружи методов) добавьте следующие поля:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — Поля класса
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code"
+                        data-code="Random rand = new Random(); // генератор случайных чисел
+
+Stopwatch stopwatch = new Stopwatch(); // секундомер для измерения времени"><span class="cls">Random</span> <span class="var">rand</span> = <span class="kw">new</span> <span class="cls">Random</span>(); <span class="cm">// генератор случайных чисел</span>
+
+<span class="cls">Stopwatch</span> <span class="var">stopwatch</span> = <span class="kw">new</span> <span class="cls">Stopwatch</span>(); <span class="cm">// секундомер для измерения времени</span></pre>
+                </div>
+
+                <div class="theory-box">
+                    <p>Эти объекты позволят нам вызывать случайную задержку и измерять время реакции.</p>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 7.3 — Объявление переменных в классе</span>
+                    </div>
+                    <img src="картинки/7.3.png" alt="Объявление переменных">
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 2 ══ -->
+            <section class="section" id="ch2">
+                <div class="section-title">
+                    <div class="section-num">▶️</div>
+                    <h2>Глава 2 — Код кнопки «Старт»</h2>
+                </div>
+
+                <p class="prose">Напишем код, который начинает игру. В обработчике события <code
+                        style="color:var(--purple);font-family:'JetBrains Mono',monospace">btnStart_Click</code>:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — btnStart_Click
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="private void btnStart_Click(object sender, EventArgs e)
+{
+    btnStart.Enabled = false; // отключаем кнопку Старт, пока ждём сигнал
+
+    labelResult.Text = &quot;Ждём зелёного...&quot;; // сообщаем пользователю, что надо ждать
+
+    // Устанавливаем случайную задержку 2-5 секунд
+    timer1.Interval = rand.Next(2000, 5000);
+    timer1.Start(); // запускаем таймер
+}"><span class="kw">private void</span> <span class="fn">btnStart_Click</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">EventArgs</span> <span class="var">e</span>)
+{
+    <span class="var">btnStart</span>.Enabled = <span class="kw">false</span>; <span class="cm">// отключаем кнопку Старт, пока ждём сигнал</span>
+
+    <span class="var">labelResult</span>.Text = <span class="str">"Ждём зелёного..."</span>; <span class="cm">// сообщаем пользователю, что надо ждать</span>
+
+    <span class="cm">// Устанавливаем случайную задержку 2-5 секунд</span>
+    <span class="var">timer1</span>.Interval = <span class="var">rand</span>.<span class="fn">Next</span>(<span class="num">2000</span>, <span class="num">5000</span>);
+    <span class="var">timer1</span>.<span class="fn">Start</span>(); <span class="cm">// запускаем таймер</span>
+}</pre>
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Объяснение:</strong> когда ученик нажимает «Старт», мы сразу выключаем эту кнопку (чтобы
+                        случайно не нажать повторно) и выводим сообщение «Ждём зелёного...». С помощью <code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">rand.Next(2000, 5000)</code>
+                        устанавливаем задержку от 2000 до 5000 миллисекунд. Затем запускаем timer1.</p>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 7.4 — Код кнопки «Старт»</span>
+                    </div>
+                    <img src="картинки/7.4.png" alt="Код кнопки Старт">
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 3 ══ -->
+            <section class="section" id="ch3">
+                <div class="section-title">
+                    <div class="section-num">⏱️</div>
+                    <h2>Глава 3 — Обработчик таймера</h2>
+                </div>
+
+                <p class="prose">Дважды щёлкните по таймеру <strong>timer1</strong> внизу окна, чтобы создать метод
+                    <code style="color:var(--purple);font-family:'JetBrains Mono',monospace">timer1_Tick</code>. В этом
+                    методе мы должны остановить таймер, сменить кнопку на зелёную и запустить секундомер:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — timer1_Tick
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="private void timer1_Tick(object sender, EventArgs e)
+{
+    timer1.Stop(); // останавливаем таймер, чтобы событие сработало только один раз
+
+    stopwatch.Restart(); // сбрасываем и сразу запускаем секундомер
+
+    btnReaction.Enabled = true; // делаем кнопку нажимаемой
+
+    btnReaction.BackColor = Color.LightGreen; // красим кнопку в зелёный цвет
+
+    labelResult.Text = &quot;ЖМИ!&quot;; // показываем команду игроку
+}"><span class="kw">private void</span> <span class="fn">timer1_Tick</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">EventArgs</span> <span class="var">e</span>)
+{
+    <span class="var">timer1</span>.<span class="fn">Stop</span>(); <span class="cm">// останавливаем таймер, чтобы событие сработало только один раз</span>
+
+    <span class="var">stopwatch</span>.<span class="fn">Restart</span>(); <span class="cm">// сбрасываем и сразу запускаем секундомер</span>
+
+    <span class="var">btnReaction</span>.Enabled = <span class="kw">true</span>; <span class="cm">// делаем кнопку нажимаемой</span>
+
+    <span class="var">btnReaction</span>.BackColor = <span class="cls">Color</span>.LightGreen; <span class="cm">// красим кнопку в зелёный цвет</span>
+
+    <span class="var">labelResult</span>.Text = <span class="str">"ЖМИ!"</span>; <span class="cm">// показываем команду игроку</span>
+}</pre>
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Объяснение:</strong> после случайной задержки таймер «тиком» вызывает этот метод. Мы
+                        останавливаем таймер (<code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">Stop</code>), чтобы он не
+                        тикал повторно. Запускаем stopwatch, чтобы засечь время. Включаем кнопку
+                        <strong>btnReaction</strong>, меняем её цвет на зелёный (чтобы игрок понял, что можно жать) и
+                        выводим на метке «ЖМИ!». Теперь игрок должен как можно быстрее нажать зелёную кнопку.</p>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 7.5 — Обработчик таймера timer1_Tick</span>
+                    </div>
+                    <img src="картинки/7.5.png" alt="Обработчик таймера">
+                </div>
+            </section>
+
+            <!-- ══ ГЛАВА 4 ══ -->
+            <section class="section" id="ch4">
+                <div class="section-title">
+                    <div class="section-num">⚡</div>
+                    <h2>Глава 4 — Обработчик кнопки «Жми!» (измерение времени)</h2>
+                </div>
+
+                <p class="prose">Дважды щёлкните по кнопке <strong>btnReaction</strong>, чтобы создать <code
+                        style="color:var(--purple);font-family:'JetBrains Mono',monospace">btnReaction_Click</code>.
+                    Здесь мы останавливаем секундомер и выводим результат реакции:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — btnReaction_Click
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="private void btnReaction_Click(object sender, EventArgs e)
+{
+    stopwatch.Stop(); // останавливаем секундомер
+
+    long time = stopwatch.ElapsedMilliseconds; // время реакции в миллисекундах
+
+    labelResult.Text = &quot;Время: &quot; + time + &quot; мс&quot;; // показываем результат
+
+    // Готовим всё к новому запуску:
+    btnStart.Enabled = true;      // снова активируем кнопку Старт
+    btnReaction.Enabled = false;  // блокируем кнопку Жми!
+    btnReaction.BackColor = SystemColors.Control; // возвращаем серый цвет
+    btnReaction.Text = &quot;Жми!&quot;;  // сбрасываем текст кнопки
+}"><span class="kw">private void</span> <span class="fn">btnReaction_Click</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">EventArgs</span> <span class="var">e</span>)
+{
+    <span class="var">stopwatch</span>.<span class="fn">Stop</span>(); <span class="cm">// останавливаем секундомер</span>
+
+    <span class="kw">long</span> <span class="var">time</span> = <span class="var">stopwatch</span>.ElapsedMilliseconds; <span class="cm">// время реакции в миллисекундах</span>
+
+    <span class="var">labelResult</span>.Text = <span class="str">"Время: "</span> + <span class="var">time</span> + <span class="str">" мс"</span>; <span class="cm">// показываем результат</span>
+
+    <span class="cm">// Готовим всё к новому запуску:</span>
+    <span class="var">btnStart</span>.Enabled = <span class="kw">true</span>;      <span class="cm">// снова активируем кнопку Старт</span>
+    <span class="var">btnReaction</span>.Enabled = <span class="kw">false</span>;  <span class="cm">// блокируем кнопку Жми!</span>
+    <span class="var">btnReaction</span>.BackColor = <span class="cls">SystemColors</span>.Control; <span class="cm">// возвращаем серый цвет</span>
+    <span class="var">btnReaction</span>.Text = <span class="str">"Жми!"</span>;   <span class="cm">// сбрасываем текст кнопки</span>
+}</pre>
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Объяснение:</strong> когда игрок нажмёт зелёную кнопку, мы останавливаем stopwatch и
+                        получаем количество миллисекунд реакции (<code
+                            style="color:var(--cyan);font-family:'JetBrains Mono',monospace">ElapsedMilliseconds</code>).
+                        Показываем это время в метке. Затем сбрасываем состояние игры: включаем кнопку «Старт»,
+                        выключаем кнопку «Жми!» и возвращаем ей изначальный вид (серый цвет и прежний текст). Теперь
+                        можно запустить игру заново.</p>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 7.6 — Код кнопки «Жми!»</span>
+                    </div>
+                    <img src="картинки/7.6.png" alt="Код кнопки Жми">
+                </div>
+            </section>
+
+            <!-- ══ ПОЛНЫЙ КОД ══ -->
+            <section class="section" id="full">
+                <div class="section-title">
+                    <div class="section-num">💻</div>
+                    <h2>Полный код программы</h2>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Form1.cs — Полный код
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace ReactionTest
+{
+    public partial class Form1 : Form
+    {
+        Random rand = new Random(); // генератор случайных чисел
+        Stopwatch stopwatch = new Stopwatch(); // секундомер
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            btnStart.Enabled = false;
+            labelResult.Text = &quot;Ждём зелёного...&quot;;
+            timer1.Interval = rand.Next(2000, 5000);
+            timer1.Start();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            timer1.Stop();
+            stopwatch.Restart();
+            btnReaction.Enabled = true;
+            btnReaction.BackColor = Color.LightGreen;
+            labelResult.Text = &quot;ЖМИ!&quot;;
+        }
+
+        private void btnReaction_Click(object sender, EventArgs e)
+        {
+            stopwatch.Stop();
+            labelResult.Text = &quot;Время: &quot; + stopwatch.ElapsedMilliseconds + &quot; мс&quot;;
+            btnReaction.Enabled = false;
+            btnReaction.BackColor = SystemColors.Control;
+            btnStart.Enabled = true;
+        }
+    }
+}"><span class="kw">using</span> System;
+<span class="kw">using</span> System.Diagnostics;
+<span class="kw">using</span> System.Drawing;
+<span class="kw">using</span> System.Windows.Forms;
+
+<span class="kw">namespace</span> ReactionTest
+{
+    <span class="kw">public partial class</span> <span class="cls">Form1</span> : <span class="cls">Form</span>
+    {
+        <span class="cls">Random</span> <span class="var">rand</span> = <span class="kw">new</span> <span class="cls">Random</span>(); <span class="cm">// генератор случайных чисел</span>
+        <span class="cls">Stopwatch</span> <span class="var">stopwatch</span> = <span class="kw">new</span> <span class="cls">Stopwatch</span>(); <span class="cm">// секундомер</span>
+
+        <span class="kw">public</span> <span class="fn">Form1</span>()
+        {
+            <span class="fn">InitializeComponent</span>();
+        }
+
+        <span class="kw">private void</span> <span class="fn">btnStart_Click</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">EventArgs</span> <span class="var">e</span>)
+        {
+            <span class="var">btnStart</span>.Enabled = <span class="kw">false</span>;
+            <span class="var">labelResult</span>.Text = <span class="str">"Ждём зелёного..."</span>;
+            <span class="var">timer1</span>.Interval = <span class="var">rand</span>.<span class="fn">Next</span>(<span class="num">2000</span>, <span class="num">5000</span>);
+            <span class="var">timer1</span>.<span class="fn">Start</span>();
+        }
+
+        <span class="kw">private void</span> <span class="fn">timer1_Tick</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">EventArgs</span> <span class="var">e</span>)
+        {
+            <span class="var">timer1</span>.<span class="fn">Stop</span>();
+            <span class="var">stopwatch</span>.<span class="fn">Restart</span>();
+            <span class="var">btnReaction</span>.Enabled = <span class="kw">true</span>;
+            <span class="var">btnReaction</span>.BackColor = <span class="cls">Color</span>.LightGreen;
+            <span class="var">labelResult</span>.Text = <span class="str">"ЖМИ!"</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">btnReaction_Click</span>(<span class="kw">object</span> <span class="var">sender</span>, <span class="cls">EventArgs</span> <span class="var">e</span>)
+        {
+            <span class="var">stopwatch</span>.<span class="fn">Stop</span>();
+            <span class="var">labelResult</span>.Text = <span class="str">"Время: "</span> + <span class="var">stopwatch</span>.ElapsedMilliseconds + <span class="str">" мс"</span>;
+            <span class="var">btnReaction</span>.Enabled = <span class="kw">false</span>;
+            <span class="var">btnReaction</span>.BackColor = <span class="cls">SystemColors</span>.Control;
+            <span class="var">btnStart</span>.Enabled = <span class="kw">true</span>;
+        }
+    }
+}</pre>
+                </div>
+            </section>
+
+            <!-- ══ ИТОГ ══ -->
+            <section class="section" id="end">
+                <div class="section-title">
+                    <div class="section-num">🏁</div>
+                    <h2>Итог урока</h2>
+                </div>
+
+                <div class="theory-box">
+                    <p>Ученик собрал простую игру «Реакшн-тест» с графическим интерфейсом Windows Forms. Мы разобрали
+                        ключевые инструменты для работы со временем и событиями.</p>
+                </div>
+
+                <ul class="bullet-list" style="margin-bottom:20px;">
+                    <li>✅ Ученик собрал простую игру «Реакшн-тест» с графическим интерфейсом Windows Forms</li>
+                    <li>✅ Мы научились использовать класс <strong>Timer</strong> для создания случайной задержки и класс
+                        <strong>Stopwatch</strong> для точного измерения времени</li>
+                    <li>✅ Разобрались с обработчиками событий: событие <strong>Click</strong> у кнопок и
+                        <strong>Tick</strong> у таймера</li>
+                    <li>✅ Поняли, как изменять свойства элементов (текст кнопки, её цвет, доступность) во время
+                        выполнения программы</li>
+                </ul>
+
+                <div class="chips">
+                    <div class="chip">Stopwatch</div>
+                    <div class="chip">Timer</div>
+                    <div class="chip pink">ElapsedMilliseconds</div>
+                    <div class="chip pink">Restart()</div>
+                    <div class="chip green">btnStart_Click</div>
+                    <div class="chip green">timer1_Tick</div>
+                    <div class="chip cyan">Enabled</div>
+                    <div class="chip cyan">BackColor</div>
+                    <div class="chip yellow">rand.Next</div>
+                </div>
+
+                <!-- Самостоятельная работа -->
+                <div class="section-title" style="margin-top:32px;margin-bottom:16px;padding-bottom:12px;">
+                    <div class="section-num" style="background:linear-gradient(135deg,var(--yellow),var(--green));">🎨
+                    </div>
+                    <h2>Самостоятельная работа</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n" style="background:linear-gradient(135deg,#ffe066,#00ffb3);color:#000;">🎨
+                        </div>
+                        <div class="step-t"><strong>Добавьте фоновую картинку к форме</strong> (например, изображение
+                            секундомера или абстрактный фон) через свойство <code
+                                style="color:var(--purple);font-family:'JetBrains Mono',monospace">BackgroundImage</code>
+                            формы.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n" style="background:linear-gradient(135deg,#ffe066,#00ffb3);color:#000;">🌈
+                        </div>
+                        <div class="step-t"><strong>Измените цвета и шрифты элементов:</strong> сделайте кнопку «Старт»
+                            яркой (например, жёлтого цвета), кнопку «Жми!» — зелёной, а текст на метках более
+                            контрастным. Это украсит проект и сделает игру более наглядной.</div>
+                    </div>
+                </div>
+            </section>
+
+        </div><!-- /content -->
+
+        <div class="download-section">
+            <a href="Урок7.docx" download="Урок7.docx" class="download-btn" id="dl-btn">
+                <span class="dl-icon" id="dl-icon">📄</span>
+                Скачать полный конспект 7 урока
+            </a>
+        </div>
+
+        <footer>
+            <div class="footer-brand">Сделано тьютором <span>KIBERone</span> Калининград 🏰</div>
+            <div class="footer-hint">// Урок 7 · C# · Windows Forms · Stopwatch · Timer</div>
+        </footer>
+
+    </div><!-- /main -->
+
+    <div id="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+    <div id="toast">✅ Код скопирован!</div>
+    <div id="easter-egg">
+        <span class="big">⚡</span>
+        <h3>Молниеносная реакция!</h3>
+        <p>Ты нашёл секрет урока 🎉<br>Konami code: ↑↑↓↓←→←→BA</p>
+        <button id="egg-close" onclick="closeEgg()">Закрыть</button>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+            updateNav();
+        });
+
+        (function () {
+            const c = document.getElementById('particles');
+            const colors = ['#949cff', '#ff3d68', '#00e5ff', '#00ffb3', '#ffe066'];
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div'); p.className = 'particle';
+                const s = Math.random() * 6 + 3;
+                p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};animation-duration:${Math.random() * 20 + 12}s;animation-delay:-${Math.random() * 20}s;`;
+                c.appendChild(p);
+            }
+        })();
+
+        function toggleQ(h) {
+            h.classList.toggle('open');
+            h.nextElementSibling.classList.toggle('open');
+        }
+
+        function copyCode(btn) {
+            const pre = btn.closest('.code-wrap').querySelector('pre');
+            const raw = (pre.dataset.code || pre.innerText).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+            navigator.clipboard.writeText(raw).then(() => {
+                btn.textContent = '✅ Скопировано!'; btn.classList.add('copied');
+                showToast('Код скопирован!');
+                setTimeout(() => { btn.textContent = '📋 Копировать'; btn.classList.remove('copied'); }, 2000);
+            });
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = '✅ ' + msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function openLightbox(w) { document.getElementById('lightbox-img').src = w.querySelector('img').src; document.getElementById('lightbox').classList.add('open'); }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEgg(); } });
+
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('open'); }
+        function closeMenu() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('open'); }
+
+        const sects = ['hero', 'theory', 'setup', 'ch1', 'ch2', 'ch3', 'ch4', 'full', 'end'];
+        function updateNav() {
+            let cur = sects[0];
+            sects.forEach(id => { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < 130) cur = id; });
+            document.querySelectorAll('.nav-item').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+        }
+
+        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let ki = 0;
+        document.addEventListener('keydown', e => { ki = (e.key === konami[ki]) ? ki + 1 : 0; if (ki === konami.length) { document.getElementById('easter-egg').classList.add('show'); ki = 0; } });
+        function closeEgg() { document.getElementById('easter-egg').classList.remove('show'); }
+
+        document.getElementById('dl-btn').addEventListener('click', function () {
+            const icon = document.getElementById('dl-icon'); icon.textContent = '✅';
+            setTimeout(() => { icon.textContent = '📄'; }, 2500);
+        });
+
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => { chip.style.transform = 'scale(1.15)'; setTimeout(() => chip.style.transform = '', 200); showToast('🏷️ ' + chip.textContent); });
+        });
+    </script>
+</body>
+
+</html>

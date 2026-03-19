@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок 3 — Питомец Тамагочи 🐾</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<!-- Кнопка Назад в Каталог -->
+<a href="../index.html" class="back-to-index" style="position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #a855f7, #3b82f6); color: white; text-decoration: none; border-radius: 8px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 99999; display: flex; align-items: center; gap: 8px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);">
+  &#8592; Вернуться в каталог
+</a>
+<style>
+    .back-to-index:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.8); border-color: white; }
+    .back-to-index:active { transform: scale(0.95); }
+    @media (max-width: 768px) { .back-to-index { font-size: 12px !important; padding: 7px 10px !important; top: 8px !important; right: 8px !important; border-radius: 6px !important; gap: 4px !important; } }
+</style>
+
+
+    <div id="progress-bar"></div>
+    <div id="particles"></div>
+
+    <nav id="sidebar">
+        <div class="sidebar-logo">
+            <div class="k">🎮 KIBERone</div>
+            <span class="t">Калининград · Урок 3</span>
+        </div>
+        <a class="nav-item active" href="#hero"> <span class="nav-emoji">🏠</span> Главная <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#repeat"><span class="nav-emoji">📝</span> Повторение <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#theory"><span class="nav-emoji">🧠</span> Теория ООП <span
+                class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch1"> <span class="nav-emoji">🏗️</span> Класс Pet <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#ch2"> <span class="nav-emoji">🔄</span> Цикл игры <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#end"> <span class="nav-emoji">🏁</span> Итог <span class="nav-dot"></span></a>
+        <div class="sidebar-footer">Тьютор <span>KIBERone</span><br>Калининград 🏰</div>
+    </nav>
+
+    <div id="sidebar-overlay" onclick="closeMenu()"></div>
+    <button id="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <div id="main">
+
+        <section class="hero" id="hero">
+            <div class="hero-badge">⚡ Урок 3 · C# · ООП</div>
+            <h1>
+                <span class="line1">Питомец Тамагочи</span>
+                <span class="line2">в консоли 🐾</span>
+            </h1>
+            <p class="hero-desc">Цель: научить детей базовым принципам ООП (класс, объект, поля, методы) на простом
+                примере; показать, как создавать свой класс и управлять его объектом; закрепить использование условий,
+                цикла и ввода с клавиатуры.</p>
+            <div class="hero-tags">
+                <div class="hero-tag"><span>🏗️</span>Класс &amp; Объект</div>
+                <div class="hero-tag"><span>🗂️</span>Поля &amp; Методы</div>
+                <div class="hero-tag"><span>🔄</span>while(true) + break</div>
+                <div class="hero-tag"><span>🚀</span>Process.Start</div>
+            </div>
+        </section>
+
+        <div class="content">
+
+            <section class="section" id="repeat">
+                <div class="section-title">
+                    <div class="section-num">📝</div>
+                    <h2>Блок 1 — Повторение прошлых тем</h2>
+                </div>
+                <p class="prose" style="color:var(--muted);margin-bottom:16px;">Задай эти вопросы детям перед началом 👇
+                </p>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)"><span>💾</span> Вопросы по переменным <i
+                            class="q-chevron">▾</i></div>
+                    <div class="q-group-body">
+                        <div class="q-item"><span class="q-num">1</span>Что такое переменная?</div>
+                        <div class="q-item"><span class="q-num">2</span>Зачем в программе нужно хранить значения
+                            (например, загаданное число в игре) в отдельной переменной?</div>
+                        <div class="q-item"><span class="q-num">3</span>Можно ли изменить значение переменной во время
+                            работы программы?</div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)"><span>🎲</span> Вопросы по Random <i
+                            class="q-chevron">▾</i></div>
+                    <div class="q-group-body">
+                        <div class="q-item"><span class="q-num">1</span>Как компьютер может «загадать» случайное число?
+                        </div>
+                        <div class="q-item"><span class="q-num">2</span>Что делает выражение <code
+                                style="color:var(--purple);font-family:'JetBrains Mono',monospace">rand.Next(1, 101)</code>?
+                        </div>
+                        <div class="q-item"><span class="q-num">3</span>Почему для диапазона 1–100 мы пишем 101, а не
+                            100?</div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)"><span>🔀</span> Вопросы по условиям (if) <i
+                            class="q-chevron">▾</i></div>
+                    <div class="q-group-body">
+                        <div class="q-item"><span class="q-num">1</span>Когда выполняется блок кода внутри if?</div>
+                        <div class="q-item"><span class="q-num">2</span>Что произойдёт, если условие в if ложно (false)?
+                        </div>
+                        <div class="q-item"><span class="q-num">3</span>В чём разница между оператором присваивания
+                            <code style="color:var(--pink);font-family:'JetBrains Mono',monospace">=</code> и сравнением
+                            <code style="color:var(--pink);font-family:'JetBrains Mono',monospace">==</code>?</div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)"><span>🔄</span> Вопросы по циклам <i
+                            class="q-chevron">▾</i></div>
+                    <div class="q-group-body">
+                        <div class="q-item"><span class="q-num">1</span>Для чего нужен цикл в программе?</div>
+                        <div class="q-item"><span class="q-num">2</span>Что делает цикл while? Как он решал проблему
+                            однократного ввода в игре «Угадайка»?</div>
+                        <div class="q-item"><span class="q-num">3</span>Когда цикл while прекращает свою работу?</div>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div class="q-group-header" onclick="toggleQ(this)"><span>⌨️</span> Вопросы по вводу с клавиатуры <i
+                            class="q-chevron">▾</i></div>
+                    <div class="q-group-body">
+                        <div class="q-item"><span class="q-num">1</span>Что возвращает метод <code
+                                style="color:var(--purple);font-family:'JetBrains Mono',monospace">Console.ReadLine()</code>?
+                        </div>
+                        <div class="q-item"><span class="q-num">2</span>Почему нужно применять <code
+                                style="color:var(--purple);font-family:'JetBrains Mono',monospace">Convert.ToInt32()</code>
+                            к результату ReadLine()?</div>
+                        <div class="q-item"><span class="q-num">3</span>Как вы вводили данные для игры в прошлый раз?
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="theory">
+                <div class="section-title">
+                    <div class="section-num">🧠</div>
+                    <h2>Новая тема — Классы и объекты</h2>
+                </div>
+
+                <div class="theory-box">
+                    <p>Настало время познакомиться с <strong>ООП — объектно-ориентированным программированием</strong>.
+                        Звучит сложно, но идея проста 😊 Если раньше мы работали с разрозненными переменными и
+                        командами, то ООП позволяет собрать связанные данные и действия в одно целое —
+                        <strong>класс</strong>. От класса мы затем создаём <strong>объект</strong> (как экземпляр этого
+                        класса) и работаем уже с ним.</p>
+                </div>
+
+                <div class="grid2">
+                    <div class="mini-card" style="border-color:rgba(148,156,255,0.3);">
+                        <h4>📐 Класс = шаблон / чертёж</h4>
+                        <ul>
+                            <li>Описывает, <strong>какими свойствами</strong> обладает объект</li>
+                            <li>Описывает, <strong>что объект умеет делать</strong></li>
+                            <li>Как рецепт блюда — сам по себе не еда</li>
+                            <li>Пример: класс <strong>Pet</strong> — общая идея «питомца»</li>
+                        </ul>
+                    </div>
+                    <div class="mini-card" style="border-color:rgba(255,61,104,0.3);">
+                        <h4>🐾 Объект = конкретный экземпляр</h4>
+                        <ul>
+                            <li>Создаётся <strong>по шаблону класса</strong></li>
+                            <li>Имеет <strong>реальные значения</strong> полей</li>
+                            <li>Можно создать несколько объектов одного класса</li>
+                            <li>Пример: <strong>твой</strong> питомец Бобик</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="icon">💡</div>
+                    <p>Мы уже встречались с классами! <strong>Random rand = new Random();</strong> — здесь Random — это
+                        класс, а rand — объект. <strong>Console</strong> — тоже класс с методами WriteLine, ReadLine и
+                        др. Теперь создадим свой!</p>
+                </div>
+
+                <div class="theory-box">
+                    <p>У класса внутри могут быть:</p>
+                    <ul>
+                        <li>🗂️ <strong>Поля (fields)</strong> — переменные, которые хранят состояние объекта (как
+                            характеристики)</li>
+                        <li>⚙️ <strong>Методы (methods)</strong> — функции, описывающие действия, которые объект умеет
+                            делать</li>
+                    </ul>
+                    <p style="margin-top:10px;">Например, у класса Pet будут такие <strong>поля</strong> состояния:
+                        <strong>голод</strong> (0 — сыт, 10 — очень голоден), <strong>радость</strong> (уровень
+                        счастья), <strong>энергия</strong> (уровень сил). И следующие <strong>методы</strong>:
+                        <strong>Кормить()</strong>, <strong>Играть()</strong>, <strong>Спать()</strong>.</p>
+                </div>
+
+                <div class="warn-box">
+                    <div class="icon">🙀</div>
+                    <p>Если питомец станет слишком голодным (hunger = 10), он <strong>«сбегает»</strong>! Программа
+                        выведет сообщение и откроет в браузере картинку убегающего кота 😂</p>
+                </div>
+
+                <p class="prose"><strong>Как это будет работать в программе?</strong> Мы создадим класс Pet с полями и
+                    методами. Затем в Main создадим <strong>объект</strong> этого класса. Управлять им будем в цикле:
+                    программа спрашивает, что сделать (1 — покормить, 2 — поиграть), считывает команду и вызывает
+                    соответствующий метод объекта. Цикл позволит выполнять много действий подряд. Если голод питомца
+                    достигнет 10 — программа прервёт цикл: питомец «сбежит», и игра закончится.</p>
+            </section>
+
+            <section class="section" id="ch1">
+                <div class="section-title">
+                    <div class="section-num">🏗️</div>
+                    <h2>Глава 1 — Создание класса питомца</h2>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t">Открой <strong>Visual Studio → Create a new project → Консольное приложение
+                                (Microsoft)</strong></div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t">Назови проект <strong>ИмяРебёнка_Урок3</strong> → нажми
+                            <strong>Create</strong></div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t">В <strong>Solution Explorer</strong> щёлкни правой кнопкой по проекту →
+                            выбери <strong>Add → Class...</strong></div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">4</div>
+                        <div class="step-t">Назови новый файл <strong>Pet.cs</strong> → нажми <strong>Add</strong>.
+                            Visual Studio создаст заготовку: <code>internal class Pet {}</code></div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 3.1 — Диалог добавления нового элемента</span>
+                    </div>
+                    <img src="картинки/3.1.jpg" alt="Add new item dialog">
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 3.2 — Solution Explorer: ПКМ → Add → Class</span>
+                    </div>
+                    <img src="картинки/3.2.jpg" alt="Solution Explorer Add Class">
+                </div>
+
+                <p class="prose">Теперь добавляем код внутрь фигурных скобок класса Pet:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Pet.cs — C#
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="internal class Pet
+{
+    public int hunger = 5; // голод (0-10)
+
+    public void Feed()
+    {
+        hunger -= 3;
+        if (hunger < 0) hunger = 0;
+        Console.WriteLine(&quot;Питомец поел.&quot;);
+    }
+
+    public void Play()
+    {
+        hunger += 2;
+        if (hunger > 10) hunger = 10;
+        Console.WriteLine(&quot;Питомец играет!&quot;);
+    }
+}"><span class="kw">internal class</span> <span class="cls">Pet</span>
+{
+    <span class="kw">public int</span> <span class="var">hunger</span> = <span class="num">5</span>; <span class="cm">// голод (0–10)</span>
+
+    <span class="kw">public void</span> <span class="fn">Feed</span>()
+    {
+        <span class="var">hunger</span> -= <span class="num">3</span>;
+        <span class="kw">if</span> (<span class="var">hunger</span> &lt; <span class="num">0</span>) <span class="var">hunger</span> = <span class="num">0</span>;
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"🍗 Питомец поел."</span>);
+    }
+
+    <span class="kw">public void</span> <span class="fn">Play</span>()
+    {
+        <span class="var">hunger</span> += <span class="num">2</span>;
+        <span class="kw">if</span> (<span class="var">hunger</span> &gt; <span class="num">10</span>) <span class="var">hunger</span> = <span class="num">10</span>;
+        <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"🤹 Питомец играет!"</span>);
+    }
+}</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 3.3 — Код класса Pet.cs в Visual Studio</span>
+                    </div>
+                    <img src="картинки/3.3.jpg" alt="Pet.cs code">
+                </div>
+
+                <div class="theory-box">
+                    <p><strong>Разбор класса Pet:</strong></p>
+                    <ul>
+                        <li>Поле <strong>hunger</strong> — показатель голода от 0 до 10, начальное значение 5 (средний
+                            голод)</li>
+                        <li>Метод <strong>Feed()</strong> — уменьшает голод на 3, не даёт уйти ниже 0, выводит сообщение
+                            в консоль</li>
+                        <li>Метод <strong>Play()</strong> — увеличивает голод на 2 (игра тратит силы), ограничивает до
+                            10</li>
+                        <li>Класс объединяет <strong>состояние</strong> и <strong>поведение</strong> — это и есть суть
+                            ООП!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="section" id="ch2">
+                <div class="section-title">
+                    <div class="section-num">🔄</div>
+                    <h2>Глава 2 — Цикл ухода за питомцем</h2>
+                </div>
+                <p class="prose">Класс готов! Теперь напишем основную логику игры в файле <strong>Program.cs</strong>.
+                    Нам нужен цикл, который будет повторять запрос действия и обновлять питомца, пока игра не окончена.
+                </p>
+                <p class="prose">Открой <strong>Program.cs</strong> и добавь следующий код:</p>
+
+                <div class="code-wrap">
+                    <div class="code-header">
+                        <div class="code-lang">
+                            <div class="code-dots"><span class="d1"></span><span class="d2"></span><span
+                                    class="d3"></span></div>
+                            📄 Program.cs — C#
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+                    </div>
+                    <pre class="code" data-code="using System.Diagnostics;
+using Урок_3;
+
+Pet pet = new Pet();
+Console.WriteLine(&quot;У тебя появился питомец!&quot;);
+
+while (true)
+{
+    Console.WriteLine(&quot;1-Кормить  2-Играть&quot;);
+    int choice = Convert.ToInt32(Console.ReadLine());
+
+    if (choice == 1) pet.Feed();
+    else if (choice == 2) pet.Play();
+    else Console.WriteLine(&quot;Введите 1 или 2&quot;);
+
+    // каждый ход увеличивается голод
+    pet.hunger++;
+    if (pet.hunger > 10) pet.hunger = 10;
+
+    // если голод 10 — питомец сбежал
+    if (pet.hunger == 10) break;
+
+    Console.WriteLine($&quot;Голод: {pet.hunger}&quot;);
+}
+
+Console.WriteLine(&quot;Питомец убежал&quot;);
+
+Process.Start(new ProcessStartInfo
+{
+    FileName = &quot;https://i.ytimg.com/vi/w4HNHhYWyRc/maxresdefault.jpg&quot;,
+    UseShellExecute = true
+});"><span class="kw">using</span> System.Diagnostics;
+<span class="kw">using</span> Урок_3;
+
+<span class="cls">Pet</span> <span class="var">pet</span> = <span class="kw">new</span> <span class="cls">Pet</span>();
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"У тебя появился питомец!"</span>);
+
+<span class="kw">while</span> (<span class="kw">true</span>)
+{
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"1-Кормить  2-Играть"</span>);
+    <span class="kw">int</span> <span class="var">choice</span> = <span class="cls">Convert</span>.<span class="fn">ToInt32</span>(<span class="cls">Console</span>.<span class="fn">ReadLine</span>());
+
+    <span class="kw">if</span> (<span class="var">choice</span> == <span class="num">1</span>) <span class="var">pet</span>.<span class="fn">Feed</span>();
+    <span class="kw">else if</span> (<span class="var">choice</span> == <span class="num">2</span>) <span class="var">pet</span>.<span class="fn">Play</span>();
+    <span class="kw">else</span> <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Введите 1 или 2"</span>);
+
+    <span class="cm">// каждый ход увеличивается голод</span>
+    <span class="var">pet</span>.<span class="var">hunger</span>++;
+    <span class="kw">if</span> (<span class="var">pet</span>.<span class="var">hunger</span> &gt; <span class="num">10</span>) <span class="var">pet</span>.<span class="var">hunger</span> = <span class="num">10</span>;
+
+    <span class="cm">// если голод 10 — питомец сбежал</span>
+    <span class="kw">if</span> (<span class="var">pet</span>.<span class="var">hunger</span> == <span class="num">10</span>) <span class="kw">break</span>;
+
+    <span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">$"Голод: {<span class="var">pet</span>.<span class="var">hunger</span>}"</span>);
+}
+
+<span class="cls">Console</span>.<span class="fn">WriteLine</span>(<span class="str">"Питомец убежал 😿"</span>);
+
+<span class="cls">Process</span>.<span class="fn">Start</span>(<span class="kw">new</span> <span class="cls">ProcessStartInfo</span>
+{
+    FileName = <span class="str">"https://i.ytimg.com/vi/w4HNHhYWyRc/maxresdefault.jpg"</span>,
+    UseShellExecute = <span class="kw">true</span>
+});</pre>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 3.4 — Код Program.cs в Visual Studio</span>
+                    </div>
+                    <img src="картинки/3.4.jpg" alt="Program.cs code">
+                </div>
+
+                <p class="prose" style="font-weight:800;color:var(--white);margin:20px 0 12px;">🔍 Разбор кода по шагам:
+                </p>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-n">1</div>
+                        <div class="step-t"><code>using System.Diagnostics;</code> — подключает пространство имён, чтобы
+                            использовать класс Process. Без этой строки команда Process.Start() не будет доступна.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">2</div>
+                        <div class="step-t"><code>Pet pet = new Pet();</code> — создаём экземпляр класса Pet (ранее мы
+                            импортировали этот класс через using Урок_3). У него есть поле hunger, которое начинается со
+                            значения 5.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">3</div>
+                        <div class="step-t"><code>while (true)</code> — бесконечный цикл. Работает, пока мы сами его не
+                            остановим командой <code>break</code>.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">4</div>
+                        <div class="step-t">Внутри цикла: выводим меню, считываем ввод через
+                            <code>Console.ReadLine()</code>, конвертируем в число, вызываем метод pet.Feed() или
+                            pet.Play(). Если другое значение — выводим предупреждение.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">5</div>
+                        <div class="step-t"><code>pet.hunger++</code> — после каждого хода голод увеличивается на 1. Это
+                            имитация времени — питомец постепенно снова хочет есть. Стоит проверка, чтобы значение не
+                            превышало 10.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">6</div>
+                        <div class="step-t">Если <code>pet.hunger == 10</code> — выполняется break. Питомец стал слишком
+                            голодным и «сбежал», цикл завершается.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-n">7</div>
+                        <div class="step-t"><code>Process.Start(...)</code> — открывает ссылку в браузере. Параметр
+                            UseShellExecute = true говорит системе использовать стандартный способ открытия файла или
+                            ссылки.</div>
+                    </div>
+                </div>
+
+                <div class="shot-wrap" onclick="openLightbox(this)">
+                    <div class="shot-bar">
+                        <div class="shot-dots"><span class="s1"></span><span class="s2"></span><span class="s3"></span>
+                        </div>
+                        <span class="shot-label">📷 Картинка 3.5 — Результат работы программы в консоли</span>
+                    </div>
+                    <img src="картинки/3.5.jpg" alt="Console output">
+                </div>
+            </section>
+
+            <section class="section" id="end">
+                <div class="section-title">
+                    <div class="section-num">🏁</div>
+                    <h2>Заключение урока</h2>
+                </div>
+
+                <div class="theory-box">
+                    <p>В этом уроке мы впервые <strong>создали свой класс</strong> и управляли объектом через его
+                        методы. Мы увидели, как состояние объекта меняется со временем и как цикл позволяет построить
+                        «живую» игру. Это <strong>первый шаг к настоящему объектно-ориентированному
+                            программированию</strong>.</p>
+                </div>
+
+                <div class="grid2">
+                    <div class="mini-card" style="border-color:rgba(0,255,179,0.3);">
+                        <h4 style="color:var(--green);">✅ Что изучили</h4>
+                        <ul>
+                            <li>Понятие класса и объекта в ООП</li>
+                            <li>Поля — хранение состояния</li>
+                            <li>Методы — действия объекта</li>
+                            <li>Создание класса Pet</li>
+                            <li>while(true) + break</li>
+                            <li>Process.Start для открытия ссылки</li>
+                        </ul>
+                    </div>
+                    <div class="mini-card" style="border-color:rgba(0,229,255,0.3);">
+                        <h4 style="color:var(--cyan);">🔑 Ключевые слова C#</h4>
+                        <ul>
+                            <li><strong>class</strong> — шаблон / чертёж</li>
+                            <li><strong>new</strong> — создать объект</li>
+                            <li><strong>public</strong> — доступно снаружи</li>
+                            <li><strong>void</strong> — метод не возвращает значение</li>
+                            <li><strong>break</strong> — выйти из цикла</li>
+                            <li><strong>using</strong> — подключить пространство имён</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chips" style="margin-top:16px;">
+                    <div class="chip">ООП</div>
+                    <div class="chip">Класс</div>
+                    <div class="chip">Объект</div>
+                    <div class="chip pink">Поля</div>
+                    <div class="chip pink">Методы</div>
+                    <div class="chip green">while(true)</div>
+                    <div class="chip green">break</div>
+                    <div class="chip cyan">Process.Start</div>
+                    <div class="chip cyan">using</div>
+                </div>
+
+                <div class="info-box" style="margin-top:24px;">
+                    <div class="icon">🎮</div>
+                    <p><strong>Доп. интерактив:</strong> Можно устроить соревнование — кто дольше продержит питомца
+                        живым! Или добавить новые поля (радость, энергия) и новые методы (Sleep). Попробуй добавить
+                        несколько питомцев — ведь это разные объекты одного класса! Можно разыграть приз 10к 🏆</p>
+                </div>
+            </section>
+
+        </div>
+
+        <div class="download-section">
+            <a href="Урок2.docx" download="Урок2.docx" class="download-btn" id="dl-btn">
+                <span class="dl-icon" id="dl-icon">📄</span>
+                Скачать полный конспект 2 урока
+            </a>
+        </div>
+
+        <footer>
+            <div class="footer-brand">Сделано тьютором <span>KIBERone</span> Калининград 🏰</div>
+            <div class="footer-hint">// Урок 3 · C# · ООП · Тамагочи</div>
+        </footer>
+
+    </div>
+
+    <div id="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+    <div id="toast">✅ Код скопирован!</div>
+    <div id="easter-egg">
+        <span class="big">🐱</span>
+        <h3>Питомец нашёл тебя!</h3>
+        <p>Ты нашёл секрет урока 🎉<br>Konami code: ↑↑↓↓←→←→BA</p>
+        <button id="egg-close" onclick="closeEgg()">Закрыть</button>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+            updateNav();
+        });
+        (function () {
+            const c = document.getElementById('particles');
+            const colors = ['#949cff', '#ff3d68', '#00e5ff', '#00ffb3', '#ffe066'];
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div'); p.className = 'particle';
+                const s = Math.random() * 6 + 3;
+                p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};animation-duration:${Math.random() * 20 + 12}s;animation-delay:-${Math.random() * 20}s;`;
+                c.appendChild(p);
+            }
+        })();
+        function toggleQ(h) { h.classList.toggle('open'); h.nextElementSibling.classList.toggle('open'); }
+        document.querySelector('.q-group-header').click();
+        function copyCode(btn) {
+            const pre = btn.closest('.code-wrap').querySelector('pre');
+            const raw = (pre.dataset.code || pre.innerText).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+            navigator.clipboard.writeText(raw).then(() => {
+                btn.textContent = '✅ Скопировано!'; btn.classList.add('copied');
+                showToast('Код скопирован!');
+                setTimeout(() => { btn.textContent = '📋 Копировать'; btn.classList.remove('copied'); }, 2000);
+            });
+        }
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = '✅ ' + msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+        function openLightbox(w) { document.getElementById('lightbox-img').src = w.querySelector('img').src; document.getElementById('lightbox').classList.add('open'); }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEgg(); } });
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('open'); }
+        function closeMenu() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('open'); }
+        const sects = ['hero', 'repeat', 'theory', 'ch1', 'ch2', 'end'];
+        function updateNav() {
+            let cur = sects[0];
+            sects.forEach(id => { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < 130) cur = id; });
+            document.querySelectorAll('.nav-item').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+        }
+        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let ki = 0;
+        document.addEventListener('keydown', e => { ki = (e.key === konami[ki]) ? ki + 1 : 0; if (ki === konami.length) { document.getElementById('easter-egg').classList.add('show'); ki = 0; } });
+        function closeEgg() { document.getElementById('easter-egg').classList.remove('show'); }
+        document.getElementById('dl-btn').addEventListener('click', function () {
+            const icon = document.getElementById('dl-icon'); icon.textContent = '✅';
+            setTimeout(() => { icon.textContent = '📄'; }, 2500);
+        });
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => { chip.style.transform = 'scale(1.15)'; setTimeout(() => chip.style.transform = '', 200); showToast('🏷️ ' + chip.textContent); });
+        });
+    </script>
+</body>
+
+</html>
